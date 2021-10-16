@@ -47,6 +47,11 @@ const routes = [
         component: () => import('../views/background/group/GroupManagement.vue'),
       },
       {
+        path:'group/:groupId',
+        name: 'GroupInfo',
+        component: () => import('../views/background/group/GroupInfo.vue'),
+      },
+      {
         path:'problem',
         name: 'ProblemManagement',
         component: () => import('../views/background/problem/ProblemManagement.vue'),

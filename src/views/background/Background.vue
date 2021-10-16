@@ -1,6 +1,6 @@
 <template>
   <v-container fluid fill-height class="blue-grey lighten-5" pa-0 align-start>
-    <v-navigation-drawer permanent dark>
+    <v-navigation-drawer permanent dark app>
       <v-list>
         <v-subheader class="text-h6 white--text">后台管理</v-subheader>
         <v-list-item-group mandatory color=" teal lighten-3">
@@ -15,8 +15,8 @@
         </v-list-item-group>
       </v-list>
     </v-navigation-drawer>
-    <v-main fill-height class="pa-5">
-      <router-view></router-view>
+    <v-main>
+      <router-view class=""></router-view>
     </v-main>
   </v-container>
 </template>
