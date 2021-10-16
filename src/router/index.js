@@ -37,32 +37,27 @@ const routes = [
     component: () => import('../views/background/Background.vue'),
     children:[
       {
-        path:'userManger',
-        name: 'UserManager',
-        component: () => import('../views/background/userManager/UserManager.vue'),
+        path:'user',
+        name: 'UserManagement',
+        component: () => import('../views/background/user/UserManagement.vue'),
       },
       {
-        path:'labManager',
-        name: 'LabManager',
-        component: () => import('../views/background/labManager/LabManager.vue'),
+        path:'group',
+        name: 'GroupManagement',
+        component: () => import('../views/background/group/GroupManagement.vue'),
       },
       {
-        path:'problemManager',
-        name: 'ProblemManager',
-        component: () => import('../views/background/problemManager/ProblemManager.vue'),
+        path:'problem',
+        name: 'ProblemManagement',
+        component: () => import('../views/background/problem/ProblemManagement.vue'),
       },
       {
-        path:'competitionManager',
-        name: 'CompetitionManager',
-        component: () => import('../views/background/competitionManager/CompetitionManager.vue'),
+        path:'competition',
+        name: 'CompetitionManagement',
+        component: () => import('../views/background/competition/CompetitionManagement.vue'),
       }
     ]
     
-  },
-  {
-    path: '/homework',
-    component: () => import('../views/homework/homework.vue'),
- 
   }
 ]
 

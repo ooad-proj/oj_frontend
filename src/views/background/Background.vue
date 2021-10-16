@@ -26,10 +26,10 @@ export default {
   data: () => ({
     selectedItem: 1,
     items: [
-      { text: "用户管理", icon: "mdi-clock",router:{ name: 'UserManager'} },
-      { text: "班级管理", icon: "mdi-account",router:{ name: 'LabManager'} },
-      { text: "问题管理", icon: "mdi-application-edit",router:{ name: 'ProblemManager'} },
-      { text: "竞赛管理", icon: "mdi-flag",router:{ name: 'CompetitionManager'} },
+      { text: "用户管理", icon: "mdi-clock",router:{ name: 'UserManagement'} },
+      { text: "班级管理", icon: "mdi-account",router:{ name: 'GroupManagement'} },
+      { text: "问题管理", icon: "mdi-application-edit",router:{ name: 'ProblemManagement'} },
+      { text: "竞赛管理", icon: "mdi-flag",router:{ name: 'CompetitionManagement'} },
     ],
     items1: [
       ["mdi-email", "Inbox"],
