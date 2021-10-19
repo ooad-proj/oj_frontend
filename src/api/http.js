@@ -20,11 +20,11 @@ instance.interceptors.response.use(
     if (error.response.status) {            
       switch (error.response.status) {               
         case 401:                    
-            router.push('/login')
+          router.push('/login')
           break;
                
         case 403:
-          //用户无权限
+          router.push('/unauthorized')
           break; 
       }
       return Promise.reject(error.response);
@@ -54,7 +54,7 @@ let post = function(url, params) {
 
 let del = function(url, params) {    
   return new Promise((resolve, reject) =>{        
-      instance.get(url, params).then(res => {
+      instance.delete(url, params).then(res => {
           resolve(res.data);
       }).catch(err =>{
           reject(err.data)        
@@ -63,7 +63,7 @@ let del = function(url, params) {
 
 let put = function(url, params) {    
   return new Promise((resolve, reject) =>{        
-      instance.get(url, params).then(res => {
+      instance.put(url, params).then(res => {
           resolve(res.data);
       }).catch(err =>{
           reject(err.data)        

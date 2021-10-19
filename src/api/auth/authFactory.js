@@ -2,6 +2,12 @@ import http from '../http'
 
 
 export default {
+  login(id, password) {
+    return http.post('/api/auth/login', {
+      id: id,
+      password: password
+    })
+  },
   isLogin() {
     return http.get('/api/auth/isLogin')
   },
@@ -11,8 +17,8 @@ export default {
   logout() {
     return http.post('/api/auth/logout')
   },
-  editInfo() {
-    return http.put('/api/auth/info')
+  editInfo(name, mail) {
+    return http.put('/api/auth/info', {name, mail})
   },
   getRole() {
     return http.get('/api/auth/role')
@@ -20,8 +26,8 @@ export default {
   getGroups() {
     return http.get('/api/auth/groups')
   },
-  editPassword() {
-    return http.put('/api/auth/password')
+  editPassword(oldPassword, newPassword) {
+    return http.put('/api/auth/password', {oldPassword, newPassword})
   }
   
 }

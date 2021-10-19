@@ -30,6 +30,7 @@
           
           <v-list-item
             @click="background()"
+            v-if="isAdmin"
             class="tw-transition-all tw-cursor-default"
             v-ripple
           >
@@ -72,9 +73,10 @@ import api from "../api/api";
 export default {
   data() {
     return {
-      isLogin: true,
+      isLogin: false,
+      isAdmin: false,
       shown: false,
-      user: { id: -1, name: "name", mail: "30acda@ad.com" },
+      user: { id: "-1", name: "name", mail: "30acda@ad.com" },
       top: [
         { path: "/user/info", name: "个人主页", icon: "mdi-account-details" },
         { path: "/user/edit", name: "修改信息", icon: "mdi-pencil" },
@@ -83,15 +85,28 @@ export default {
   },
   methods: {
     open() {
-      api.authFactory.isLogin().then((resp) => {
+      api.authFactory.isLogin().then(resp => {
         this.isLogin = resp.isLogin;
-        this.getUser();
+        if (this.isLogin) {
+          this.getUser();
+          this.getAdmin();
+        }
+        this.shown = true;
       });
-      this.shown = true;
+      
+    },
+    getAdmin() {
+      api.authFactory.getRole().then(resp => {
+        if (resp.content == 'teacher' || resp.content == 'assistant') {
+          this.isAdmin = true
+        } else {
+          this.isAdmin = false
+        }
+      })
     },
     getUser() {
-      api.authFactory.getInfo().then((resp) => {
-        this.user = resp.info;
+      api.authFactory.getInfo().then(resp => {
+        this.user = resp.content;
       });
     },
     logout() {
