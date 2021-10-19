@@ -27,39 +27,47 @@
             </v-tabs>
             <v-tabs-items v-model="choosen">
               <v-tab-item class="pa-4">
-                <v-form>
+                <v-form v-model="infoValid">
                   <v-text-field
                     color="teal"
                     label="新用户名"
+                    :rules="rules.name"
                     v-model="editInfo.name"
                   ></v-text-field>
                   <v-text-field
                     color="teal"
                     label="新邮箱"
+                    :rules="rules.mail"
                     v-model="editInfo.mail"
                   ></v-text-field>
                 </v-form>
-                <v-btn color="primary">确定</v-btn>
+                <v-btn color="primary" :disabled="!infoValid" @click="updateInfo()">确定</v-btn>
               </v-tab-item>
               <v-tab-item class="pa-4">
-                <v-form>
+                <v-form v-model="passwordValid">
                   <v-text-field
                     color="teal"
                     label="旧密码"
+                    type="password"
+                    :rules="rules.password"
                     v-model="editPassword.old"
                   ></v-text-field>
                   <v-text-field
                     color="teal"
                     label="新密码"
+                    type="password"
+                    :rules="rules.password"
                     v-model="editPassword.new"
                   ></v-text-field>
                   <v-text-field
                     color="teal"
                     label="重复密码"
+                    type="password"
+                    :rules="rules.repeatPassword"
                     v-model="editPassword.confirm"
                   ></v-text-field>
                 </v-form>
-                <v-btn color="primary">确定</v-btn>
+                <v-btn color="primary" :disabled="!passwordValid" @click="updatePassword()">确定</v-btn>
               </v-tab-item>
             </v-tabs-items>
           </v-col>
@@ -67,6 +75,14 @@
         </v-row>
       </v-card>
     </v-container>
+
+    <v-snackbar
+      v-model="warn.doing"
+      timeout=1000
+    >
+      {{warn.text}}
+    </v-snackbar>
+
   </div>
 </template>
 
@@ -87,15 +103,62 @@ export default {
         api.authFactory.getGroups(),
       ]).then((resps) => {
         let info = resps[0];
-        this.basic = info.info;
+        this.basic = info.content;
       });
     },
-    updateInfo() {},
-    updatePassword() {},
+    startWarn(text) {
+      this.warn.text = text
+      this.warn.doing = true
+    },
+    updateInfo() {
+      api.authFactory.editInfo(this.updateInfo.name, this.updateInfo.mail).then(resp => {
+        if (resp.code == 0) {
+          this.$router.push('info')
+        } else if (resp.code == -1) {
+          this.startWarn('必填项为空')
+        } else if (resp.code == -2) {
+          this.startWarn('信息格式错误')
+        }
+      })
+    },
+    updatePassword() {
+      api.authFactory.editPassword(this.editPassword.old, this.editPassword.new).then(resp => {
+        if (resp.code == 0) {
+          this.$router.push('info')
+        } else if (resp.code == -1) {
+          this.startWarn('原密码错误')
+        } else if (resp.code == -2) {
+          this.startWarn('密码格式错误')
+        }
+      })
+    },
   },
   data: function () {
     return {
+      warn: {
+        doing: false,
+        text: ''
+      },
       choosen: 0,
+      infoValid: false,
+      passwordValid: false,
+      rules: {
+        name: [
+          v => !!v || '用户名为空',
+        ],
+        mail: [
+          // v => !!v || '邮箱为空',
+          v => (v == '' || /.+@.+\..+/.test(v)) || '邮箱格式不合法',
+        ],
+        password: [
+          v => !!v || '密码为空',
+          v => v.length >= 6 || '密码长度不能少于6个字符',
+        ],
+        repeatPassword: [
+          v => !!v || '密码为空',
+          v => v == this.editPassword.old || '密码输入不一致'
+        ]
+      },
       basic: {
         id: "",
         name: "",

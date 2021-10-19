@@ -15,6 +15,10 @@ Vue.use(VueRouter)
 
 const routes = [
   {
+    path: '/unauthorized',
+    component: () => import('../views/UnauthorizedView.vue')
+  },
+  {
     path: '/',
     component: () => import('../views/foreground/Foreground.vue'),
     children: [
