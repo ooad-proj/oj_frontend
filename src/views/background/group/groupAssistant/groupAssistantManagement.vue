@@ -1,0 +1,175 @@
+<template>
+  <div>
+    <v-data-table
+      :headers="groupAssistantHeaders"
+      :items="groupAssistant"
+      :options.sync="options"
+      :server-items-length="totalGroupAssistant"
+      :loading="loading"
+      :hide-default-footer="true"
+      class="elevation-2"
+    >
+      <template v-slot:[`item.actions`]="{ item }">
+        <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
+      </template>
+
+      <template v-slot:footer>
+        <v-container grid-list-xs align-center justify-center fill-height fluid>
+          <v-btn
+            color="primary"
+            dark
+            class="mb-2"
+            @click="addAssistantDialog = true"
+          >
+            添加新记录
+          </v-btn>
+        </v-container>
+      </template>
+    </v-data-table>
+
+    <v-dialog v-model="dialogDelete" max-width="500px">
+      <v-card>
+        <v-card-title class="text-h5">确定删除吗</v-card-title>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" text @click="closeDelete">取消</v-btn>
+          <v-btn color="blue darken-1" text @click="deleteItemConfirm"
+            >确定</v-btn
+          >
+          <v-spacer></v-spacer>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="addAssistantDialog" max-width="600px">
+      <v-card class="pa-5">
+        <v-row>
+          <v-col>
+            <v-card-title class="text-h5">添加一个学助</v-card-title>
+            <v-card-text>
+              <v-form ref="editingForm">
+                <v-text-field
+                  v-model="assistantId"
+                  :rules="[(v) => !!v || 'ID不能为空']"
+                  label="请输入学助ID"
+                  required
+                ></v-text-field>
+                ></v-form
+              >
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="blue darken-1" text @click="closeAddingAssistant"
+                >取消</v-btn
+              >
+              <v-btn
+                color="blue darken-1 secondary"
+                text
+                @click="submit"
+                :loading="addAssistantLoader"
+                :disabled="addAssistantLoader"
+                >确定</v-btn
+              >
+              <v-spacer></v-spacer>
+            </v-card-actions>
+          </v-col>
+        </v-row>
+      </v-card>
+    </v-dialog>
+  </div>
+</template>
+
+<script>
+import api from "@/api/api";
+export default {
+  props: ["groupId"],
+  data() {
+    return {
+      assistantId: null,
+      addAssistantLoader: false,
+      addAssistantDialog: false,
+      assitantId: null,
+      defaultItem: {
+        id: "",
+        name: "",
+        mail: "",
+      },
+      editedItem: {
+        id: "",
+        name: "",
+        mail: "",
+      },
+      editedIndex: -1,
+      dialogDelete: false,
+      options: {},
+      loading: false,
+      totalGroupAssistant: 0,
+      groupAssistant: [],
+      groupAssistantHeaders: [
+        { text: "学助id", align: "start", sortable: false, value: "id" },
+        { text: "学助名", value: "name" },
+        { text: "学助邮箱", value: "mail" },
+        { text: "查看学助详细信息", value: "date" },
+        { text: "删除学助", value: "actions", sortable: false },
+      ],
+    };
+  },
+  watch: {
+    options: {
+      handler() {
+        this.getDataFromApi();
+      },
+      deep: true,
+    },
+  },
+  mounted() {
+    this.getDataFromApi();
+  },
+  methods: {
+    closeAddingAssistant() {
+      this.assistantId = null;
+      this.$refs.editingForm.resetValidation();
+      this.addAssistantDialog = false
+      this.getDataFromApi()
+    },
+    submit() {
+      this.addAssistantLoader = true;
+      api.groupFactory.addAssistantInGroup(this.groupId, this.assistantId).then((response)=>{
+        console.log(response)
+        this.$emit("addAssitant", response.msg);
+        this.addAssistantLoader = false;
+        this.closeAddingAssistant()
+      })
+    },
+    deleteItemConfirm() {
+      api.groupFactory
+        .deleteAssistantInGroup(this.groupId, this.editedItem.userId)
+        .then((response) => {
+          this.$emit("deleteAssitant", response.msg);
+        });
+      this.closeDelete();
+    },
+    closeDelete() {
+      this.getDataFromApi();
+      this.dialogDelete = false;
+      this.$nextTick(() => {
+        this.editedItem = Object.assign({}, this.defaultItem);
+        this.editedIndex = -1;
+      });
+    },
+    deleteItem(item) {
+      this.editedIndex = this.groupAssistant.indexOf(item);
+      this.editedItem = Object.assign({}, item);
+      this.dialogDelete = true;
+    },
+    getDataFromApi() {
+      this.loading = true;
+      api.groupFactory.getAssistantInGroup(this.groupId).then((response) => {
+        this.groupAssistant = response.content.list;
+        this.totalGroupAssistant = response.content.totalAmount;
+        this.loading = false;
+      });
+    },
+  },
+};
+</script>

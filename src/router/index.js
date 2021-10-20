@@ -16,6 +16,7 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
+    name: 'home',
     component: () => import('../views/foreground/Foreground.vue'),
     children: [
       {
@@ -34,6 +35,7 @@ const routes = [
   },
   {
     path: '/admin',
+    name: 'admin',
     component: () => import('../views/background/Background.vue'),
     children:[
       {
