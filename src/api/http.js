@@ -20,11 +20,11 @@ instance.interceptors.response.use(
     if (error.response.status) {            
       switch (error.response.status) {               
         case 401:                    
-            router.push('/login')
+          router.push('/login')
           break;
                
         case 403:
-          //用户无权限
+          router.push('/unauthorized')
           break; 
       }
       return Promise.reject(error.response);

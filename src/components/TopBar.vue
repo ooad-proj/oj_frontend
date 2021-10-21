@@ -47,8 +47,8 @@ export default {
       api.authFactory.isLogin().then(resp => {
         if (resp.isLogin == true) {
           api.authFactory.getInfo().then(resp => {
-            this.user.id = resp.info.id
-            this.user.name = resp.info.name
+            this.user.id = resp.content.id
+            this.user.name = resp.content.name
           })
         } else {
             this.user.id = -1
