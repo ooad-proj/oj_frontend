@@ -7,8 +7,8 @@
     <v-container grid-list-xs fluid>
       <v-row>
         <v-col>
-          <v-card class="pa-4">
-            <div class="tw-flex tw-justify-between tw-items-center tw-mb-8">
+          <v-card>
+            <div class="tw-flex tw-justify-between tw-items-center pa-5">
               <div class="tw-font-bold tw-text-xl">我管理的群组</div>
               <div>
                 <v-btn color="primary" @click="addGroup">添加群组</v-btn>
@@ -51,8 +51,8 @@
             >
               <template v-slot:[`item.actions`]="{ item }">
                 <v-btn
-                  tile
-                  color="cyan"
+                  text
+                  color="primary"
                   :to="{
                     name: 'GroupInfo',
                     params: {
@@ -63,8 +63,8 @@
                     },
                   }"
                 >
-                  <v-icon left> mdi-pencil </v-icon>
-                  进入群组
+                  <v-icon left>mdi-door-open</v-icon>
+                  进入
                 </v-btn>
               </template>
             </v-data-table>
@@ -106,7 +106,7 @@ export default {
         { text: "群组名称", value: "groupName" },
         { text: "当前人数", value: "memberNum" },
         { text: "学助人数", value: "assistantNum" },
-        { text: "进入群组", value: "actions", sortable: false },
+        { text: "进入群组", value: "actions", sortable: false ,class:"tw-w-48",align: "center"},
       ],
     };
   },

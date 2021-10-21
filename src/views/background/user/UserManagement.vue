@@ -7,14 +7,26 @@
     <v-container grid-list-xs fluid>
       <v-row>
         <v-col>
-          <v-card class="pa-4">
-            <div class="tw-flex tw-justify-between tw-items-center tw-mb-8">
+          <v-card>
+            <div class="tw-flex tw-justify-between tw-items-center pa-5">
               <div class="tw-font-bold tw-text-xl">所有用户</div>
               <div>
-                <v-btn color="primary" @click="addingManyUser = true"
+                <div class="tw-inline-block mx-1">
+                  <v-text-field
+                    v-model="search"
+                    append-icon="mdi-magnify"
+                    label="搜索id"
+                    single-line
+                    hide-details
+                    @click:append="searchId"
+                  >
+                  
+                  </v-text-field>
+                </div>
+                <v-btn color="primary mx-1" @click="addingManyUser = true"
                   >批量添加</v-btn
                 >
-                <v-btn color="primary mx-2" @click="addingUser = true"
+                <v-btn color="primary mx-1" @click="addingUser = true"
                   >添加用户</v-btn
                 >
               </div>
@@ -30,23 +42,27 @@
                     :bench="benched"
                     :items="responseData"
                     height="400"
-                    item-height="64"
-                    width="100"
+                    item-height="50"
+                    width="400"
+                    class="tw-bg-gray-300"
                   >
-                    <template v-slot:default="{ item }">
-                      <v-list-item :key="item.userId">
-                        <v-list-item-content>
-                          <v-list-item-title>
-                            <strong
-                              >学号:{{ item.userId }} 结果:{{
-                                item.status
-                              }}</strong
-                            >
-                          </v-list-item-title>
-                        </v-list-item-content>
+                    <template v-slot:default="{ index, item }">
+                      <v-list-item
+                        :key="index"
+                        :class="
+                          index % 2 == 0 ? ' tw-bg-gray-100' : 'tw-bg-gray-50'
+                        "
+                      >
+                        <div class="tw-flex">
+                          <div class="tw-w-32">{{ item.userId }}</div>
+                          <div
+                            :class="classMap[item.status]"
+                            class="tw-px-1 tw-rounded-md"
+                          >
+                            {{ respMap[item.status] }}
+                          </div>
+                        </div>
                       </v-list-item>
-
-                      <v-divider></v-divider>
                     </template>
                   </v-virtual-scroll>
                 </v-row>
@@ -62,11 +78,11 @@
                 <v-row>
                   <v-col>
                     <v-card-actions>
-                      <v-btn color="blue darken-1" text @click="closeUpload"
+                      <v-btn color="primary" text @click="closeUpload"
                         >返回</v-btn
                       >
                       <v-btn
-                        color="blue darken-1 secondary"
+                        color="primary"
                         text
                         @click="sendFile"
                         :loading="addingUserLoader"
@@ -142,8 +158,6 @@
                 </v-icon>
                 <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
               </template>
-
-    
             </v-data-table>
 
             <v-dialog v-model="dialogDelete" max-width="500px">
@@ -172,7 +186,7 @@
                   <v-col>
                     <v-card-title class="text-h5">修改这个用户</v-card-title>
                     <v-card-text>
-                      <v-form ref="formSecond">
+                      <v-form ref="formSecond" v-model="infoValid">
                         <v-text-field
                           v-model="editedItem.userId"
                           :rules="[(v) => !!v || 'ID不能为空']"
@@ -195,15 +209,15 @@
                     </v-card-text>
                     <v-card-actions>
                       <v-spacer></v-spacer>
-                      <v-btn color="blue darken-1" text @click="closeEditing"
+                      <v-btn color="primary" text @click="closeEditing"
                         >取消</v-btn
                       >
                       <v-btn
-                        color="blue darken-1 secondary"
+                        color="primary"
                         text
                         @click="submitEditUser"
                         :loading="editingUser"
-                        :disabled="editingUser"
+                        :disabled="!infoValid || editingUser"
                         >确定</v-btn
                       >
                       <v-spacer></v-spacer>
@@ -228,8 +242,23 @@ export default {
   components: {
     SnackBar,
   },
+
   data() {
     return {
+      search: "",
+      respMap: {
+        0: "成功",
+        "-1": "用户已存在",
+        "-2": "必须项不能为空",
+        "-3": "密码格式错误",
+      },
+      classMap: {
+        0: "tw-bg-green-400",
+        "-1": "tw-bg-yellow-500",
+        "-2": "tw-bg-red-400",
+        "-3": "tw-bg-red-400",
+      },
+      infoValid: false,
       dialogDelete: false,
       editingUser: false,
       defaultItem: {
@@ -250,7 +279,7 @@ export default {
       name: null,
       mail: null,
       addingManyUser: false,
-      benched: 0,
+      benched: 1,
       groupName: "",
       addingUser: false,
       addingUserLoader: false,
@@ -279,17 +308,16 @@ export default {
   },
   computed: {},
   watch: {
-    options: {
-      handler() {
-        this.getDataFromApi();
-      },
-      deep: true,
-    },
+
   },
   mounted() {
-    this.getDataFromApi();
+    this.getDataFromApi("");
   },
   methods: {
+    
+    searchId(){
+      this.getDataFromApi(this.search)
+    },
     deleteItemConfirm() {
       api.userFactory
         .deleteUserInfo(this.editedItem.userId)
@@ -300,7 +328,7 @@ export default {
             this.$refs.sb.warn("删除失败，未知错误");
           }
         });
-        this.closeDelete()
+      this.closeDelete();
     },
     closeDelete() {
       this.dialogDelete = false;
@@ -356,20 +384,6 @@ export default {
       let header = { "Content-Type": "multipart/form-data;" };
       axios.post(url, data, header).then((resp) => {
         that.responseData = resp.data.content;
-        that.repsonseData = that.responseData.map(function (item) {
-          if (item.status == 0) {
-            item.status = "成功";
-          } else if (item.status == -1) {
-            item.status = "用户已存在";
-          } else if (item.status == -2) {
-            item.status = "必须项不能为空";
-          } else if (item.status == -3) {
-            item.status = "密码格式错误";
-          } else {
-            item.status = "未知错误";
-          }
-          return item;
-        });
         this.$refs.sb.warn("上传成功");
       });
     },
@@ -404,11 +418,11 @@ export default {
 
       this.addingUserLoader = false;
     },
-    getDataFromApi() {
+    getDataFromApi(searchText) {
       const { page, itemsPerPage } = this.options;
       this.loading = true;
       api.userFactory
-        .getUserInfoSimple(page, itemsPerPage, "")
+        .getUserInfoSimple(page, itemsPerPage, searchText)
         .then((response) => {
           this.userInfo = response.content.list;
           this.totalUser = response.content.totalAmount;
