@@ -1,5 +1,6 @@
 <template>
   <div>
+    <SnackBar ref="snkBar"></SnackBar>
     <div class="tw-bg-white tw-shadow-md">
       <v-breadcrumbs :items="items"></v-breadcrumbs>
     </div>
@@ -10,19 +11,63 @@
             <div class="tw-flex tw-justify-between tw-items-center tw-mb-8">
               <div class="tw-font-bold tw-text-xl">我管理的群组</div>
               <div>
-                <v-btn color="primary">添加群组</v-btn>
+                <v-btn color="primary" @click="addGroup">添加群组</v-btn>
               </div>
             </div>
 
-            <!-- todo -->
+            <v-dialog v-model="add_group" max-width="500px">
+              <v-card>
+                <v-card-title class="text-h5">添加一个班级</v-card-title>
+                <v-card-text>
+                  <v-form ref="groupForm">
+                    <v-text-field
+                      v-model="groupName"
+                      :rules="[(v) => !!v || '名称不能为空']"
+                      label="请输入班级的名称"
+                      required
+                    ></v-text-field>
+                  </v-form>
+                </v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn color="blue darken-1" text @click="closeAddGroup"
+                    >取消</v-btn
+                  >
+                  <v-btn color="blue darken-1" text @click="confirmAddGroup"
+                    >确定</v-btn
+                  >
+                  <v-spacer></v-spacer>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+
             <v-data-table
               :headers="headers"
-              :items="desserts"
+              :items="groupInfo"
               :options.sync="options"
-              :server-items-length="totalDesserts"
+              :server-items-length="totalgroup"
               :loading="loading"
               class="elevation-2"
-            ></v-data-table>
+            >
+              <template v-slot:[`item.actions`]="{ item }">
+                <v-btn
+                  tile
+                  color="cyan"
+                  :to="{
+                    name: 'GroupInfo',
+                    params: {
+                      groupId: item.groupId,
+                      name: item.groupName,
+                      memberNum: item.memberNum,
+                      assistantNum: item.assistantNum,
+                    },
+                  }"
+                >
+                  <v-icon left> mdi-pencil </v-icon>
+                  进入群组
+                </v-btn>
+              </template>
+            </v-data-table>
           </v-card>
         </v-col>
       </v-row>
@@ -31,42 +76,37 @@
 </template>
 
 <script>
+import api from "@/api/api";
+import SnackBar from "../../../components/SnackBar.vue";
 export default {
+  components: {
+    SnackBar,
+  },
   data() {
     return {
+      groupName: "",
+      add_group: false,
       items: [
         {
-          text: "Dashboard",
+          text: "我管理的群组",
           disabled: false,
-          href: "breadcrumbs_dashboard",
-        },
-        {
-          text: "Link 1",
-          disabled: false,
-          href: "breadcrumbs_link_1",
-        },
-        {
-          text: "Link 2",
-          disabled: true,
-          href: "breadcrumbs_link_2",
         },
       ],
-      totalDesserts: 0,
-      desserts: [],
+      totalgroup: 0,
+      groupInfo: [],
       loading: true,
       options: {},
       headers: [
         {
-          text: "Dessert (100g serving)",
+          text: "群组ID",
           align: "start",
           sortable: false,
-          value: "name",
+          value: "groupId",
         },
-        { text: "Calories", value: "calories" },
-        { text: "Fat (g)", value: "fat" },
-        { text: "Carbs (g)", value: "carbs" },
-        { text: "Protein (g)", value: "protein" },
-        { text: "Iron (%)", value: "iron" },
+        { text: "群组名称", value: "groupName" },
+        { text: "当前人数", value: "memberNum" },
+        { text: "学助人数", value: "assistantNum" },
+        { text: "进入群组", value: "actions", sortable: false },
       ],
     };
   },
@@ -84,134 +124,27 @@ export default {
   methods: {
     getDataFromApi() {
       this.loading = true;
-      this.fakeApiCall().then((data) => {
-        this.desserts = data.items;
-        this.totalDesserts = data.total;
+      const { page, itemsPerPage } = this.options;
+      api.groupFactory.getGroup(page, itemsPerPage, "").then((response) => {
+        this.groupInfo = response.content.list;
+        this.totalgroup = response.content.totalAmount;
         this.loading = false;
       });
     },
-    /**
-     * In a real application this would be a call to fetch() or axios.get()
-     */
-    fakeApiCall() {
-      return new Promise((resolve) => {
-        const { sortBy, sortDesc, page, itemsPerPage } = this.options;
-
-        let items = this.getDesserts();
-        const total = items.length;
-
-        if (sortBy.length === 1 && sortDesc.length === 1) {
-          items = items.sort((a, b) => {
-            const sortA = a[sortBy[0]];
-            const sortB = b[sortBy[0]];
-
-            if (sortDesc[0]) {
-              if (sortA < sortB) return 1;
-              if (sortA > sortB) return -1;
-              return 0;
-            } else {
-              if (sortA < sortB) return -1;
-              if (sortA > sortB) return 1;
-              return 0;
-            }
-          });
-        }
-
-        if (itemsPerPage > 0) {
-          items = items.slice((page - 1) * itemsPerPage, page * itemsPerPage);
-        }
-
-        setTimeout(() => {
-          resolve({
-            items,
-            total,
-          });
-        }, 1000);
+    closeAddGroup() {
+      this.groupName = null;
+      this.add_group = false;
+      this.$refs.groupForm.resetValidation();
+    },
+    confirmAddGroup() {
+      api.groupFactory.createGroup(this.groupName).then((response) => {
+        this.$refs.snkBar.warn(response.msg);
+        this.getDataFromApi();
+        this.closeAddGroup();
       });
     },
-    getDesserts() {
-      return [
-        {
-          name: "Frozen Yogurt",
-          calories: 159,
-          fat: 6.0,
-          carbs: 24,
-          protein: 4.0,
-          iron: "1%",
-        },
-        {
-          name: "Ice cream sandwich",
-          calories: 237,
-          fat: 9.0,
-          carbs: 37,
-          protein: 4.3,
-          iron: "1%",
-        },
-        {
-          name: "Eclair",
-          calories: 262,
-          fat: 16.0,
-          carbs: 23,
-          protein: 6.0,
-          iron: "7%",
-        },
-        {
-          name: "Cupcake",
-          calories: 305,
-          fat: 3.7,
-          carbs: 67,
-          protein: 4.3,
-          iron: "8%",
-        },
-        {
-          name: "Gingerbread",
-          calories: 356,
-          fat: 16.0,
-          carbs: 49,
-          protein: 3.9,
-          iron: "16%",
-        },
-        {
-          name: "Jelly bean",
-          calories: 375,
-          fat: 0.0,
-          carbs: 94,
-          protein: 0.0,
-          iron: "0%",
-        },
-        {
-          name: "Lollipop",
-          calories: 392,
-          fat: 0.2,
-          carbs: 98,
-          protein: 0,
-          iron: "2%",
-        },
-        {
-          name: "Honeycomb",
-          calories: 408,
-          fat: 3.2,
-          carbs: 87,
-          protein: 6.5,
-          iron: "45%",
-        },
-        {
-          name: "Donut",
-          calories: 452,
-          fat: 25.0,
-          carbs: 51,
-          protein: 4.9,
-          iron: "22%",
-        },
-        {
-          name: "KitKat",
-          calories: 518,
-          fat: 26.0,
-          carbs: 65,
-          protein: 7,
-          iron: "6%",
-        },
-      ];
+    addGroup() {
+      this.add_group = true;
     },
   },
 };

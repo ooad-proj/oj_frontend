@@ -2,6 +2,7 @@ import http from '../http'
 
 
 export default {
+
   login(id, password) {
     return http.post('/api/auth/login', {
       id: id,
