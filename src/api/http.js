@@ -1,11 +1,13 @@
 import axios from 'axios'
+import qs from 'qs'
 import router from '../router/index'
 
 let instance = axios.create({
-  baseURL:"http://mockjs.docway.net/mock/1itkXEuHAcj"
+  // baseURL:"http://mockjs.docway.net/mock/1itkXEuHAcj"
+  baseURL:"http://localhost:8082/"
 })
 
-instance.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
+// instance.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 instance.defaults.timeout = 10000;
 
 instance.interceptors.response.use(
@@ -45,7 +47,7 @@ let get = function(url, params) {
 
 let post = function(url, params) {    
   return new Promise((resolve, reject) =>{        
-      instance.post(url, params).then(res => {
+      instance.post(url,  qs.stringify(params), { headers: {"Content-Type": "application/x-www-form-urlencoded"} }).then(res => {
           resolve(res.data);
       }).catch(err =>{
           reject(err.data)        
@@ -54,7 +56,7 @@ let post = function(url, params) {
 
 let del = function(url, params) {    
   return new Promise((resolve, reject) =>{        
-      instance.delete(url, params).then(res => {
+      instance.delete(url,  qs.stringify(params), { headers: {"Content-Type": "application/x-www-form-urlencoded"} }).then(res => {
           resolve(res.data);
       }).catch(err =>{
           reject(err.data)        
@@ -63,7 +65,7 @@ let del = function(url, params) {
 
 let put = function(url, params) {    
   return new Promise((resolve, reject) =>{        
-      instance.put(url, params).then(res => {
+      instance.put(url,  qs.stringify(params), { headers: {"Content-Type": "application/x-www-form-urlencoded"} }).then(res => {
           resolve(res.data);
       }).catch(err =>{
           reject(err.data)        

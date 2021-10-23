@@ -7,8 +7,8 @@
     <v-container grid-list-xs fluid>
       <v-row>
         <v-col>
-          <v-card class="pa-4">
-            <div class="tw-flex tw-justify-between tw-items-center tw-mb-8">
+          <v-card>
+            <div class="tw-flex tw-justify-between tw-items-center pa-5">
               <div class="tw-font-bold tw-text-xl">我管理的群组</div>
               <div>
                 <v-btn color="primary" @click="addGroup">添加群组</v-btn>
@@ -19,7 +19,7 @@
               <v-card>
                 <v-card-title class="text-h5">添加一个班级</v-card-title>
                 <v-card-text>
-                  <v-form ref="groupForm">
+                  <v-form ref="groupForm" v-model="addValid">
                     <v-text-field
                       v-model="groupName"
                       :rules="[(v) => !!v || '名称不能为空']"
@@ -30,10 +30,10 @@
                 </v-card-text>
                 <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-btn color="blue darken-1" text @click="closeAddGroup"
+                  <v-btn color="primary" text @click="closeAddGroup"
                     >取消</v-btn
                   >
-                  <v-btn color="blue darken-1" text @click="confirmAddGroup"
+                  <v-btn color="primary" text @click="confirmAddGroup" :disabled="!addValid"
                     >确定</v-btn
                   >
                   <v-spacer></v-spacer>
@@ -51,8 +51,8 @@
             >
               <template v-slot:[`item.actions`]="{ item }">
                 <v-btn
-                  tile
-                  color="cyan"
+                  text
+                  color="primary"
                   :to="{
                     name: 'GroupInfo',
                     params: {
@@ -63,8 +63,8 @@
                     },
                   }"
                 >
-                  <v-icon left> mdi-pencil </v-icon>
-                  进入群组
+                  <v-icon left>mdi-door-open</v-icon>
+                  进入
                 </v-btn>
               </template>
             </v-data-table>
@@ -84,6 +84,7 @@ export default {
   },
   data() {
     return {
+      addValid: false,
       groupName: "",
       add_group: false,
       items: [
@@ -103,10 +104,10 @@ export default {
           sortable: false,
           value: "groupId",
         },
-        { text: "群组名称", value: "groupName" },
-        { text: "当前人数", value: "memberNum" },
-        { text: "学助人数", value: "assistantNum" },
-        { text: "进入群组", value: "actions", sortable: false },
+        { text: "群组名称", value: "groupName" ,sortable: false,},
+        { text: "当前人数", value: "memberNum" , sortable: false,},
+        { text: "学助人数", value: "assistantNum", sortable: false,},
+        { text: "进入群组", value: "actions", sortable: false ,class:"tw-w-48",align: "center"},
       ],
     };
   },
@@ -138,7 +139,11 @@ export default {
     },
     confirmAddGroup() {
       api.groupFactory.createGroup(this.groupName).then((response) => {
-        this.$refs.snkBar.warn(response.msg);
+        if(response.code ==0){
+           this.$refs.snkBar.warn("成功");
+        }else{
+           this.$refs.snkBar.warn("组已存在");
+        }
         this.getDataFromApi();
         this.closeAddGroup();
       });

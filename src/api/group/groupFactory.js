@@ -10,13 +10,13 @@ export default {
         })
     },
     createGroup(name) {
-        return http.post('/group/' + name, {})
+        return http.post('/api/group/' + name, {})
     },
-    deleteGroup(id){
-        return http.del('/api/group/'+id, {})
+    deleteGroup(id) {
+        return http.del('/api/group/' + id, {})
     },
-    editGroupName(newName,id){
-        return http.put('/api/group/'+id, {
+    editGroupName(newName, id) {
+        return http.put('/api/group/' + id, {
             newName: newName
         })
     },
@@ -27,16 +27,16 @@ export default {
             search: search
         })
     },
-    addUserInGroup(groupId,memberId){
-        return http.post('/api/group/'+groupId+'/member/'+memberId, {})
+    addUserInGroup(groupId, memberId) {
+        return http.post('/api/group/' + groupId + '/member/' + memberId, {})
     },
-    addManyUserInGroup(groupId,csvFile){
-        let url = '/api/group/'+groupId+'/member/add/batch'
+    addManyUserInGroup(groupId, csvFile) {
+        let url = '/api/group/' + groupId + '/member/add/batch'
         let data = new FormData();
         data.append("file", csvFile);
         let header = { "Content-Type": "multipart/form-data;" };
         return new Promise((resolve, reject) => {
-            http.instance.post(url, data, header).then(res => { 
+            http.instance.post(url, data, header).then(res => {
                 resolve(res.data);
             }).catch(err => {
                 reject(err.data)
@@ -49,10 +49,13 @@ export default {
     getAssistantInGroup(groupId) {
         return http.get('/api/group/' + groupId + '/assistants', {})
     },
-    deleteAssistantInGroup(groupId,assistantId){
-        return http.del('/api/group/'+groupId+'/assistant/'+assistantId, {})
+    deleteAssistantInGroup(groupId, assistantId) {
+        return http.del('/api/group/' + groupId + '/assistant/' + assistantId, {})
     },
-    addAssistantInGroup(groupId,assistantId){
-        return http.post('/api/group/'+groupId+'/assistant/'+assistantId, {})
+    addAssistantInGroup(groupId, assistantId) {
+        return http.post('/api/group/' + groupId + '/assistant/' + assistantId, {})
+    },
+    getDataInGroup(groupId) {
+        return http.get('/api/group/' + groupId, {})
     }
 }
