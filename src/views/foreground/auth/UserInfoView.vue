@@ -59,6 +59,7 @@ export default {
         let info = resps[0];
         this.basic = info.content;
         this.group = resps[1].content;
+        this.role = resps[2].content;
       });
     },
   },

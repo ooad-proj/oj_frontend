@@ -9,9 +9,6 @@
         <v-col>
           <groupConfig
             :groupId="this.$route.params.groupId"
-            :name="this.$route.params.name"
-            :memberNum="this.$route.params.memberNum"
-            :assistantNum="this.$route.params.assistantNum"
             @editName="showeditName"
           ></groupConfig>
         </v-col>

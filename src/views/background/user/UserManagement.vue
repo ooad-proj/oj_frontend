@@ -20,7 +20,6 @@
                     hide-details
                     @click:append="searchId"
                   >
-                  
                   </v-text-field>
                 </div>
                 <v-btn color="primary mx-1" @click="addingManyUser = true"
@@ -68,10 +67,21 @@
                 </v-row>
                 <v-row>
                   <v-card-text>
-                    <v-file-input
-                      truncate-length="15"
-                      v-model="csvFile"
-                    ></v-file-input>
+                    <v-form ref="formCsv" v-model="csvValid">
+                      <v-file-input
+                        truncate-length="15"
+                        v-model="csvFile"
+                        dense
+                        accept=".csv"
+                        :rules="[
+                          (v) =>
+                            !!v ||
+                            '文件不能为空' ||
+                            value.size < 2000000 ||
+                            '文件不能大于 2 MB!',
+                        ]"
+                      ></v-file-input>
+                    </v-form>
                     <!-- <input type="file" ref="ref1" /> -->
                   </v-card-text>
                 </v-row>
@@ -86,7 +96,7 @@
                         text
                         @click="sendFile"
                         :loading="addingUserLoader"
-                        :disabled="addingUserLoader"
+                        :disabled="addingUserLoader || !csvValid"
                         >上传</v-btn
                       >
 
@@ -103,10 +113,15 @@
                   <v-col>
                     <v-card-title class="text-h5">添加一个用户</v-card-title>
                     <v-card-text>
-                      <v-form ref="form">
+                      <v-form ref="form" v-model="addUserValid">
                         <v-text-field
                           v-model="id"
-                          :rules="[(v) => !!v || 'ID不能为空']"
+                          :rules="[
+                            (v) => !!v || 'ID不能为空',
+                            (v) =>
+                              /(^[1-9]\d*$)/.test(v) ||
+                              '请输入有效的id(8位数字)',
+                          ]"
                           label="ID"
                           required
                         ></v-text-field>
@@ -118,7 +133,12 @@
                         ></v-text-field>
                         <v-text-field
                           v-model="mail"
-                          :rules="[(v) => !!v || '邮箱不能为空']"
+                          :rules="[
+                            (v) =>
+                              v == '' ||
+                              /.+@.+\..+/.test(v) ||
+                              '邮箱格式不合法',
+                          ]"
                           label="邮箱"
                           required
                         ></v-text-field
@@ -126,15 +146,15 @@
                     </v-card-text>
                     <v-card-actions>
                       <v-spacer></v-spacer>
-                      <v-btn color="blue darken-1" text @click="closeAddUser"
+                      <v-btn color="primary" text @click="closeAddUser"
                         >取消</v-btn
                       >
                       <v-btn
-                        color="blue darken-1 secondary"
+                        color="primary"
                         text
                         @click="addUser"
                         :loading="addingUserLoader"
-                        :disabled="addingUserLoader"
+                        :disabled="addingUserLoader || !addUserValid"
                         >确定</v-btn
                       >
                       <v-spacer></v-spacer>
@@ -160,21 +180,14 @@
               </template>
             </v-data-table>
 
-            <v-dialog v-model="dialogDelete" max-width="500px">
-              <v-card>
-                <v-card-title class="text-h5">确定删除吗</v-card-title>
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn color="blue darken-1" text @click="closeDelete"
-                    >取消</v-btn
-                  >
-                  <v-btn color="blue darken-1" text @click="deleteItemConfirm"
-                    >确定</v-btn
-                  >
-                  <v-spacer></v-spacer>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
+            <DeleteDialog
+              title="删除一个用户"
+              content="确定删除吗"
+              width="35rem"
+              v-model="dialogDelete"
+              @cancel="closeDelete"
+              @confirm="deleteItemConfirm"
+            ></DeleteDialog>
 
             <v-dialog
               v-model="editingDialog"
@@ -184,28 +197,33 @@
               <v-card class="pa-5">
                 <v-row>
                   <v-col>
-                    <v-card-title class="text-h5">修改这个用户</v-card-title>
+                    <v-card-title class="text-h5">修改这个用户 {{editedItem2.id}}</v-card-title>
                     <v-card-text>
                       <v-form ref="formSecond" v-model="infoValid">
                         <v-text-field
-                          v-model="editedItem.userId"
-                          :rules="[(v) => !!v || 'ID不能为空']"
-                          label="ID"
-                          required
-                        ></v-text-field>
-                        <v-text-field
-                          v-model="editedItem.name"
+                          v-model="editedItem2.name"
                           :rules="[(v) => !!v || '用户名不能为空']"
                           label="用户名"
                           required
                         ></v-text-field>
                         <v-text-field
-                          v-model="editedItem.mail"
-                          :rules="[(v) => !!v || '邮箱不能为空']"
+                          v-model="editedItem2.mail"
+                          :rules="[
+                            (v) =>
+                              v == '' ||
+                              /.+@.+\..+/.test(v) ||
+                              '邮箱格式不合法',
+                          ]"
                           label="邮箱"
                           required
-                        ></v-text-field
-                      ></v-form>
+                        ></v-text-field>
+                        <v-text-field
+                          v-model="editedItem2.password"
+                          :rules="[(v) => !!v || '密码不能为空']"
+                          label="密码"
+                          required
+                        ></v-text-field>
+                      </v-form>
                     </v-card-text>
                     <v-card-actions>
                       <v-spacer></v-spacer>
@@ -238,13 +256,35 @@
 import api from "@/api/api";
 import SnackBar from "../../../components/SnackBar.vue";
 import axios from "axios";
+import DeleteDialog from "@/components/DeleteDialog.vue";
 export default {
   components: {
     SnackBar,
+    DeleteDialog,
   },
 
+  watch: {
+    options: {
+      handler() {
+        this.getDataFromApi("");
+      },
+      deep: true,
+    },
+  },
+  mounted() {
+    this.getDataFromApi("");
+  },
   data() {
     return {
+      //编辑的item
+      editedItem2: {
+        id: null,
+        name: null,
+        mail: null,
+        password: null,
+      },
+      csvValid: false,
+      addUserValid: false,
       search: "",
       respMap: {
         0: "成功",
@@ -263,13 +303,18 @@ export default {
       editingUser: false,
       defaultItem: {
         name: "",
-        userId: "",
+        id: "",
         mail: "",
+        isEditable: false,
+        isDeleteable: false,
       },
+      //删除的item
       editedItem: {
         name: "",
-        userId: "",
+        id: "",
         mail: "",
+        isEditable: false,
+        isDeleteable: false,
       },
       editedIndex: null,
       editingDialog: null,
@@ -277,7 +322,7 @@ export default {
       responseData: [],
       id: null,
       name: null,
-      mail: null,
+      mail: "",
       addingManyUser: false,
       benched: 1,
       groupName: "",
@@ -298,37 +343,29 @@ export default {
           text: "用户ID",
           align: "start",
           sortable: false,
-          value: "userId",
+          value: "id",
         },
-        { text: "用户名称", value: "name" },
-        { text: "用户邮箱", value: "mail" },
+        { text: "用户名称", value: "name", sortable: false },
+        { text: "用户邮箱", value: "mail", sortable: false },
         { text: "操作", value: "actions", sortable: false },
       ],
     };
   },
   computed: {},
-  watch: {
-
-  },
-  mounted() {
-    this.getDataFromApi("");
-  },
   methods: {
-    
-    searchId(){
-      this.getDataFromApi(this.search)
+    searchId() {
+      this.getDataFromApi(this.search);
     },
     deleteItemConfirm() {
-      api.userFactory
-        .deleteUserInfo(this.editedItem.userId)
-        .then((response) => {
-          if (response.code == 0) {
-            this.$refs.sb.warn("删除成功");
-          } else {
-            this.$refs.sb.warn("删除失败，未知错误");
-          }
-        });
-      this.closeDelete();
+      api.userFactory.deleteUserInfo(this.editedItem.id).then((response) => {
+        if (response.code == 0) {
+          this.$refs.sb.warn("删除成功");
+        } else {
+          this.$refs.sb.warn("用户不存在");
+        }
+        this.closeDelete();
+        this.getDataFromApi("");
+      });
     },
     closeDelete() {
       this.dialogDelete = false;
@@ -345,8 +382,12 @@ export default {
     closeEditing() {
       this.$refs.formSecond.resetValidation();
       this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
+        this.editedItem2 = {
+          id: null,
+          name: null,
+          mail: null,
+          password: null,
+        };
       });
       this.editingDialog = false;
     },
@@ -356,18 +397,19 @@ export default {
       that.editingUser = true;
       api.userFactory
         .changeUserInfo(
-          that.editedItem.userId,
-          that.editedItem.name,
-          "123456",
-          that.editedItem.mail
+          that.editedItem2.id,
+          that.editedItem2.name,
+          that.editedItem2.password,
+          that.editedItem2.mail
         )
         .then((response) => {
           if (response.code == 0) {
-            this.$refs.sb.warn(response.msg);
+            this.$refs.sb.warn("修改成功");
           } else {
-            this.$refs.sb.warn("修改失败，未知错误");
+            this.$refs.sb.warn("非法信息");
             errorflag = 1;
           }
+          this.getDataFromApi("");
         });
       that.editingUser = false;
       if (errorflag == 0) {
@@ -376,7 +418,7 @@ export default {
     },
     sendFile() {
       let that = this;
-      let url = "http://mockjs.docway.net/mock/1itkXEuHAcj/api/user/add/batch";
+      let url = "http://localhost:8082/api/user/add/batch";
       //获取数据
       let data = new FormData();
       data.append("file", this.csvFile);
@@ -385,6 +427,8 @@ export default {
       axios.post(url, data, header).then((resp) => {
         that.responseData = resp.data.content;
         this.$refs.sb.warn("上传成功");
+        this.$refs.formCsv.resetValidation();
+        this.csvFile = null;
       });
     },
     closeUpload() {
@@ -403,20 +447,11 @@ export default {
       api.userFactory
         .createUser(this.id, this.name, 123456, this.mail)
         .then((response) => {
-          if (response.code == 0) {
-            this.$refs.sb.warn("添加成功");
-          } else if (response.code == -1) {
-            this.$refs.sb.warn("用户已经存在");
-          } else if (response.code == -2) {
-            this.$refs.sb.warn("必填项不能为空");
-          } else if (response.code == -3) {
-            this.$refs.sb.warn("密码格式错误");
-          } else {
-            this.$refs.sb.warn("未知错误");
-          }
+          this.$refs.sb.warn(this.respMap[response.code]);
+          this.closeAddUser();
+          this.addingUserLoader = false;
+          this.getDataFromApi("");
         });
-
-      this.addingUserLoader = false;
     },
     getDataFromApi(searchText) {
       const { page, itemsPerPage } = this.options;
@@ -429,9 +464,12 @@ export default {
           this.loading = false;
         });
     },
+
     editItem(item) {
-      this.editedIndex = this.userInfo.indexOf(item);
-      this.editedItem = Object.assign({}, item);
+      api.userFactory.getUserById(item.id).then((response) => {
+        this.editedItem2 = response.content;
+      });
+
       this.editingDialog = true;
     },
   },

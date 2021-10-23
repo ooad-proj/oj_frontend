@@ -48,14 +48,13 @@
       @confirm="deleteItemConfirm"
     ></DeleteDialog>
 
-
     <v-dialog v-model="editingDialog" max-width="600px">
       <v-card class="pa-5">
         <v-row>
           <v-col>
             <v-card-title class="text-h5">修改组名</v-card-title>
             <v-card-text>
-              <v-form ref="addingForm">
+              <v-form ref="addingForm" v-model="addValid">
                 <v-text-field
                   v-model="newName"
                   :rules="[(v) => !!v || 'ID不能为空']"
@@ -66,15 +65,15 @@
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="closeEditingDialog"
+              <v-btn color="primary" text @click="closeEditingDialog"
                 >取消</v-btn
               >
               <v-btn
-                color="blue darken-1 secondary"
+                color="primary"
                 text
                 @click="submitEditingDialog"
                 :loading="editingLoader"
-                :disabled="editingLoader"
+                :disabled="editingLoader || !addValid"
                 >确定</v-btn
               >
               <v-spacer></v-spacer>
@@ -90,21 +89,34 @@
 import api from "@/api/api";
 import DeleteDialog from "@/components/DeleteDialog.vue";
 export default {
-  props: ["groupId", "name", "memberNum", "assistantNum"],
+  props: ["groupId"],
   components: {
     DeleteDialog,
   },
   data() {
     return {
+      name: null,
+      memberNum: null,
+      assistantNum: null,
+
+      addValid: false,
       editingDialog: false,
       dialogDelete: false,
       newName: null,
       editingLoader: false,
     };
   },
+  mounted() {
+    this.getDataFromApi();
+  },
   methods: {
-    //TODO
-    getDataFromApi() {},
+    getDataFromApi() {
+      api.groupFactory.getDataInGroup(this.groupId).then((response)=>{
+        this.name = response.content.groupName
+        this.memberNum = response.content.memberNum
+        this.assistantNum = response.content.assistantNum
+      })
+    },
     closeEditingDialog() {
       this.editingDialog = false;
       this.newName = null;
@@ -115,7 +127,13 @@ export default {
       api.groupFactory
         .editGroupName(this.newName, this.groupId)
         .then((response) => {
-          this.$emit("editName", response.code.msg);
+          let respMap = {
+            0: "成功",
+            "-1": "组已存在",
+            "-2": "组为空",
+            "-3": "组名重复",
+          };
+          this.$emit("editName", respMap[response.code]);
           this.editingLoader = false;
           this.closeEditingDialog();
         });

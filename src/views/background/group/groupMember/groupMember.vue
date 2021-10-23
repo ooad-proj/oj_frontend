@@ -40,10 +40,13 @@
           <v-col>
             <v-card-title class="text-h5">修改一个用户</v-card-title>
             <v-card-text>
-              <v-form ref="editingForm">
+              <v-form ref="editingForm" v-model="editValid">
                 <v-text-field
                   v-model="editedItem.id"
-                  :rules="[(v) => !!v || 'ID不能为空']"
+                  :rules="[
+                    (v) => !!v || 'ID不能为空',
+                    (v) => /(^[1-9]\d*$)/.test(v) || '请输入有效的id(数字)',
+                  ]"
                   label="ID"
                   required
                 ></v-text-field>
@@ -55,7 +58,13 @@
                 ></v-text-field>
                 <v-text-field
                   v-model="editedItem.mail"
-                  :rules="[(v) => !!v || '邮箱不能为空']"
+                  :rules="[
+                    (v) => !!v || '邮箱不能为空',
+                    (v) =>
+                      /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/.test(
+                        v
+                      ) || '邮箱格式错误',
+                  ]"
                   label="邮箱"
                   required
                 ></v-text-field
@@ -63,15 +72,13 @@
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="closeEditUser"
-                >取消</v-btn
-              >
+              <v-btn color="primary" text @click="closeEditUser">取消</v-btn>
               <v-btn
-                color="blue darken-1 secondary"
+                color="primary"
                 text
                 @click="submitEditUser"
                 :loading="editingUserLoader"
-                :disabled="editingUserLoader"
+                :disabled="editingUserLoader || !editValid"
                 >确定</v-btn
               >
               <v-spacer></v-spacer>
@@ -81,8 +88,7 @@
       </v-card>
     </v-dialog>
 
-    
-     <DeleteDialog
+    <DeleteDialog
       title="删除组内用户"
       content="确定删除吗"
       width="35rem"
@@ -91,18 +97,19 @@
       @confirm="deleteItemConfirm"
     ></DeleteDialog>
 
-
-
     <v-dialog v-model="addingDialog" max-width="600px">
       <v-card class="pa-5">
         <v-row>
           <v-col>
             <v-card-title class="text-h5">添加一个用户</v-card-title>
             <v-card-text>
-              <v-form ref="addingForm">
+              <v-form ref="addingForm" v-model="addValid">
                 <v-text-field
                   v-model="addUserId"
-                  :rules="[(v) => !!v || 'ID不能为空']"
+                  :rules="[
+                    (v) => !!v || 'ID不能为空',
+                    (v) => /(^[1-9]\d*$)/.test(v) || '请输入有效的id(数字)',
+                  ]"
                   label="请输入用户ID"
                   required
                 ></v-text-field>
@@ -110,15 +117,15 @@
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="closeAddingDialog"
+              <v-btn color="primary" text @click="closeAddingDialog"
                 >取消</v-btn
               >
               <v-btn
-                color="blue darken-1 secondary"
+                color="primary"
                 text
                 @click="submitAddingDialog"
                 :loading="addUserLoader"
-                :disabled="addUserLoader"
+                :disabled="addUserLoader || !addValid"
                 >确定</v-btn
               >
               <v-spacer></v-spacer>
@@ -138,42 +145,58 @@
             :bench="benched"
             :items="responseData"
             height="400"
-            item-height="64"
-            width="100"
+            item-height="50"
+            width="400"
+            class="tw-bg-gray-300"
           >
-            <template v-slot:default="{ item }">
-              <v-list-item :key="item.userId">
-                <v-list-item-content>
-                  <v-list-item-title>
-                    <strong
-                      >学号:{{ item.userId }} 结果:{{ item.status }}</strong
-                    >
-                  </v-list-item-title>
-                </v-list-item-content>
+            <template v-slot:default="{ index, item }">
+              <v-list-item
+                :key="index"
+                :class="index % 2 == 0 ? ' tw-bg-gray-200' : 'tw-bg-gray-50'"
+              >
+                <div class="tw-flex">
+                  <div class="tw-w-32">{{ item.userId }}</div>
+                  <div
+                    :class="classMap[item.status]"
+                    class="tw-px-1 tw-rounded-md"
+                  >
+                    {{ respMap[item.status] }}
+                  </div>
+                </div>
               </v-list-item>
-
-              <v-divider></v-divider>
             </template>
           </v-virtual-scroll>
         </v-row>
         <v-row>
           <v-card-text>
-            <v-file-input truncate-length="15" v-model="csvFile"></v-file-input>
+            <v-form ref="formCsv" v-model="csvValid">
+              <v-file-input
+                truncate-length="15"
+                v-model="csvFile"
+                dense
+                accept=".csv"
+                :rules="[
+                  (v) =>
+                    !!v ||
+                    '文件不能为空' ||
+                    value.size < 2000000 ||
+                    '文件不能大于 2 MB!',
+                ]"
+              ></v-file-input>
+            </v-form>
             <!-- <input type="file" ref="ref1" /> -->
           </v-card-text>
         </v-row>
         <v-row>
           <v-col>
             <v-card-actions>
-              <v-btn color="blue darken-1" text @click="closeUpload"
-                >返回</v-btn
-              >
+              <v-btn color="primary" text @click="closeUpload">返回</v-btn>
               <v-btn
-                color="blue darken-1 secondary"
+                color="primary"
                 text
                 @click="sendFile"
                 :loading="addingManyLoader"
-                :disabled="addingManyLoader"
+                :disabled="addingManyLoader || !csvValid"
                 >上传</v-btn
               >
 
@@ -194,7 +217,23 @@ export default {
     DeleteDialog,
   },
   data: () => ({
-    props: ["groupId"],
+    respMap: {
+      0: "成功",
+      "-1": "用户已存在",
+      "-2": "必须项不能为空",
+      "-3": "密码格式错误",
+    },
+    classMap: {
+      0: "tw-bg-green-400",
+      "-1": "tw-bg-yellow-500",
+      "-2": "tw-bg-red-400",
+      "-3": "tw-bg-red-400",
+    },
+    csvValid: false,
+    editValid: false,
+    addValid: false,
+    // props: ["groupId"],
+    groupId: null,
     //////////////////////添加学生到组/////////////////////////////
     addingDialog: false,
     addUserId: null,
@@ -227,9 +266,8 @@ export default {
     choosen: 0,
     userHeaders: [
       { text: "用户id", align: "start", sortable: false, value: "id" },
-      { text: "用户名", value: "name" },
-      { text: "用户邮箱", value: "mail" },
-      { text: "查看用户详细信息", value: "date" },
+      { text: "用户名", value: "name"   ,sortable: false,},
+      { text: "用户邮箱", value: "mail"  ,sortable: false,},
       { text: "编辑用户", value: "edit", sortable: false },
       { text: "删除用户", value: "actions", sortable: false },
     ],
@@ -244,6 +282,7 @@ export default {
     },
   },
   mounted() {
+    this.groupId = this.$route.params.groupId;
     this.getDataFromApi();
   },
   methods: {
@@ -251,21 +290,10 @@ export default {
       api.groupFactory
         .addManyUserInGroup(this.groupId, this.csvFile)
         .then((response) => {
-          response.content.map(function (item) {
-            if (item.status == 0) {
-              item.status = "成功";
-            } else if (item.status == -1) {
-              item.status = "用户已存在";
-            } else if (item.status == -2) {
-              item.status = "必须项不能为空";
-            } else if (item.status == -3) {
-              item.status = "密码格式错误";
-            } else {
-              item.status = "未知错误";
-            }
-            return item;
-          });
           this.responseData = response.content;
+          this.$emit("showmsg", "上传成功");
+          this.$refs.formCsv.resetValidation();
+          this.csvFile = null;
         });
     },
     closeUpload() {
@@ -285,7 +313,13 @@ export default {
         .addUserInGroup(this.groupId, this.addUserId)
         .then((response) => {
           this.addUserLoader = false;
-          this.$emit("showmsg", response.msg);
+          let map = {
+            0: "成功",
+            "-1": "组不存在",
+            "-2": "用户不存在",
+            "-3": "用户已在组内",
+          };
+          this.$emit("showmsg", map[response.code]);
           this.closeAddingDialog();
         });
     },
@@ -293,9 +327,15 @@ export default {
       api.groupFactory
         .deleteUserInGroup(this.groupId, this.editedItem.id)
         .then((response) => {
-          this.$emit("showmsg", response.msg);
+          let map = {
+            0: "成功",
+            "-1": "组不存在",
+            "-2": "用户不在该组",
+            "-3": "用户不存在",
+          };
+          this.$emit("showmsg", map[response.code]);
+          this.closeDelete();
         });
-      this.closeDelete();
     },
     deleteItem(item) {
       this.editedIndex = this.allUser.indexOf(item);
@@ -330,9 +370,9 @@ export default {
         )
         .then((response) => {
           if (response.code == 0) {
-            this.$emit("showmsg", response.msg);
+            this.$emit("showmsg", "修改成功");
           } else {
-            this.$refs.sb.warn("修改失败，未知错误");
+            this.$emit("showmsg", "非法信息");
             errorflag = 1;
           }
           this.editingUserLoader = false;

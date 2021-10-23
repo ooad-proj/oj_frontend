@@ -31,6 +31,9 @@ export default {
             password: password,
             mail: mail
         })
+    },
+    getUserById(id){
+        return http.get(('/api/user/details/'+id),{})
     }
 
 }

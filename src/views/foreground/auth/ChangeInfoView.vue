@@ -104,6 +104,8 @@ export default {
       ]).then((resps) => {
         let info = resps[0];
         this.basic = info.content;
+        this.editInfo.name = this.basic.name
+        this.editInfo.mail = this.basic.mail
       });
     },
     startWarn(text) {
@@ -111,7 +113,7 @@ export default {
       this.warn.doing = true
     },
     updateInfo() {
-      api.authFactory.editInfo(this.updateInfo.name, this.updateInfo.mail).then(resp => {
+      api.authFactory.editInfo(this.editInfo.name, this.editInfo.mail).then(resp => {
         if (resp.code == 0) {
           this.$router.push('info')
         } else if (resp.code == -1) {
@@ -156,7 +158,7 @@ export default {
         ],
         repeatPassword: [
           v => !!v || '密码为空',
-          v => v == this.editPassword.old || '密码输入不一致'
+          v => v == this.editPassword.new || '密码输入不一致'
         ]
       },
       basic: {

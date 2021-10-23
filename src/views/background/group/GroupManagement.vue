@@ -19,7 +19,7 @@
               <v-card>
                 <v-card-title class="text-h5">添加一个班级</v-card-title>
                 <v-card-text>
-                  <v-form ref="groupForm">
+                  <v-form ref="groupForm" v-model="addValid">
                     <v-text-field
                       v-model="groupName"
                       :rules="[(v) => !!v || '名称不能为空']"
@@ -30,10 +30,10 @@
                 </v-card-text>
                 <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-btn color="blue darken-1" text @click="closeAddGroup"
+                  <v-btn color="primary" text @click="closeAddGroup"
                     >取消</v-btn
                   >
-                  <v-btn color="blue darken-1" text @click="confirmAddGroup"
+                  <v-btn color="primary" text @click="confirmAddGroup" :disabled="!addValid"
                     >确定</v-btn
                   >
                   <v-spacer></v-spacer>
@@ -84,6 +84,7 @@ export default {
   },
   data() {
     return {
+      addValid: false,
       groupName: "",
       add_group: false,
       items: [
@@ -103,9 +104,9 @@ export default {
           sortable: false,
           value: "groupId",
         },
-        { text: "群组名称", value: "groupName" },
-        { text: "当前人数", value: "memberNum" },
-        { text: "学助人数", value: "assistantNum" },
+        { text: "群组名称", value: "groupName" ,sortable: false,},
+        { text: "当前人数", value: "memberNum" , sortable: false,},
+        { text: "学助人数", value: "assistantNum", sortable: false,},
         { text: "进入群组", value: "actions", sortable: false ,class:"tw-w-48",align: "center"},
       ],
     };
@@ -138,7 +139,11 @@ export default {
     },
     confirmAddGroup() {
       api.groupFactory.createGroup(this.groupName).then((response) => {
-        this.$refs.snkBar.warn(response.msg);
+        if(response.code ==0){
+           this.$refs.snkBar.warn("成功");
+        }else{
+           this.$refs.snkBar.warn("组已存在");
+        }
         this.getDataFromApi();
         this.closeAddGroup();
       });

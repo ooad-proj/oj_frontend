@@ -86,6 +86,7 @@ export default {
   methods: {
     open() {
       api.authFactory.isLogin().then(resp => {
+        console.log(resp)
         this.isLogin = resp.isLogin;
         if (this.isLogin) {
           this.getUser();

@@ -5,7 +5,7 @@
 
       <div>
         <v-btn color="primary" dark class="" @click="addAssistantDialog = true">
-          添加新记录
+          添加新学助
         </v-btn>
       </div>
     </div>
@@ -32,34 +32,35 @@
       @confirm="deleteItemConfirm"
     ></DeleteDialog>
 
-
     <v-dialog v-model="addAssistantDialog" max-width="600px">
       <v-card class="pa-5">
         <v-row>
           <v-col>
             <v-card-title class="text-h5">添加一个学助</v-card-title>
             <v-card-text>
-              <v-form ref="editingForm">
+              <v-form ref="editingForm" v-model="addValid">
                 <v-text-field
                   v-model="assistantId"
-                  :rules="[(v) => !!v || 'ID不能为空']"
+                  :rules="[
+                    (v) => !!v || 'ID不能为空',
+                    (v) => /(^[1-9]\d*$)/.test(v) || '请输入有效的id(数字)',
+                  ]"
                   label="请输入学助ID"
                   required
                 ></v-text-field>
-                ></v-form
-              >
+              </v-form>
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="closeAddingAssistant"
+              <v-btn color="primary" text @click="closeAddingAssistant"
                 >取消</v-btn
               >
               <v-btn
-                color="blue darken-1 secondary"
+                color="primary"
                 text
                 @click="submit"
                 :loading="addAssistantLoader"
-                :disabled="addAssistantLoader"
+                :disabled="addAssistantLoader || !addValid"
                 >确定</v-btn
               >
               <v-spacer></v-spacer>
@@ -78,9 +79,11 @@ export default {
   components: {
     DeleteDialog,
   },
-  props: ["groupId"],
+  // props: ["groupId"],
   data() {
     return {
+      groupId: null,
+      addValid: false,
       assistantId: null,
       addAssistantLoader: false,
       addAssistantDialog: false,
@@ -105,7 +108,6 @@ export default {
         { text: "学助id", align: "start", sortable: false, value: "id" },
         { text: "学助名", value: "name" },
         { text: "学助邮箱", value: "mail" },
-        { text: "查看学助详细信息", value: "date" },
         { text: "删除学助", value: "actions", sortable: false },
       ],
     };
@@ -119,6 +121,7 @@ export default {
     },
   },
   mounted() {
+    this.groupId = this.$route.params.groupId;
     this.getDataFromApi();
   },
   methods: {
@@ -133,19 +136,26 @@ export default {
       api.groupFactory
         .addAssistantInGroup(this.groupId, this.assistantId)
         .then((response) => {
-          console.log(response);
-          this.$emit("addAssitant", response.msg);
+          let map = {
+            0: "成功",
+            "-1": "组不存在",
+            "-2": "学助已在本组",
+            "-3": "学助不存在",
+          };
+          this.$emit("addAssitant", map[response.code]);
           this.addAssistantLoader = false;
           this.closeAddingAssistant();
         });
     },
     deleteItemConfirm() {
       api.groupFactory
-        .deleteAssistantInGroup(this.groupId, this.editedItem.userId)
+        .deleteAssistantInGroup(this.groupId, this.editedItem.id)
         .then((response) => {
-          this.$emit("deleteAssitant", response.msg);
+          console.log(this.editedItem);
+          let map = { 0: "成功", "-1": "组不存在", "-2": "学助不存在" };
+          this.$emit("deleteAssitant", map[response.code]);
+          this.closeDelete();
         });
-      this.closeDelete();
     },
     closeDelete() {
       this.getDataFromApi();
