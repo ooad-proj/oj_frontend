@@ -4,9 +4,9 @@
       <div class="tw-text-xl tw-font-bold">组详情</div>
 
       <div>
-        <v-btn color="primary" @click="editGroupName" class="mx-1"
+        <v-btn color="primary" @click="editGroupName" class="mx-1" v-if="checkTeacher"
           >修改组名</v-btn
-        ><v-btn color="error" @click="deleteGroup" class="mx-1">删除本组</v-btn>
+        ><v-btn color="error" @click="deleteGroup" class="mx-1" v-if="checkTeacher">删除本组</v-btn>
       </div>
     </div>
     <v-container fluid class="tw-px-8">
@@ -95,6 +95,7 @@ export default {
   },
   data() {
     return {
+      myrole:null,
       name: null,
       memberNum: null,
       assistantNum: null,
@@ -108,8 +109,19 @@ export default {
   },
   mounted() {
     this.getDataFromApi();
+    this.getMyRole();
+  },
+  computed:{
+    checkTeacher: function(){
+      return this.myrole == 'teacher'
+    }
   },
   methods: {
+    getMyRole() {
+      api.authFactory.getRole().then((response) => {
+        this.myrole = response.content;
+      });
+    },
     getDataFromApi() {
       api.groupFactory.getDataInGroup(this.groupId).then((response)=>{
         this.name = response.content.groupName

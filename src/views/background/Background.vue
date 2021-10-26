@@ -11,7 +11,7 @@
       <v-list>
         <v-subheader class="text-h6 white--text">后台管理</v-subheader>
         <v-list-item-group mandatory color=" teal lighten-3">
-          <v-list-item v-for="(item, i) in items" :key="i" :to="item.router">
+          <v-list-item v-for="(item, i) in activeItemList" :key="i" :to="item.router">
             <v-list-item-icon>
               <v-icon v-text="item.icon"></v-icon>
             </v-list-item-icon>
@@ -37,29 +37,49 @@
 </template>
 
 <script>
+import api from "@/api/api";
 export default {
+  mounted(){
+    this.getMyRole()
+  },
+  computed: {
+    activeItemList: function() {
+		return this.items.filter((item) => {
+      if (item.notSeeBy.indexOf(this.myrole)==-1){
+        return true
+      }else{
+        return false
+      }
+		})
+	}
+  },
   data: () => ({
+    myrole: null,
     selectedItem: 1,
     items: [
       {
         text: "用户管理",
         icon: "mdi-account-edit",
         router: { name: "UserManagement" },
+        notSeeBy: ['assistant']
       },
       {
         text: "班级管理",
         icon: "mdi-account-group",
         router: { name: "GroupManagement" },
+        notSeeBy: []
       },
       {
         text: "问题管理",
         icon: "mdi-application-edit",
         router: { name: "ProblemManagement" },
+        notSeeBy: []
       },
       {
         text: "竞赛管理",
         icon: "mdi-flag",
         router: { name: "CompetitionManagement" },
+        notSeeBy: []
       },
     ],
     items1: [
@@ -69,5 +89,12 @@ export default {
       ["mdi-clock-start", "Clock-in"],
     ],
   }),
+  methods: {
+    getMyRole() {
+      api.authFactory.getRole().then((response) => {
+        this.myrole = response.content;
+      });
+    },
+  },
 };
 </script>
