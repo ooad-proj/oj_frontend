@@ -22,10 +22,16 @@
                   >
                   </v-text-field>
                 </div>
-                <v-btn color="primary mx-1" @click="addingManyUser = true"
+                <v-btn
+                  color="primary mx-1"
+                  @click="addingManyUser = true"
+                  v-if="myrole == 'teacher'"
                   >批量添加</v-btn
                 >
-                <v-btn color="primary mx-1" @click="addingUser = true"
+                <v-btn
+                  color="primary mx-1"
+                  @click="addingUser = true"
+                  v-if="myrole == 'teacher'"
                   >添加用户</v-btn
                 >
               </div>
@@ -173,10 +179,24 @@
               class="elevation-2"
             >
               <template v-slot:[`item.actions`]="{ item }">
-                <v-icon small class="mr-2" @click="editItem(item)">
+                <v-icon
+                  small
+                  @click="deleteItem(item)"
+                  v-if="item.deletable && myrole == 'teacher'"
+                >
+                  mdi-delete
+                </v-icon>
+              </template>
+
+              <template v-slot:[`item.revise`]="{ item }">
+                <v-icon
+                  small
+                  class="mr-2"
+                  @click="editItem(item)"
+                  v-if="item.editable && myrole == 'teacher'"
+                >
                   mdi-pencil
                 </v-icon>
-                <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
               </template>
             </v-data-table>
 
@@ -197,7 +217,9 @@
               <v-card class="pa-5">
                 <v-row>
                   <v-col>
-                    <v-card-title class="text-h5">修改这个用户 {{editedItem2.id}}</v-card-title>
+                    <v-card-title class="text-h5"
+                      >修改这个用户 {{ editedItem2.id }}</v-card-title
+                    >
                     <v-card-text>
                       <v-form ref="formSecond" v-model="infoValid">
                         <v-text-field
@@ -273,9 +295,11 @@ export default {
   },
   mounted() {
     this.getDataFromApi("");
+    this.getMyRole();
   },
   data() {
     return {
+      myrole: null,
       //编辑的item
       editedItem2: {
         id: null,
@@ -348,11 +372,17 @@ export default {
         { text: "用户名称", value: "name", sortable: false },
         { text: "用户邮箱", value: "mail", sortable: false },
         { text: "操作", value: "actions", sortable: false },
+        { text: "修改", value: "revise", sortable: false },
       ],
     };
   },
   computed: {},
   methods: {
+    getMyRole() {
+      api.authFactory.getRole().then((response) => {
+        this.myrole = response.content;
+      });
+    },
     searchId() {
       this.getDataFromApi(this.search);
     },

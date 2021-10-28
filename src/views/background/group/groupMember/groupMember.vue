@@ -3,8 +3,8 @@
     <div class="tw-flex tw-justify-between pa-5 tw-w-full">
       <div class="tw-text-xl tw-font-bold">班级用户管理</div>
 
-      <div>
-        <v-btn color="primary" dark class="mx-1" @click="addingDialog = true">
+      <div >
+        <v-btn color="primary" dark class="mx-1" @click="addingDialog = true" v-if="checkTeacher">
           添加学生到组
         </v-btn>
         <v-btn
@@ -12,13 +12,14 @@
           dark
           class="mx-1"
           @click="addingManyDialog = true"
+          v-if="checkTeacher"
         >
           批量添加到组
         </v-btn>
       </div>
     </div>
     <v-data-table
-      :headers="userHeaders"
+      :headers="headerToShow"
       :items="allUser"
       :options.sync="options"
       :server-items-length="totalUser"
@@ -213,10 +214,20 @@
 import api from "@/api/api";
 import DeleteDialog from "@/components/DeleteDialog.vue";
 export default {
+  computed:{
+    checkTeacher: function(){
+      // return true
+      return this.myrole == 'teacher' ? true : false
+    },
+      headerToShow: function(){
+      return this.myrole == 'teacher'? this.userHeaders:this.headerForAssistant
+    }
+  },
   components: {
     DeleteDialog,
   },
   data: () => ({
+    myrole:null,
     respMap: {
       0: "成功",
       "-1": "用户已存在",
@@ -271,6 +282,11 @@ export default {
       { text: "编辑用户", value: "edit", sortable: false },
       { text: "删除用户", value: "actions", sortable: false },
     ],
+    headerForAssistant: [
+      { text: "用户id", align: "start", sortable: false, value: "id" },
+      { text: "用户名", value: "name"   ,sortable: false,},
+      { text: "用户邮箱", value: "mail"  ,sortable: false,},
+    ],
   }),
   created() {},
   watch: {
@@ -284,8 +300,14 @@ export default {
   mounted() {
     this.groupId = this.$route.params.groupId;
     this.getDataFromApi();
+    this.getMyRole()
   },
   methods: {
+    getMyRole() {
+      api.authFactory.getRole().then((response) => {
+        this.myrole = response.content;
+      });
+    },
     sendFile() {
       api.groupFactory
         .addManyUserInGroup(this.groupId, this.csvFile)

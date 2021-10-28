@@ -11,7 +11,7 @@
             <div class="tw-flex tw-justify-between tw-items-center pa-5">
               <div class="tw-font-bold tw-text-xl">我管理的群组</div>
               <div>
-                <v-btn color="primary" @click="addGroup">添加群组</v-btn>
+                <v-btn color="primary" @click="addGroup" v-if="myrole =='teacher'">添加群组</v-btn>
               </div>
             </div>
 
@@ -84,6 +84,7 @@ export default {
   },
   data() {
     return {
+      myrole:null,
       addValid: false,
       groupName: "",
       add_group: false,
@@ -120,9 +121,15 @@ export default {
     },
   },
   mounted() {
+    this.getMyRole();
     this.getDataFromApi();
   },
   methods: {
+    getMyRole() {
+      api.authFactory.getRole().then((response) => {
+        this.myrole = response.content;
+      });
+    },
     getDataFromApi() {
       this.loading = true;
       const { page, itemsPerPage } = this.options;

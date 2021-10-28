@@ -4,13 +4,13 @@
       <div class="tw-text-xl tw-font-bold">班级学助管理</div>
 
       <div>
-        <v-btn color="primary" dark class="" @click="addAssistantDialog = true">
+        <v-btn color="primary" dark class="" @click="addAssistantDialog = true" v-if="checkTeacher">
           添加新学助
         </v-btn>
       </div>
     </div>
     <v-data-table
-      :headers="groupAssistantHeaders"
+      :headers="headerToShow"
       :items="groupAssistant"
       :options.sync="options"
       :server-items-length="totalGroupAssistant"
@@ -82,6 +82,7 @@ export default {
   // props: ["groupId"],
   data() {
     return {
+      myrole: null,
       groupId: null,
       addValid: false,
       assistantId: null,
@@ -110,6 +111,11 @@ export default {
         { text: "学助邮箱", value: "mail" },
         { text: "删除学助", value: "actions", sortable: false },
       ],
+      headerForAssistant:[
+        { text: "学助id", align: "start", sortable: false, value: "id" },
+        { text: "学助名", value: "name" },
+        { text: "学助邮箱", value: "mail" },
+      ]
     };
   },
   watch: {
@@ -123,8 +129,22 @@ export default {
   mounted() {
     this.groupId = this.$route.params.groupId;
     this.getDataFromApi();
+    this.getMyRole();
+  },
+  computed:{
+    checkTeacher: function(){
+      return this.myrole == 'teacher'
+    },
+    headerToShow: function(){
+      return this.myrole == 'teacher'? this.groupAssistantHeaders:this.headerForAssistant
+    }
   },
   methods: {
+    getMyRole() {
+      api.authFactory.getRole().then((response) => {
+        this.myrole = response.content;
+      });
+    },
     closeAddingAssistant() {
       this.assistantId = null;
       this.$refs.editingForm.resetValidation();
