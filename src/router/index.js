@@ -35,6 +35,18 @@ const routes = [
         path: 'user/edit',
         component: ChangeInfoView
       },
+      {
+        path: 'problemSet',
+        component: () => import('../views/foreground/problem/ProblemListView.vue'),
+      },
+      {
+        path: 'problem/:problemId',
+        component: () => import('../views/foreground/problem/ProblemView.vue'),
+      },
+      {
+        path: 'contest',
+        component: () => import('../views/foreground/contest/GroupView.vue'),
+      }
     ]
   },
   {
