@@ -1,5 +1,5 @@
 <template>
-    <v-dialog v-model="popUp" :max-width=width @input="$emit('change',popUp)">
+    <v-dialog v-model="popUpSelf" :max-width=width>
         <v-card class="pa-5 tw-flex-col tw-space-y-4">
           <div class="tw-text-xl tw-font-bold">{{title}}</div>
           <div class="tw-flex">
@@ -26,11 +26,20 @@ export default {
         prop: "popUp",
         event: "change"
     },
-    props: ["title","content","width","popUp"],
+    props: ["title","content","width", "popUp"],
     data() {
         return {
+          popUpSelf: false
         }
     },
+    watch: {
+      popUp (val) {
+        this.popUpSelf = val
+      },
+      popUpSelf() {
+        this.$emit('change', this.popUpSelf)
+      }
+    }
 }
 </script>
 

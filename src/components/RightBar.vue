@@ -1,5 +1,5 @@
 <template>
-  <v-navigation-drawer v-model="shown" app right absolute temporary>
+  <v-navigation-drawer v-model="shown" app right temporary>
     <div
       v-if="isLogin"
       class="tw-flex tw-flex-wrap tw-h-full tw-content-between"

@@ -7,16 +7,16 @@
       <v-btn depressed class=" darken-3 grey white--text " href="/#/">
         <v-icon>mdi-home</v-icon>首页
       </v-btn>
-      <v-btn depressed class=" darken-3 grey white--text ">
+      <v-btn depressed class=" darken-3 grey white--text " href="/#/problemSet">
         <v-icon dense>mdi-file-question</v-icon>问题
       </v-btn>
-      <v-btn depressed class=" darken-3 grey white--text ">
+      <v-btn depressed class=" darken-3 grey white--text " href="/#/">
         <v-icon dense>mdi-format-list-bulleted</v-icon>记录
       </v-btn>
-      <v-btn depressed class=" darken-3 grey white--text ">
+      <v-btn depressed class=" darken-3 grey white--text " href="/#/">
         <v-icon dense>mdi-chevron-triple-up</v-icon>排名
       </v-btn>
-      <v-btn depressed class=" darken-3 grey white--text ">
+      <v-btn depressed class=" darken-3 grey white--text " href="/#/contest">
         <v-icon dense>mdi-trophy</v-icon>竞赛
       </v-btn>
     </div>
