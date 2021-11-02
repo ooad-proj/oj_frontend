@@ -5,10 +5,10 @@ import router from './router'
 import './assets/tailwind.css'
 import i18n from './i18n'
 import vuetify from './plugins/vuetify'
-
+import mavonEditor from 'mavon-editor'
+import 'mavon-editor/dist/css/index.css'
 Vue.config.productionTip = false
-
-
+Vue.use(mavonEditor)
 let vue = new Vue({
   store,
   router,

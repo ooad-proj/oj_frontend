@@ -63,10 +63,20 @@ const routes = [
         component: () => import('../views/background/problem/ProblemManagement.vue'),
       },
       {
+        path: 'problem/createProblem/:contestId',
+        name: 'createProblem',
+        component: () => import('../views/background/problem/createProblem.vue'),
+      },
+      {
         path:'competition',
         name: 'CompetitionManagement',
         component: () => import('../views/background/competition/CompetitionManagement.vue'),
-      }
+      },
+      {
+        path:'competition/:contestId',
+        name: 'contestInfo',
+        component: () => import('../views/background/competition/contestInfo.vue'),
+      },
     ]
     
   }

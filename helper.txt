@@ -1,1 +1,35 @@
 class=" grey darken-3"
+
+<v-row>
+              <v-col>
+                <mavon-editor
+                  :value="test"
+                  defaultOpen="preview"
+                  :boxShadow="false"
+                  style="z-index: 1; height: 20vh"
+                  :editable="false"
+                  :subfield="false"
+                  :toolbarsFlag="false"
+                >
+                </mavon-editor>
+              </v-col>
+            </v-row>
+
+<v-checkbox
+      v-model="checkbox"
+      :label="`Checkbox 1: ${checkbox.toString()}`"
+    ></v-checkbox>
+
+    verify: () => {
+        console.log(this.description)
+        if (this.description ==''){
+          console.log('错')
+        }
+
+      },
+
+ // for (var key in submitTemplate) {
+      //   if (submitTemplate[key] == "") {
+      //     delete submitTemplate[key];
+      //   }
+      // }

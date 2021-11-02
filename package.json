@@ -12,6 +12,7 @@
     "autoprefixer": "^9",
     "axios": "^0.22.0",
     "core-js": "^3.6.5",
+    "mavon-editor": "^2.9.1",
     "postcss": "^7",
     "qs": "^6.10.1",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.0.2",
