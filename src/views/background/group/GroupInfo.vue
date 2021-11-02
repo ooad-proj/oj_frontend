@@ -32,6 +32,11 @@
           ></groupAssistantManagement>
         </v-col>
       </v-row>
+       <v-row>
+        <v-col>
+          <contest-of-group :groupId="this.$route.params.groupId" @showmsg="showContestMsg"></contest-of-group>>
+        </v-col>
+      </v-row>
     </v-container>
   </div>
 </template>
@@ -41,12 +46,15 @@ import SnackBar from "../../../components/SnackBar.vue";
 import groupAssistantManagement from "@/views/background/group/groupAssistant/groupAssistantManagement.vue";
 import groupConfig from "@/views/background/group/groupConfig/groupConfig.vue";
 import groupMember from "@/views/background/group/groupMember/groupMember.vue";
+import contestOfGroup from "@/views/background/group/groupContest/contestOfGroup.vue";
+
 export default {
   components: {
     SnackBar,
     groupAssistantManagement,
     groupConfig,
     groupMember,
+    contestOfGroup,
   },
   data: () => ({
     items: [
@@ -77,6 +85,9 @@ export default {
       this.$refs.sb.warn(msg);
     },
     showDeleteAssistant(msg) {
+      this.$refs.sb.warn(msg);
+    },
+     showContestMsg(msg) {
       this.$refs.sb.warn(msg);
     },
   },

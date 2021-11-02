@@ -57,5 +57,12 @@ export default {
     },
     getDataInGroup(groupId) {
         return http.get('/api/group/' + groupId, {})
+    },
+    getContestInGroup(groupId,page,itemsPerPage,search){
+        return http.get('/api/group/'+groupId+'/contest', {
+            page:page,
+            itemsPerPage:itemsPerPage,
+            search:search,
+        })
     }
 }
