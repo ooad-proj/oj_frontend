@@ -402,6 +402,7 @@ export default {
       this.editedItem.startTime = start;
       this.editedItem.endTime = end;
       this.editingLoader = true;
+      console.log(this.editedItem)
       if (this.editing) {
         api.contestFactory
           .changeContestBasicInfo(

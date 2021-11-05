@@ -94,6 +94,7 @@ export default {
         },
         { text: "标题", value: "title", sortable: false },
         { text: "来源", value: "groupName", sortable: false },
+        { text: "比赛来源", value: "contestTitle", sortable: false },
         { text: "修改", value: "revise", sortable: false },
         { text: "删除", value: "delete", sortable: false },
       ],
@@ -136,10 +137,11 @@ export default {
       this.deleteProblemId = null;
     },
     editItem(item){
+      console.log(item)
       this.$router.push({
         name: "createProblem",
         params: {
-          contestId: item.contestId,
+          contestId: 0,
         },
         query: {
           ifEdit: true,

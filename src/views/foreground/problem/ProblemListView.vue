@@ -1,21 +1,27 @@
 <template>
   <div>
     <v-container grid-list-xs>
-      <v-card class=" pa-5">
-        <p class=" tw-text-xl tw-font-bold">问题集</p>
+      <v-card class="pa-5">
+        <p class="tw-text-xl tw-font-bold">问题集</p>
         <v-data-table
           :headers="headers"
-          :items="desserts"
-          :page.sync="page"
-          :items-per-page="itemsPerPage"
+          :items="tableData"
           hide-default-footer
+          :loading="loading"
+        >
+          <template v-slot:[`item.enter`]="{ item }">
+            <v-btn text color="primary" @click="goInProblem(item)">
+              <v-icon left>mdi-door-open</v-icon>
+              进入问题
+            </v-btn>
+          </template>
+        </v-data-table>
 
-          @page-count="pageCount = $event"
-        ></v-data-table>
         <div class="text-center pt-2">
           <v-pagination
             v-model="page"
-            :length="pageCount"
+            :total-visible="9"
+            :length="totalPage"
           ></v-pagination>
         </div>
       </v-card>
@@ -24,112 +30,64 @@
 </template>
 
 <script>
-  export default {
-    data () {
-      return {
-        page: 1,
-        pageCount: 0,
-        itemsPerPage: 10,
-        headers: [
-          {
-            text: 'Dessert (100g serving)',
-            align: 'start',
-            sortable: false,
-            value: 'name',
-          },
-          { text: 'Calories', value: 'calories' },
-          { text: 'Fat (g)', value: 'fat' },
-          { text: 'Carbs (g)', value: 'carbs' },
-          { text: 'Protein (g)', value: 'protein' },
-          { text: 'Iron (%)', value: 'iron' },
-        ],
-        desserts: [
-          {
-            name: 'Frozen Yogurt',
-            calories: 159,
-            fat: 6.0,
-            carbs: 24,
-            protein: 4.0,
-            iron: '1%',
-          },
-          {
-            name: 'Ice cream sandwich',
-            calories: 237,
-            fat: 9.0,
-            carbs: 37,
-            protein: 4.3,
-            iron: '1%',
-          },
-          {
-            name: 'Eclair',
-            calories: 262,
-            fat: 16.0,
-            carbs: 23,
-            protein: 6.0,
-            iron: '7%',
-          },
-          {
-            name: 'Cupcake',
-            calories: 305,
-            fat: 3.7,
-            carbs: 67,
-            protein: 4.3,
-            iron: '8%',
-          },
-          {
-            name: 'Gingerbread',
-            calories: 356,
-            fat: 16.0,
-            carbs: 49,
-            protein: 3.9,
-            iron: '16%',
-          },
-          {
-            name: 'Jelly bean',
-            calories: 375,
-            fat: 0.0,
-            carbs: 94,
-            protein: 0.0,
-            iron: '0%',
-          },
-          {
-            name: 'Lollipop',
-            calories: 392,
-            fat: 0.2,
-            carbs: 98,
-            protein: 0,
-            iron: '2%',
-          },
-          {
-            name: 'Honeycomb',
-            calories: 408,
-            fat: 3.2,
-            carbs: 87,
-            protein: 6.5,
-            iron: '45%',
-          },
-          {
-            name: 'Donut',
-            calories: 452,
-            fat: 25.0,
-            carbs: 51,
-            protein: 4.9,
-            iron: '22%',
-          },
-          {
-            name: 'KitKat',
-            calories: 518,
-            fat: 26.0,
-            carbs: 65,
-            protein: 7,
-            iron: '6%',
-          },
-        ],
-      }
+import api from "@/api/api";
+export default {
+  mounted() {
+    this.getDataFromApi("");
+  },
+  data() {
+    return {
+      options: {},
+      loading: false,
+      totalPage: 100,
+      totalAmont: 0,
+      tableData: [],
+      page: 1,
+      pageCount: 0,
+      itemsPerPage: 10,
+      headers: [
+        {
+          text: "编号",
+          align: "start",
+          sortable: false,
+          value: "problemId",
+        },
+        { text: "标题", value: "title", sortable: false },
+        { text: "来源", value: "groupName", sortable: false },
+        { text: "来源班级", value: "groupId", sortable: false },
+        { text: "进入问题", value: "enter", sortable: false },
+      ],
+    };
+  },
+  watch: {
+    page: {
+      handler() {
+        this.getDataFromApi("");
+      },
+      deep: true,
     },
-  }
+  },
+  methods: {
+    getDataFromApi(searchText) {
+      this.loading = true;
+      api.problemFactory
+        .getAnswerableProblem(this.page, this.itemsPerPage, searchText)
+        .then((response) => {
+          this.tableData = response.content.list;
+          this.totalPage = response.content.totalPage;
+          this.totalAmont = response.content.totalAmont;
+          this.loading = false;
+        });
+    },
+    goInProblem(item){
+      this.$router.push({
+        name: "problemPage",
+        params: { problemId: item.problemId },
+      });
+    }
+  },
+};
 </script>
 
 <style>
-
 </style>

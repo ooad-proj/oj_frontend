@@ -29,6 +29,13 @@ export default {
   },
   editPassword(oldPassword, newPassword) {
     return http.put('/api/auth/password', {oldPassword, newPassword})
+  },
+  getGroupsByPage(page,itemsPerPage,search){
+    return http.get('/api/auth/groups/at',{
+        page:page,
+        itemsPerPage:itemsPerPage,
+        search:search
+    })
   }
   
 }

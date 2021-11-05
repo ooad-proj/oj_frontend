@@ -95,14 +95,15 @@ export default {
       this.$refs.sb.warn(msg);
     },
     getDataFromApi() {
+
       api.contestFactory.getContestInfo(this.contestId).then((response) => {
-        this.title = response.content.title;
-        this.description = response.content.description;
-        this.creatorName = response.content.creatorName;
-        this.creatorId = response.content.creatorId;
+        this.title = response.content.contest.title;
+        this.description = response.content.contest.description;
+        this.creatorName = response.content.contest.creatorName;
+        this.creatorId = response.content.contest.creatorId;
         let that = this;
-        let tempStart = that.timestampToTime(response.content.startTime);
-        let tempEnd = that.timestampToTime(response.content.endTime);
+        let tempStart = that.timestampToTime(response.content.contest.startTime);
+        let tempEnd = that.timestampToTime(response.content.contest.endTime);
 
         that.startTime = tempStart[0] + tempStart[1];
         that.endTime = tempEnd[0] + tempEnd[1];

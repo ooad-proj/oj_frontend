@@ -41,11 +41,22 @@ const routes = [
       },
       {
         path: 'problem/:problemId',
+        name: 'problemPage',
         component: () => import('../views/foreground/problem/ProblemView.vue'),
       },
       {
         path: 'contest',
         component: () => import('../views/foreground/contest/GroupView.vue'),
+      },
+      {
+        path: 'contest/:groupId',
+        name:'contestInGroup',
+        component: () => import('../views/foreground/contest/group/contestInGroupView.vue'),
+      },
+      {
+        path: 'contest/:groupId/:contestId',
+        name:'problemIncontest',
+        component: () => import('../views/foreground/contest/group/problem/problemInContest.vue'),
       }
     ]
   },

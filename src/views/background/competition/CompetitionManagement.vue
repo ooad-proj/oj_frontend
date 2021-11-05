@@ -55,7 +55,7 @@
                   :to="{
                     name: 'contestInfo',
                     params: {
-                      contestId: item.contestId,
+                      contestId: item.id,
                     },
                   }"
                 >
@@ -298,7 +298,7 @@ export default {
   methods: {
     //////////////////////////删除///////////////////
     deleteItem(item) {
-      this.deleteContestId = item.contestId;
+      this.deleteContestId = item.id;
       this.dialogDelete = true;
     },
     //TODO loading
@@ -356,7 +356,7 @@ export default {
       if (this.editing) {
         api.contestFactory
           .changeContestBasicInfo(
-            this.editedItem.contestId,
+            this.editedItem.id,
             this.editedItem.title,
             this.editedItem.description,
             this.editedItem.startTime,
@@ -374,7 +374,7 @@ export default {
 
           .addContest(
             //TODO
-            this.editedItem.contestId,
+            this.editedItem.id,
             this.editedItem.title,
             this.editedItem.description,
             this.editedItem.startTime,
@@ -412,7 +412,7 @@ export default {
             item.endTime = tempEnd[0] + tempEnd[1];
           });
 
-          that.totalContest = response.totalAmount;
+          that.totalContest = response.content.totalAmount;
           that.loading = false;
         });
     },
@@ -464,7 +464,7 @@ export default {
       editingDialog: false,
       editingLoader: false,
       defaultItem: {
-        contestId: "",
+        id: "",
         title: "",
         startTime: "",
         endTime: "",
@@ -472,7 +472,7 @@ export default {
       },
 
       editedItem: {
-        contestId: "",
+        id: "",
         title: "",
         startTime: "",
         endTime: "",
@@ -490,7 +490,7 @@ export default {
           text: "竞赛ID",
           align: "start",
           sortable: false,
-          value: "contestId",
+          value: "id",
         },
         { text: "标题", value: "title", sortable: false },
         { text: "开始时间", value: "startTime", sortable: false },

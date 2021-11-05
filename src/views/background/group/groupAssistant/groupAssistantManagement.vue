@@ -160,7 +160,9 @@ export default {
             0: "成功",
             "-1": "组不存在",
             "-2": "学助已在本组",
-            "-3": "学助不存在",
+            "-3": "用户不存在",
+            "-4": "不能添加老师",
+            "-5": "不能添加本组学生"
           };
           this.$emit("addAssitant", map[response.code]);
           this.addAssistantLoader = false;

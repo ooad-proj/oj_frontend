@@ -472,10 +472,10 @@ export default {
     },
     uploadSample() {
       api.problemFactory
-        .addSample(this.groupId, this.sampleFile)
+        .addSample(this.$route.params.contestId, this.sampleFile)
         .then((response) => {
           let map = { 0: "样例上传成功", "-1": "样例上传失败" };
-
+          console.log(this.sampleFile)
           if (response.code == 0) {
             this.testCaseId = response.content.testCaseId;
             this.testCaseAmount = response.content.testCaseAmount;
@@ -572,6 +572,8 @@ export default {
         this.select,
         this.content
       );
+      console.log(submitTemplate)
+      // console.log()
       if (this.$refs.Form.validate()) {
         api.problemFactory
           .editProblemInfo(

@@ -63,6 +63,12 @@ export default {
       loading: false,
       headers: [
         {
+          text: "problemID",
+          align: "start",
+          sortable: false,
+          value: "problemId",
+        },
+        {
           text: "问题ID",
           align: "start",
           sortable: false,
