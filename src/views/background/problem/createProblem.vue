@@ -8,69 +8,78 @@
         </div>
         <v-form ref="Form">
           <v-container grid-list-xs fluid>
-            <v-row class="tw-mt-4">
+            <v-row>
               <v-col>
-                <div class="tw-font-bold tw-p-2">标题</div>
-                <v-divider></v-divider>
+                <div class="tw-font-bold tw-bg-gray-50 tw-py-2 tw-px-4 tw-rounded-md tw-my-4">标题</div>
               </v-col>
             </v-row>
 
             <v-row>
               <v-col>
                 <v-text-field
-                  dense
-                  outlined
+                  
                   v-model="shownId"
                   :counter="20"
                   :rules="[(v) => !!v || '竞赛中显示的id不能为空']"
-                  label="竞赛中显示的id"
                   required
-                ></v-text-field>
+                >
+                  <div slot="prepend">
+                    <v-tooltip bottom>
+                      <template v-slot:activator="{ on, attrs }">
+                        <p
+                          class=" tw-whitespace-pre tw-text-base"
+                          v-bind="attrs"
+                          v-on="on"
+                        >显示ID: </p>
+                      </template>
+                      <span>竞赛中本题显示的ID。</span>
+                    </v-tooltip>
+                  </div>
+                </v-text-field>
               </v-col>
               <v-col>
                 <v-text-field
-                  dense
-                  outlined
                   v-model="title"
                   :counter="50"
                   :rules="[(v) => !!v || '标题不能为空']"
-                  label="问题的标题"
                   required
-                ></v-text-field>
-              </v-col>
-            </v-row>
-
-            <v-row class="tw-mt-4">
-              <v-col>
-                <v-row>
-                  <v-col md="2">
-                    <div class="tw-font-bold tw-p-2">问题描述</div>
-                  </v-col>
-                  <v-col>
-                    <div class="tw-font-bold tw-p-2">
-                      <v-input
-                        :rules="[(v) => !!v || '问题描述不能为空']"
-                        v-model="description"
-                      >
-                      </v-input>
-                    </div>
-                  </v-col>
-                  <v-spacer></v-spacer>
-                </v-row>
-                <v-divider></v-divider>
+                >
+                  <div slot="prepend">
+                    <v-tooltip bottom>
+                      <template v-slot:activator="{ on, attrs }">
+                        <p
+                          class=" tw-whitespace-pre tw-text-base"
+                          v-bind="attrs"
+                          v-on="on"
+                        >标题: </p>
+                      </template>
+                      <span>问题的标题。</span>
+                    </v-tooltip>
+                  </div>
+                </v-text-field>
               </v-col>
             </v-row>
 
             <v-row>
               <v-col>
-                <mavon-editor v-model="description" style="z-index: 0" />
+                <div class="tw-font-bold tw-bg-gray-50 tw-py-2 tw-px-4 tw-rounded-md tw-my-4">问题描述</div>
               </v-col>
             </v-row>
 
-            <v-row class="tw-mt-4">
+            <v-row>
               <v-col>
-                <div class="tw-font-bold tw-p-2">输入格式</div>
-                <v-divider></v-divider>
+                <v-input
+                  :rules="[(v) => !!v || '问题描述不能为空']"
+                  v-model="description"
+                >
+                  <md-editor class=" tw-w-full" v-model="description"/>
+                </v-input>
+              </v-col>
+            </v-row>
+
+            <v-row>
+              <v-col>
+                <div class="tw-font-bold tw-bg-gray-50 tw-py-2 tw-px-4 tw-rounded-md tw-my-4">输入格式</div>
               </v-col>
             </v-row>
 
@@ -80,19 +89,14 @@
                   :rules="[(v) => !!v || '输入格式不能为空']"
                   v-model="inputFormat"
                 >
-                  <mavon-editor
-                    v-model="inputFormat"
-                    :boxShadow="false"
-                    style="z-index: 0"
-                  />
+                  <md-editor class=" tw-w-full" v-model="inputFormat"/>
                 </v-input>
               </v-col>
             </v-row>
 
-            <v-row class="tw-mt-4">
+            <v-row>
               <v-col>
-                <div class="tw-font-bold tw-p-2">输出格式</div>
-                <v-divider></v-divider>
+                <div class="tw-font-bold tw-bg-gray-50 tw-py-2 tw-px-4 tw-rounded-md tw-my-4">输出格式</div>
               </v-col>
             </v-row>
 
@@ -102,36 +106,38 @@
                   :rules="[(v) => !!v || '输出格式不能为空']"
                   v-model="outputFormat"
                 >
-                  <mavon-editor v-model="outputFormat" style="z-index: 0" />
+                  <md-editor class=" tw-w-full" v-model="outputFormat"/>
                 </v-input>
               </v-col>
             </v-row>
 
-            <v-row class="tw-mt-4">
+            <v-row >
               <v-col>
-                <div class="tw-font-bold tw-p-2">样例</div>
-                <v-divider></v-divider>
+                <div class="tw-font-bold tw-bg-gray-50 tw-py-2 tw-px-4 tw-rounded-md tw-my-4">样例</div>
               </v-col>
             </v-row>
 
             <v-row>
               <v-col>
                 <div v-for="(sample, index) in samples" :key="index">
-                  <div class="tw-flex tw-justify-between tw-p-2">
-                    <div>这是第{{ index + 1 }}号样例</div>
-
+                  <div class="tw-flex tw-justify-between tw-items-center tw-py-4">
+                    <div class=" tw-font-semibold">样例 {{ index + 1 }}</div>
                     <div>
-                      <v-btn outlined color="error" @click="deleteSample(index)"
+                      <v-btn depressed color="error" @click="deleteSample(index)"
                         >删除样例</v-btn
                       >
                     </div>
                   </div>
                   <v-row>
                     <v-col>
-                      <v-textarea outlined v-model="sample.input"></v-textarea>
+                      <div class=" tw-text-sm tw-text-gray-500">输入：</div>
+                      <textarea class=" tw-p-2 tw-resize-none tw-h-48 focus:tw-border-gray-300 tw-font-mono focus:tw-outline-none tw-w-full tw-border tw-border-solid tw-rounded-md"
+                      v-model="sample.input"></textarea>
                     </v-col>
                     <v-col>
-                      <v-textarea outlined v-model="sample.output"></v-textarea>
+                      <div class=" tw-text-sm tw-text-gray-500">输出：</div>
+                      <textarea class=" tw-p-2 tw-resize-none tw-h-48 focus:tw-border-gray-300 tw-font-mono focus:tw-outline-none tw-w-full tw-border tw-border-solid tw-rounded-md"
+                      v-model="sample.output"></textarea>
                     </v-col>
                   </v-row>
                 </div>
@@ -139,11 +145,11 @@
                   :rules="[(v) => v.length != 0 || '样例不能为空']"
                   v-model="samples"
                 >
-                  <div>
+                  <div class=" tw-py-4">
                     <v-btn
                       block
                       depressed
-                      color="teal lighten-4"
+                      color="primary"
                       @click="addSample"
                       >添加样例</v-btn
                     >
@@ -152,61 +158,66 @@
               </v-col>
             </v-row>
 
-            <v-row class="tw-mt-4">
+            <v-row>
               <v-col>
-                <div class="tw-font-bold tw-p-2">提示</div>
-                <v-divider></v-divider>
+                <div class="tw-font-bold tw-bg-gray-50 tw-py-2 tw-px-4 tw-rounded-md tw-my-4">提示</div>
               </v-col>
             </v-row>
 
             <v-row>
               <v-col>
                 <v-input :rules="[(v) => !!v || '提示不能为空']" v-model="tips">
-                  <mavon-editor v-model="tips" style="z-index: 0" />
+                  <md-editor class=" tw-w-full" v-model="tips"/>
                 </v-input>
               </v-col>
             </v-row>
 
-            <v-row class="tw-mt-4">
+            <v-row>
               <v-col>
-                <div class="tw-font-bold tw-p-2">问题限制</div>
-                <v-divider></v-divider>
+                <div class="tw-font-bold tw-bg-gray-50 tw-py-2 tw-px-4 tw-rounded-md tw-my-4">问题限制</div>
               </v-col>
             </v-row>
+
 
             <v-row>
               <v-col>
                 <v-text-field
-                  dense
-                  outlined
+                  
                   v-model="timeLimit"
-                  :counter="20"
                   :rules="[(v) => !!v || '时间限制不能为空']"
-                  label="时间限制"
                   required
-                ></v-text-field>
+                >
+                  <div slot="prepend">
+                    <p class=" tw-whitespace-pre tw-text-base">时间限制：</p>
+                  </div>
+                </v-text-field>
               </v-col>
               <v-col>
                 <v-text-field
-                  dense
-                  outlined
+                  
                   v-model="spaceLimit"
                   :rules="[(v) => !!v || '空间限制不能为空']"
-                  label="空间限制"
                   required
-                ></v-text-field>
+                >
+                  <div slot="prepend">
+                    <p class=" tw-whitespace-pre tw-text-base">空间限制：</p>
+                  </div>
+                </v-text-field>
               </v-col>
             </v-row>
 
+
             <!-- //TODO组合框 -->
-            <v-row class="tw-mt-4">
+            <v-row>
               <v-col>
-                <div class="tw-font-bold tw-p-2">语言设置</div>
-                <v-divider></v-divider>
+                <div class="tw-font-bold tw-bg-gray-50 tw-py-2 tw-px-4 tw-rounded-md tw-my-4">语言设置</div>
               </v-col>
             </v-row>
 
             <v-row>
+              <v-col cols="2">
+                <div class=" tw-bg-red-500"> 是否需要模板</div>
+              </v-col>
               <v-col>
                 <v-combobox
                   v-model="select"
@@ -219,29 +230,21 @@
               </v-col>
             </v-row>
 
-            <v-row class="tw-mt-4">
-              <v-col>
-                <div class="tw-font-bold tw-p-2">提交模板</div>
-                <v-divider></v-divider>
-              </v-col>
-            </v-row>
-
             <v-row>
               <v-col>
                 <div v-for="(language, index) in select" :key="index">
                   <v-textarea
                     outlined
-                    :label="language"
+                    :label="language + '模板'"
                     v-model="content[language]"
                   ></v-textarea>
                 </div>
               </v-col>
             </v-row>
 
-            <v-row class="tw-mt-4">
+            <v-row>
               <v-col>
-                <div class="tw-font-bold tw-p-2">样例设置</div>
-                <v-divider></v-divider>
+                <div class="tw-font-bold tw-bg-gray-50 tw-py-2 tw-px-4 tw-rounded-md tw-my-4">样例设置</div>
               </v-col>
             </v-row>
 
@@ -251,7 +254,10 @@
                   :rules="[(v) => !!v || '必须上传样例']"
                   v-model="testCaseId"
                 >
-                  <div>这是{{ testCaseId }}</div>
+                  <div class=" tw-rounded-md tw-flex tw-justify-center tw-items-center tw-w-full tw-text-center tw-h-10"
+                  :class=" !!testCaseId ? ' tw-bg-teal-300' : ' tw-bg-gray-300'">
+                    <div>{{ !!testCaseId ? testCaseId + '.zip' : '未上传' }}</div>
+                  </div>
                 </v-input>
               </v-col>
               <v-col md="7">
@@ -266,42 +272,45 @@
                 ></v-file-input>
               </v-col>
               <v-col md="3">
-                <v-btn
-                  color="success"
-                  :disabled="!!!sampleFile"
-                  @click="uploadSample"
-                  >上传样例</v-btn
-                >
-                <v-btn color="primary">下载样例</v-btn>
-              </v-col>
-            </v-row>
-
-            <v-row class="tw-mt-4">
-              <v-col>
-                <div class="tw-font-bold tw-p-2">评分标准</div>
-                <v-divider></v-divider>
+                <div class=" tw-flex tw-space-x-2">
+                  <v-btn
+                    color="primary"
+                    :disabled="!!!sampleFile"
+                    @click="uploadSample"
+                    >上传样例</v-btn
+                  >
+                  <v-btn color="primary">下载样例</v-btn>
+                </div>
               </v-col>
             </v-row>
 
             <v-row>
               <v-col>
+                <div class="tw-font-bold tw-bg-gray-50 tw-py-2 tw-px-4 tw-rounded-md tw-my-4">评分标准</div>
+              </v-col>
+            </v-row>
+
+            <v-row>
+              <v-col md="2">
+                <v-checkbox v-model="allowPartial" label="允许部分分"></v-checkbox>
+              </v-col>
+              <v-col md="3">
                 <v-text-field
-                  dense
-                  outlined
+                  
                   v-model="totalScore"
-                  :counter="20"
                   :rules="[
                     (v) => !!v || '总分不能为空',
-                    (v) => /^[1-9]\d*$/.test(v) || '总分必须为数字',
-                  ]"
-                  label="总分"
+                    (v) => /^[1-9]\d*$/.test(v) || '总分必须为数字',]"
                   required
-                ></v-text-field>
+                >
+                  <div slot="prepend">
+                    <p class=" tw-whitespace-pre tw-text-base">总分：</p>
+                  </div>
+                </v-text-field>
               </v-col>
               <v-col>
                 <v-text-field
-                  dense
-                  outlined
+                  
                   v-model="punishRule"
                   :rules="[
                     (v) => !!v || '罚分规则不能为空',
@@ -310,28 +319,20 @@
                         v
                       ) || '罚分规则格式错误',
                   ]"
-                  label="罚分规则"
                   required
-                ></v-text-field>
+                >
+                  <div slot="prepend">
+                    <p class=" tw-whitespace-pre tw-text-base">罚分规则：</p>
+                  </div>
+                </v-text-field>
               </v-col>
             </v-row>
 
-            <v-row class="tw-mt-4">
-              <v-col>
-                <div class="tw-font-bold tw-p-2">额外选项</div>
-                <v-divider></v-divider>
-              </v-col>
-            </v-row>
 
-            <v-checkbox v-model="allowPartial" label="允许部分分"></v-checkbox>
+            
           </v-container>
 
-          <v-row class="tw-mt-4">
-            <v-col>
-              <div class="tw-font-bold tw-p-2">提交</div>
-              <v-divider></v-divider>
-            </v-col>
-          </v-row>
+          <div class=" tw-p-10"></div>
 
           <v-card-actions>
             <v-spacer></v-spacer>
@@ -342,7 +343,7 @@
               @click="confirm"
               :disabled="loader"
               :loading="loader"
-              >确定</v-btn
+              >添加</v-btn
             >
             <v-spacer></v-spacer>
           </v-card-actions>
@@ -356,6 +357,7 @@
 <script>
 import api from "@/api/api";
 import SnackBar from "../../../components/SnackBar.vue";
+import MdEditor from "../../../components/MdEditor.vue";
 export default {
   computed: {
     HeadLine(){
@@ -363,7 +365,7 @@ export default {
     }
   },
   components: {
-    SnackBar,
+    SnackBar, MdEditor
   },
   mounted() {
     if (this.$route.query.ifEdit) {
