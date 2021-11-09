@@ -480,7 +480,7 @@ export default {
             item.endTime = tempEnd[0] + tempEnd[1];
           });
 
-          that.totalContest = response.totalAmount;
+          that.totalContest = response.content.totalAmount;
           this.loading = false;
         });
     },

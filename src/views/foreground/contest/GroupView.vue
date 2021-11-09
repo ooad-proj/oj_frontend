@@ -46,7 +46,7 @@
               </v-col>
             </v-row>
 
-            <p class="mt-12 tw-text-sm">我的角色：{{ group.Role }}</p>
+            <p class="mt-12 tw-text-sm">我的角色：{{ group.role }}</p>
           </div>
         </div>
 

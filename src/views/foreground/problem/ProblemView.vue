@@ -56,7 +56,7 @@ export default {
       return this.change(this.sidebarData.scoreRule.punishRule)
     },
     change(fields) {
-      // console.log(this.data)
+
       let field = [];
       if (fields != null && fields.length > 0) {
         field = fields.split(",");
@@ -69,8 +69,6 @@ export default {
         return +item;
       })
 
-      // console.log(fields)
-      // console.log(field)
       return field;
     },
     getDataFromApi(){
@@ -88,9 +86,9 @@ export default {
         this.descriptionData.inputFormat = response.content.inputFormat
         this.descriptionData.outputFormat = response.content.outputFormat
         this.descriptionData.samples = response.content.samples
-        console.log(this.descriptionData)
-        // console.log(response)
-        // console.log(this.sidebarData)
+
+        console.log(response)
+
       })
     }
   },

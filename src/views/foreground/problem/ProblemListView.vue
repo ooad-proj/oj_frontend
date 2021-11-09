@@ -54,7 +54,7 @@ export default {
         },
         { text: "标题", value: "title", sortable: false },
         { text: "来源", value: "groupName", sortable: false },
-        { text: "来源班级", value: "groupId", sortable: false },
+        { text: "来源班级", value: "contestTitle", sortable: false },
         { text: "进入问题", value: "enter", sortable: false },
       ],
     };
@@ -73,9 +73,11 @@ export default {
       api.problemFactory
         .getAnswerableProblem(this.page, this.itemsPerPage, searchText)
         .then((response) => {
+          console.log(response)
           this.tableData = response.content.list;
           this.totalPage = response.content.totalPage;
           this.totalAmont = response.content.totalAmont;
+          console.log(response)
           this.loading = false;
         });
     },
