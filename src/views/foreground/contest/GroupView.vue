@@ -15,37 +15,18 @@
           <div
             v-for="group in groups"
             :key="group.groupId"
+            :title="group.groupName"
             class="
               tw-rounded-md tw-border tw-border-solid tw-border-gray-200 tw-p-4
               hover:tw-bg-gray-100
               tw-transition-colors
+              tw-cursor-pointer
             "
+            @click="$router.push('contest/' + group.groupId)"
           >
-            <v-row>
-              <v-col>
-                <p class="tw-text-3xl tw-font-bold">
-                  {{ group.groupName }}
-                </p>
-              </v-col>
-              <v-spacer></v-spacer>
-              <v-col>
-                <v-btn
-                  outlined
-                  rounded
-                  text
-                  color="primary"
-                  :to="{
-                    name: 'contestInGroup',
-                    params: {
-                      groupId: group.groupId,
-                    },
-                  }"
-                >
-                  进入
-                </v-btn>
-              </v-col>
-            </v-row>
-
+            <p class="tw-text-3xl tw-font-bold tw-truncate">
+              {{ group.groupName }}
+            </p>
             <p class="mt-12 tw-text-sm">我的角色：{{ group.role }}</p>
           </div>
         </div>
