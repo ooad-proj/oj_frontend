@@ -4,7 +4,7 @@
     <v-divider vertical class=" mx-4 grey darken-2"></v-divider>
 
     <div class=" tw-flex-row tw-space-x-2">
-      <v-btn depressed class=" darken-3 grey white--text " href="/#/">
+      <v-btn depressed class=" darken-3 grey white--text " href="/#/home">
         <v-icon>mdi-home</v-icon>首页
       </v-btn>
       <v-btn depressed class=" darken-3 grey white--text " href="/#/problemSet">

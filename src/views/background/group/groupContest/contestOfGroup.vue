@@ -16,7 +16,7 @@
             <v-text-field
               v-model="search"
               append-icon="mdi-magnify"
-              label="竞赛id"
+              label="竞赛标题"
               single-line
               hide-details
               @click:append="searchId"
