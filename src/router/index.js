@@ -57,7 +57,12 @@ const routes = [
         path: 'contest/:groupId/:contestId',
         name:'problemIncontest',
         component: () => import('../views/foreground/contest/group/problem/problemInContest.vue'),
-      }
+      },
+      {
+        path: 'home',
+        name:'homePage',
+        component: () => import('../views/foreground/home/homePage.vue'),
+      },
     ]
   },
   {

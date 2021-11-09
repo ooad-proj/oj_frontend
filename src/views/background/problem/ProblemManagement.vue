@@ -20,7 +20,7 @@
                   <v-text-field
                     v-model="search"
                     append-icon="mdi-magnify"
-                    label="问题id"
+                    label="问题标题"
                     single-line
                     hide-details
                     @click:append="searchId"
