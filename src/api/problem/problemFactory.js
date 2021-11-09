@@ -26,19 +26,24 @@ export default {
         })
     },
     addProblem(contestId, shownId, title, description, inputFormat, outputFormat, samples, tips, timeLimit, spaceLimit, allowedLanguage, testCaseId, submitTemplate, scoreRule) {
-        let problem={shownId: shownId,
-                title: title,
-                description: description,
-                inputFormat: inputFormat,
-                outputFormat: outputFormat,
-                samples: samples,
-                tips: tips,
-                timeLimit: timeLimit,
-                spaceLimit: spaceLimit,
-                allowedLanguage: allowedLanguage,
-                testCaseId: testCaseId,
-                submitTemplate: submitTemplate,
-                scoreRule: scoreRule}
+        let problem = {
+            shownId: shownId,
+            title: title,
+            description: description,
+            inputFormat: inputFormat,
+            outputFormat: outputFormat,
+            samples: samples,
+            tips: tips,
+            timeLimit: timeLimit,
+            spaceLimit: spaceLimit,
+            allowedLanguage: allowedLanguage,
+            testCaseId: testCaseId,
+            submitTemplate: submitTemplate,
+            // scoreRule: scoreRule
+            totalScore: scoreRule.totalScore,
+            punishRule: scoreRule.punishRule,
+            allowPartial: scoreRule.allowPartial
+        }
         let url = '/api/problem/contest/' + contestId
         // let header = { "Content-Type": "application/json;" };
         return new Promise((resolve, reject) => {
@@ -64,11 +69,12 @@ export default {
         //     scoreRule: scoreRule}
         // })
     },
-    getProblemInfo(problemId){
-        return http.get('/api/problem/answering/'+problemId, {})
+    getProblemInfo(problemId) {
+        return http.get('/api/problem/answering/' + problemId, {})
     },
-    editProblemInfo(problemId, shownId, title, description, inputFormat, outputFormat, samples, tips, timeLimit, spaceLimit, allowedLanguage, testCaseId, submitTemplate, scoreRule){
-        let problem={shownId: shownId,
+    editProblemInfo(problemId, shownId, title, description, inputFormat, outputFormat, samples, tips, timeLimit, spaceLimit, allowedLanguage, testCaseId, submitTemplate, scoreRule) {
+        let problem = {
+            shownId: shownId,
             title: title,
             description: description,
             inputFormat: inputFormat,
@@ -80,16 +86,20 @@ export default {
             allowedLanguage: allowedLanguage,
             testCaseId: testCaseId,
             submitTemplate: submitTemplate,
-            scoreRule: scoreRule}
-    let url = '/api/problem/'+problemId
-    // let header = { "Content-Type": "application/json;" };
-    return new Promise((resolve, reject) => {
-        http.instance.put(url, problem).then(res => {
-            resolve(res.data);
-        }).catch(err => {
-            reject(err.data)
+            // scoreRule: scoreRule
+            totalScore: scoreRule.totalScore,
+            punishRule: scoreRule.punishRule,
+            allowPartial: scoreRule.allowPartial
+        }
+        let url = '/api/problem/' + problemId
+        // let header = { "Content-Type": "application/json;" };
+        return new Promise((resolve, reject) => {
+            http.instance.put(url, problem).then(res => {
+                resolve(res.data);
+            }).catch(err => {
+                reject(err.data)
+            })
         })
-    })
         // return http.put('/api/problem/'+problemId, {
         //     shownId: shownId,
         //     title: title,
@@ -106,11 +116,11 @@ export default {
         //     scoreRule: scoreRule
         // })
     },
-    getAnswerableProblem(page,itemsPerPage,search){
-        return http.get('/api/problem/answering',{
-            search:search,
-            page:page,
-            itemsPerPage:itemsPerPage
+    getAnswerableProblem(page, itemsPerPage, search) {
+        return http.get('/api/problem/answering', {
+            search: search,
+            page: page,
+            itemsPerPage: itemsPerPage
         })
     }
 }

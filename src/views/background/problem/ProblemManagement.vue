@@ -110,7 +110,7 @@ export default {
         .then((response) => {
           console.log(response)
           this.tableData = response.content.list;
-          this.totalProblem = response.totalAmount;
+          this.totalProblem = response.content.totalAmount;
           this.loading = false;
         });
     },
