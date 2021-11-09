@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-card class="pa-5">
-      <p class="tw-text-3xl tw-font-bold">1001 A+B</p>
+      <p class="tw-text-3xl tw-font-bold">{{this.data.shownId}} {{data.title}}</p>
       <v-divider class="tw-my-4"></v-divider>
       <p class="tw-font-bold tw-text-lg tw-mt-4">问题描述</p>
       <md-viewer :value="data.description"/>

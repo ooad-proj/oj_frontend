@@ -33,7 +33,9 @@ export default {
           totalScore: null,
           punishRule:[],
         },
-        groupName:null
+        groupName:null,
+        shownId:null,
+        title:null
       },
       problemId:null,
       descriptionData:{
@@ -41,6 +43,8 @@ export default {
         inputFormat:null,
         outputFormat:null,
         samples:[],
+        shownId:null,
+        title:null
       }
     }
   },
@@ -79,15 +83,20 @@ export default {
         this.sidebarData.spaceLimit = response.content.spaceLimit
         this.sidebarData.scoreRule = response.content.scoreRule
         this.sidebarData.groupName = response.content.groupName
+        this.sidebarData.shownId = response.content.shownId
+        this.sidebarData.title = response.content.title
         this.sidebarData.scoreRule.allowPartial = this.partial()
         this.sidebarData.scoreRule.punishRule= this.changeArrayPunishRule()
+        console.log(this.sidebarData)
 
         this.descriptionData.description = response.content.description
         this.descriptionData.inputFormat = response.content.inputFormat
         this.descriptionData.outputFormat = response.content.outputFormat
         this.descriptionData.samples = response.content.samples
+         this.descriptionData.shownId = response.content.shownId
+        this.descriptionData.title = response.content.title
 
-        console.log(response)
+
 
       })
     }
