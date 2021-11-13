@@ -12,7 +12,8 @@
       <p class="tw-font-bold tw-text-lg tw-mt-4">输出格式</p>
       <md-viewer :value="data.outputFormat"/>
 
-      <p class="tw-font-bold tw-text-lg tw-mt-4">样例</p>
+      <p class="tw-font-bold tw-text-lg tw-mt-4">样
+        例</p>
       <div>
         <v-container
           ><v-row v-for="(item,index) in data.samples" :key="index">
