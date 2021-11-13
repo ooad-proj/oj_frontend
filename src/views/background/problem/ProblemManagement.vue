@@ -42,12 +42,19 @@
               <template v-slot:[`item.delete`]="{ item }">
                 <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
               </template>
-
+        
               <template v-slot:[`item.revise`]="{ item }">
                 <v-icon small class="mr-2" @click="editItem(item)">
                   mdi-pencil
                 </v-icon>
               </template>
+
+              <template v-slot:[`item.answer`]="{ item }">
+                <v-icon small class="mr-2" @click="editAnswer(item)">
+                  mdi-file-edit-outline
+                </v-icon>
+              </template>
+
             </v-data-table>
           </v-card>
         </v-col>
@@ -96,6 +103,7 @@ export default {
         { text: "来源", value: "groupName", sortable: false },
         { text: "比赛来源", value: "contestTitle", sortable: false },
         { text: "修改", value: "revise", sortable: false },
+        { text: "答案", value: "answer", sortable: false },
         { text: "删除", value: "delete", sortable: false },
       ],
       myrole: null,
@@ -137,7 +145,6 @@ export default {
       this.deleteProblemId = null;
     },
     editItem(item){
-      console.log(item)
       this.$router.push({
         name: "createProblem",
         params: {
@@ -145,6 +152,14 @@ export default {
         },
         query: {
           ifEdit: true,
+          problemId: item.problemId,
+        },
+      });
+    },
+    editAnswer(item){
+      this.$router.push({
+        name: "answerOfProblem",
+        params: {
           problemId: item.problemId,
         },
       });
