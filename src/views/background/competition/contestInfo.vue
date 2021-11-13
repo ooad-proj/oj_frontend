@@ -1,37 +1,35 @@
 <template>
-  <v-container grid-list-xs>
-    <div>
-      <SnackBar ref="sb"></SnackBar>
-      <div class="tw-bg-white tw-shadow-md">
-        <v-breadcrumbs :items="items"></v-breadcrumbs>
-      </div>
-
-      <v-container grid-list-xs fluid>
-        <v-row>
-          <v-col>
-            <contestConfig
-              :contestId="this.$route.params.contestId"
-              :title="this.title"
-              :description="this.description"
-              :startTime="this.startTime"
-              :endTime="this.endTime"
-              :creatorName="this.creatorName"
-              :creatorId="this.creatorId"
-            ></contestConfig>
-          </v-col>
-        </v-row>
-
-        <v-row>
-          <v-col>
-            <contestProblems
-              :contestId="this.$route.params.contestId"
-              @showMsg="showMsg"
-            ></contestProblems>
-          </v-col>
-        </v-row>
-      </v-container>
+  <div>
+    <SnackBar ref="sb"></SnackBar>
+    <div class="tw-bg-white tw-shadow-md">
+      <v-breadcrumbs :items="items"></v-breadcrumbs>
     </div>
-  </v-container>
+
+    <v-container grid-list-xs fluid>
+      <v-row>
+        <v-col>
+          <contestConfig
+            :contestId="this.$route.params.contestId"
+            :title="this.title"
+            :description="this.description"
+            :startTime="this.startTime"
+            :endTime="this.endTime"
+            :creatorName="this.creatorName"
+            :creatorId="this.creatorId"
+          ></contestConfig>
+        </v-col>
+      </v-row>
+
+      <v-row>
+        <v-col>
+          <contestProblems
+            :contestId="this.$route.params.contestId"
+            @showMsg="showMsg"
+          ></contestProblems>
+        </v-col>
+      </v-row>
+    </v-container>
+  </div>
 </template>
 
 <script>
@@ -95,14 +93,15 @@ export default {
       this.$refs.sb.warn(msg);
     },
     getDataFromApi() {
-
       api.contestFactory.getContestInfo(this.contestId).then((response) => {
         this.title = response.content.contest.title;
         this.description = response.content.contest.description;
         this.creatorName = response.content.contest.creatorName;
         this.creatorId = response.content.contest.creatorId;
         let that = this;
-        let tempStart = that.timestampToTime(response.content.contest.startTime);
+        let tempStart = that.timestampToTime(
+          response.content.contest.startTime
+        );
         let tempEnd = that.timestampToTime(response.content.contest.endTime);
 
         that.startTime = tempStart[0] + tempStart[1];

@@ -45,6 +45,11 @@ const routes = [
         component: () => import('../views/foreground/problem/ProblemView.vue'),
       },
       {
+        path: 'problem/:problemId/judge',
+        name: 'judgePage',
+        component: () => import('../views/foreground/problem/judge/judgeView.vue'),
+      },
+      {
         path: 'contest',
         component: () => import('../views/foreground/contest/GroupView.vue'),
       },
@@ -89,6 +94,11 @@ const routes = [
         path:'problem',
         name: 'ProblemManagement',
         component: () => import('../views/background/problem/ProblemManagement.vue'),
+      },
+      {
+        path:'problem/answer/:problemId',
+        name: 'answerOfProblem',
+        component: () => import('../views/background/problem/answer/answerOfProblemView.vue'),
       },
       {
         path: 'problem/createProblem/:contestId',

@@ -3,8 +3,8 @@ import qs from 'qs'
 import router from '../router/index'
 
 let instance = axios.create({
-  // baseURL:"http://mockjs.docway.net/mock/1itkXEuHAcj"
-  baseURL:"http://localhost:8082/"
+  baseURL:"http://mockjs.docway.net/mock/1itkXEuHAcj"
+  // baseURL:"http://localhost:8082/"
 })
 
 // instance.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
