@@ -122,5 +122,15 @@ export default {
             page: page,
             itemsPerPage: itemsPerPage
         })
-    }
+    },
+    getAnswerOfProblem(problemId){
+        return http.get('/api/problem/standardAnswer/'+problemId,{
+
+        })
+    },
+    editAnswerOfProblem(problemId,answer){
+        return http.put('/api/problem/standardAnswer/'+problemId,{
+            answer:answer
+        })
+    },
 }
