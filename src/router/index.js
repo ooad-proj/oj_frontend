@@ -20,6 +20,7 @@ const routes = [
   },
   {
     path: '/',
+    redirect: '/home',
     name: 'home',
     component: () => import('../views/foreground/Foreground.vue'),
     children: [
@@ -61,7 +62,7 @@ const routes = [
       {
         path: 'home',
         name:'homePage',
-        component: () => import('../views/foreground/home/HomePage.vue'),
+        component: () => import('../views/foreground/home/homePage.vue'),
       },
     ]
   },

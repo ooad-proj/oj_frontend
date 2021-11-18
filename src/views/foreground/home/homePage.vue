@@ -81,7 +81,7 @@ export default {
     handleScroll () {
       let height = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
       if (height < 400) {
-        this.filter = height / 40
+        this.filter =  Math.ceil(height / 40)
       } else {
         this.filter = 10
       }
