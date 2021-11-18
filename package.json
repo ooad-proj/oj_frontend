@@ -17,6 +17,7 @@
     "qs": "^6.10.1",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.0.2",
     "vue": "^2.6.11",
+    "vue-codeditor": "^1.0.5",
     "vue-i18n": "^8.26.5",
     "vue-router": "^3.2.0",
     "vuetify": "^2.4.0",

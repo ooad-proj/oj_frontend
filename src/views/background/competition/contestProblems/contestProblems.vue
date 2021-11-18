@@ -34,6 +34,12 @@
             mdi-pencil
           </v-icon>
         </template>
+
+        <template v-slot:[`item.answer`]="{ item }">
+          <v-icon small class="mr-2" @click="editAnswer(item)">
+            mdi-file-edit-outline
+          </v-icon>
+        </template>
       </v-data-table>
     </v-card>
   </div>
@@ -76,6 +82,7 @@ export default {
         },
         { text: "标题", value: "title", sortable: false },
         { text: "修改/查看", value: "revise", sortable: false },
+        { text: "答案", value: "answer", sortable: false },
         { text: "删除", value: "delete", sortable: false },
       ],
     };
@@ -123,6 +130,14 @@ export default {
         },
         query: {
           ifEdit: true,
+          problemId: item.problemId,
+        },
+      });
+    },
+    editAnswer(item) {
+      this.$router.push({
+        name: "answerOfProblem",
+        params: {
           problemId: item.problemId,
         },
       });

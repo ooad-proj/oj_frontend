@@ -1,0 +1,370 @@
+<template>
+  <v-container grid-list-xs>
+    <SnackBar ref="sb"></SnackBar>
+    <v-card class="pa-5">
+      <v-container grid-list-xs>
+        <v-row>
+          <v-col cols="6" class="">
+            <div
+              class="tw-font-bold tw-text-2xl tw-items-center tw-flex tw-h-full"
+            >
+              <div>代码提交</div>
+            </div>
+          </v-col>
+
+          <v-col cols="6" class="">
+            <v-tabs v-model="tab" show-arrows>
+              <v-tab v-for="(item, index) in title" :key="index">
+                {{ item }}
+              </v-tab>
+            </v-tabs>
+          </v-col>
+        </v-row>
+
+        <v-row>
+          <v-col cols="6">
+            <div style="height: 600px" class="tw-overflow-y-auto">
+              <vue-codeditor
+                class="scro"
+                style="font-size: 16px; min-height: 600px"
+                theme="katzenmilch"
+                v-model="code"
+              />
+            </div>
+          </v-col>
+
+          <v-col cols="6">
+            <div class="tw-p-2">选择语言</div>
+            <div class="tw-mt-2">
+              <v-select
+                :items="selections"
+                solo
+                flat
+                background-color="grey lighten-3"
+                v-model="select"
+              ></v-select>
+            </div>
+            <v-tabs-items v-model="tab">
+              <v-tab-item>
+                <div class="tw-flex tw-justify-between tw-items-center tw-p-2">
+                  <div class="">样例测试</div>
+                  <div>
+                    <v-btn
+                      color="primary"
+                      @click="testAnswer"
+                      :disabled="testLoader"
+                      :loading="testLoader"
+                      >提交测试</v-btn
+                    >
+                  </div>
+                </div>
+
+                <textarea
+                  class="
+                    tw-bg-gray-100
+                    tw-p-2
+                    tw-h-36
+                    tw-w-full
+                    tw-overflow-auto
+                    tw-rounded-md
+                  "
+                  v-model="testCase"
+                >
+                </textarea>
+
+                <v-row>
+                  <v-col md="6">
+                    <div class="tw-p-2">执行结果</div>
+                    <div
+                      class="
+                        tw-bg-gray-100
+                        tw-p-2
+                        tw-h-48
+                        tw-overflow-auto
+                        tw-rounded-md
+                      "
+                    >
+                      <div
+                        class="
+                          tw-px-2 tw-py-1 tw-text-white tw-rounded-md tw-w-min
+                        "
+                        :class="
+                          (isReturn ? 'tw-visible' : 'tw-invisible') +
+                          ' ' +
+                          colorMap[this.userResult.color]
+                        "
+                      >
+                        {{ userResult.code }}
+                      </div>
+                      <div>{{ userResult.timeCost }}</div>
+                      <div>{{ userResult.memoryCost }}</div>
+                      <pre class="tw-font-mono">{{ userResult.message }}</pre>
+                    </div>
+                  </v-col>
+                  <v-col md="6">
+                    <div class="tw-p-2">标准结果</div>
+                    <div
+                      class="
+                        tw-bg-gray-100
+                        tw-p-2
+                        tw-h-48
+                        tw-overflow-auto
+                        tw-rounded-md
+                      "
+                    >
+                      <div
+                        class="
+                          tw-px-2 tw-py-1 tw-text-white tw-rounded-md tw-w-min
+                        "
+                        :class="
+                          (isReturn ? 'tw-visible' : 'tw-invisible') +
+                          ' ' +
+                          colorMap[this.standardResult.color]
+                        "
+                      >
+                        {{ standardResult.code }}
+                      </div>
+                      <div>{{ standardResult.timeCost }}</div>
+                      <div>{{ standardResult.memoryCost }}</div>
+                      <pre class="tw-font-mono">{{
+                        standardResult.message
+                      }}</pre>
+                    </div>
+                  </v-col>
+                </v-row>
+              </v-tab-item>
+
+              <v-tab-item>
+                <div class="tw-flex tw-justify-between tw-items-center tw-p-2">
+                  <div class="">提交</div>
+                  <div>
+                    <v-btn
+                      color="primary"
+                      @click="submitAnswer"
+                      :disabled="submitLoader"
+                      :loading="submitLoader"
+                      >提交代码</v-btn
+                    >
+                  </div>
+                </div>
+
+                <div class="tw-p-2">
+                  <v-row>
+                    <v-col md="4">
+                      <div>结果:{{ this.finalResult }}</div>
+                    </v-col>
+
+                    <v-col md="4">
+                      <div>通过数目:{{ this.correctNum }}</div>
+                    </v-col>
+
+                    <v-col md="4">
+                      <div>全部数目:{{ this.totalNum }}</div>
+                    </v-col>
+                  </v-row>
+                </div>
+
+                <div class="tw-overflow-y-scroll" style="height: 400px">
+                  <v-expansion-panels flat>
+                    <v-expansion-panel
+                      v-for="(item, i) in results"
+                      :key="i"
+                      class="grey lighten-4"
+                    >
+                      <v-expansion-panel-header>
+                        <div class="tw-flex tw-justify-around">
+                          <div>{{ item.id }}</div>
+                          <div>{{ item.timeCost }}</div>
+                          <div>{{ item.memoryCost }}</div>
+                          <div
+                            class="
+                              tw-px-2
+                              tw-py-1
+                              tw-text-white
+                              tw-rounded-md
+                              tw-w-min
+                            "
+                            :class="colorMap[item.color]"
+                          >
+                            {{ item.code }}
+                          </div>
+                        </div>
+                      </v-expansion-panel-header>
+                      <v-expansion-panel-content>
+                        <div class="tw-bg-gray-200 tw-rounded-md tw-p-2">
+                          {{ item.message }}
+                        </div>
+                      </v-expansion-panel-content>
+                    </v-expansion-panel>
+                  </v-expansion-panels>
+                </div>
+              </v-tab-item>
+            </v-tabs-items>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-card>
+  </v-container>
+</template>
+
+<script>
+import SnackBar from "@/components/SnackBar.vue";
+import api from "@/api/api";
+export default {
+  components: {
+    SnackBar,
+  },
+  computed: {
+    answerClass: function () {
+      return "tw-bg-red-100 tw-p-2 tw-h-48 tw-overflow-auto tw-rounded-md";
+    },
+  },
+  data() {
+    return {
+      testLoader: false,
+      submitLoader: false,
+      resultMap: {},
+      finalResult: 0,
+      correctNum: 0,
+      totalNum: 0,
+      results: [
+        {
+          id: "",
+          total: "",
+          isCorrect: "",
+          timeCost: "",
+          memoryCost: "",
+          code: "",
+          name: "",
+          message: "",
+          color: "",
+        },
+      ],
+      result: null,
+      language: null,
+      testCase: "",
+      isReturn: false,
+      colorMap: {
+        RED: "tw-bg-red-600",
+        ORANGE: "tw-bg-yellow-600",
+        YELLOW: "tw-bg-yellow-400",
+        GREEN: "tw-bg-green-600",
+        BLUE: "tw-bg-blue-600",
+        PURPLE: "tw-bg-purple-600",
+        GRAY: "tw-bg-gray-600",
+        PINK: "tw-bg-pink-600",
+      },
+      code: "",
+      select: "Java",
+      tab: null,
+      title: ["测试", "提交"],
+      selections: ["Java", "C++", "Python", "JavaScript"],
+      standardResult: {
+        isCorrect: "",
+        timeCost: "",
+        memoryCost: "",
+        code: "",
+        name: "",
+        message: "",
+        color: "GRAY",
+      },
+      userResult: {
+        isCorrect: "",
+        timeCost: "",
+        memoryCost: "",
+        code: "",
+        name: "",
+        message: "",
+        color: "",
+      },
+      res_code_map_one: {
+        0: "成功",
+        1: "停止访问",
+        "-1": "问题不存在",
+        "-2": "没有标答",
+        "-3": "测试机错误",
+      },
+      submitId: null,
+    };
+  },
+  methods: {
+    testAnswer() {
+      this.testLoader = true;
+      api.submitFactory
+        .testAnswer(
+          this.$route.params.problemId,
+          this.code,
+          this.testCase,
+          this.select
+        )
+        .then((response) => {
+          if (response.code == 0) {
+            this.standardResult = response.content.standardResult;
+            this.userResult = response.content.userResult;
+            this.$refs.sb.warn(this.res_code_map_one[response.code]);
+            this.isReturn = true;
+          } else {
+            console.log(response);
+          }
+          this.$refs.sb.warn(this.res_code_map_one[response.code]);
+          this.testLoader = false;
+        });
+    },
+    submitAnswer() {
+      let map = {
+        0: "上传成功,开始测试",
+        "-1": "问题不存在",
+        "-2": "没有权限回答",
+        "-3": "管理员不允许参加竞赛",
+      };
+      this.submitLoader = true;
+      api.submitFactory
+        .submitAnswer(this.$route.params.problemId, this.select, this.code)
+        .then((response) => {
+          console.log(response);
+          if (response.code == 0) {
+            this.submitId = response.content.submitId;
+            this.getAnswer();
+            this.$refs.sb.warn(map[response.code]);
+            // let timer = setInterval(() => {
+            //   this.getAnswer();
+            // console.log(new Date().getTime())
+            //   api.submitFactory.getsubmitAnswer(this.submitId).then(resp => {
+            //     console.log(resp);
+            //     if (resp.code == 1) {
+            //       clearInterval(timer)
+            //     }
+            //   })
+            // }, 1000);
+          }
+        });
+    },
+    async getAnswer() {
+      while (1 + 2 == Number(3)) {
+        this.result = await api.submitFactory.getsubmitAnswer(this.submitId);
+        this.results = this.result.content.results;
+        this.finalResult = this.result.content.finalResult;
+        this.correctNum = this.result.content.correctNum;
+        this.totalNum = this.result.content.totalNum;
+        console.log(this.results);
+
+        if (this.result.code == 1) {
+          this.submitLoader = false;
+          this.$refs.sb.warn("测试完成");
+          
+          break;
+        } else {
+          await this.sleep(1000);
+        }
+      }
+    },
+    async test() {
+      await this.sleep(1000);
+    },
+
+    sleep(ms) {
+      return new Promise((resolve) => setTimeout(resolve, ms));
+    },
+  },
+};
+</script>
