@@ -60,7 +60,7 @@
 
       <v-row>
         <v-col>
-          <v-card>
+          <v-card class="pa-5">
             <div class="tw-flex tw-justify-between tw-items-center pa-5">
               <div class="tw-font-bold tw-text-xl">
                 编辑问题 {{ problemId }} 的答案
@@ -73,7 +73,7 @@
               </div>
             </div>
 
-            <div class="tw-px-12">
+            <div>
               <v-tabs v-model="tab" show-arrows>
                 <v-tab v-for="(n, index) in items" :key="index">
                   {{ n.language }}
@@ -89,11 +89,13 @@
                         <div>语言：</div>
 
                         <div>
+
                           <v-select
                             :items="selections"
                             v-model="item.language"
-                            dense
-                            outlined
+                            solo
+                            flat
+                            background-color="grey lighten-3"
                             class="pt-5"
                           ></v-select>
                         </div>
@@ -102,10 +104,11 @@
                         <v-btn
                           color="error"
                           @click="deleteItem(item)"
-                          class="px-5"
+                          class="mx-5"
                         >
                           删除该答案
                         </v-btn>
+                        
                         <v-btn
                           color="primary"
                           @click="setAnswer(item)"
@@ -115,21 +118,21 @@
                       </div>
                     </div>
 
-                    <v-divider class="py-2"></v-divider>
+                 
 
                     <div style="height: 600px" class="tw-overflow-y-auto">
                       <vue-codeditor
                         style="font-size: 16px; min-height: 600px"
                         v-model="item.code"
                         :mode="languagemode(item.language)"
-                        theme="chrome"
+                        theme="katzenmilch"
                       />
                     </div>
                   </v-tab-item>
                 </v-tabs-items>
               </v-card-text>
 
-              <v-divider></v-divider>
+
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn color="primary" text @click="cancel">取消</v-btn>

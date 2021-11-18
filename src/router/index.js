@@ -66,7 +66,7 @@ const routes = [
       {
         path: 'home',
         name:'homePage',
-        component: () => import('../views/foreground/home/HomePage.vue'),
+        component: () => import('../views/foreground/home/homePage.vue'),
       },
     ]
   },
