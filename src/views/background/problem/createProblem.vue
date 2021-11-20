@@ -592,23 +592,14 @@ export default {
       totalScore: null,
       punishRule: null,
       //////////////////////////选择///////////////////
-      languages: ["C++", "Python", "Java", "Rust", "JavaScript"],
-      select: ["C++"],
+      languages: ["python", "java"],
+      select: ["java"],
 
-      // content: [
-      //   {"C++": "int main(){}"},
-      //   {Python: "asddsa"},
-      //   {Java: ""},
-      //   {Rust: ""},
-      //   {JavaScript: ""},
-      // ],
+
 
       content: {
-        "C++": "int main(){}",
-        Python: "asddsa",
-        Java: "",
-        Rust: "",
-        JavaScript: "",
+        python: "asddsa",
+        java: "",
       },
       ////////////////////////样例文件//////////////////////
       testCaseAmount: null,
@@ -707,11 +698,8 @@ export default {
       this.select = ["C++"];
       this.testCaseId = "";
       this.content = {
-        "C++": "int main(){}",
-        Python: "asddsa",
-        Java: "",
-        Rust: "",
-        JavaScript: "",
+        python: "asddsa",
+        java: "",
       };
       this.totalScore = "";
       this.punishRule = "";
