@@ -305,8 +305,10 @@ export default {
         .then((response) => {
           if (response.code == 0) {
             this.ifHaveAnswer = response.content.haveAnswer;
+             this.$refs.sb.warn("存在答案,可以答题");
+          } else {
+            this.$refs.sb.warn(map[response.code]);
           }
-          this.$refs.sb.warn(map[response.code]);
         });
     },
     testAnswer() {
