@@ -129,8 +129,20 @@ export default {
         })
     },
     editAnswerOfProblem(problemId,answer){
-        return http.put('/api/problem/standardAnswer/'+problemId,{
+        let data ={
             answer:answer
+        } 
+        let url = '/api/problem/standardAnswer/' + problemId
+        // let header = { "Content-Type": "application/json;" };
+        return new Promise((resolve, reject) => {
+            http.instance.put(url, data).then(res => {
+                resolve(res.data);
+            }).catch(err => {
+                reject(err.data)
+            })
         })
+        // return http.put('/api/problem/standardAnswer/'+problemId,{
+        //     answer:answer
+        // })
     },
 }

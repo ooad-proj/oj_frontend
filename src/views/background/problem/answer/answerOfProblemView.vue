@@ -209,6 +209,7 @@ export default {
           val.isStandard = false;
         }
       });
+      console.log(this.items)
     },
     getDataFromApi() {
       api.problemFactory.getAnswerOfProblem(this.problemId).then((response) => {
@@ -234,8 +235,9 @@ export default {
       this.$router.go(-1);
     },
     confirm() {
+      console.log(this.items)
       api.problemFactory
-        .editAnswerOfProblem(this.problemId, this.item)
+        .editAnswerOfProblem(this.problemId, this.items)
         .then((response) => {
           if (response.code == 0) {
             this.$refs.sb.warn("保存成功");
