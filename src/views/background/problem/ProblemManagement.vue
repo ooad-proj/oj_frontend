@@ -27,7 +27,7 @@
                   >
                   </v-text-field>
                 </div>
-                <v-btn color="primary mx-1" @click="addPublicProblem">添加问题</v-btn>
+                <v-btn color="primary mx-1" @click="addPublicProblem" v-if="myrole=='teacher'">添加问题</v-btn>
               </div>
             </div>
 
@@ -76,6 +76,7 @@ export default {
     DeleteDialog,
   },
   mounted() {
+    this.getMyRole();
     this.getDataFromApi("");
   },
   watch: {
@@ -88,6 +89,7 @@ export default {
   },
   data() {
     return {
+      myrole: null,
       dialogDelete: false,
       deleteProblemId: null,
       options: {},
@@ -109,10 +111,14 @@ export default {
         { text: "答案", value: "answer", sortable: false },
         { text: "删除", value: "delete", sortable: false },
       ],
-      myrole: null,
     };
   },
   methods: {
+    getMyRole() {
+      api.authFactory.getRole().then((response) => {
+        this.myrole = response.content;
+      });
+    },
     getDataFromApi(searchText) {
       const { page, itemsPerPage } = this.options;
       this.loading = true;

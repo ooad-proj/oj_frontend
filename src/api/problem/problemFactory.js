@@ -25,7 +25,7 @@ export default {
             })
         })
     },
-    addProblem(contestId, shownId, title, description, inputFormat, outputFormat, samples, tips, timeLimit, spaceLimit, allowedLanguage, testCaseId, submitTemplate, scoreRule) {
+    addProblem(contestId, shownId, title, description, inputFormat, outputFormat, samples, tips, timeLimit, spaceLimit, allowedLanguage, testCaseId, submitTemplate, scoreRule,allowDetailedResult) {
         let problem = {
             shownId: shownId,
             title: title,
@@ -38,6 +38,7 @@ export default {
             spaceLimit: spaceLimit,
             allowedLanguage: allowedLanguage,
             testCaseId: testCaseId,
+            allowDetailedResult:allowDetailedResult,
             submitTemplate: submitTemplate,
             // scoreRule: scoreRule
             totalScore: scoreRule.totalScore,
@@ -72,7 +73,7 @@ export default {
     getProblemInfo(problemId) {
         return http.get('/api/problem/answering/' + problemId, {})
     },
-    editProblemInfo(problemId, shownId, title, description, inputFormat, outputFormat, samples, tips, timeLimit, spaceLimit, allowedLanguage, testCaseId, submitTemplate, scoreRule) {
+    editProblemInfo(problemId, shownId, title, description, inputFormat, outputFormat, samples, tips, timeLimit, spaceLimit, allowedLanguage, testCaseId, submitTemplate, scoreRule,allowDetailedResult) {
         let problem = {
             shownId: shownId,
             title: title,
@@ -85,6 +86,7 @@ export default {
             spaceLimit: spaceLimit,
             allowedLanguage: allowedLanguage,
             testCaseId: testCaseId,
+            allowDetailedResult:allowDetailedResult,
             submitTemplate: submitTemplate,
             // scoreRule: scoreRule
             totalScore: scoreRule.totalScore,
@@ -128,9 +130,10 @@ export default {
 
         })
     },
-    editAnswerOfProblem(problemId,answer){
+    editAnswerOfProblem(problemId,answer,isPublish){
         let data ={
-            answer:answer
+            answer:answer,
+            isPublish:isPublish
         } 
         let url = '/api/problem/standardAnswer/' + problemId
         // let header = { "Content-Type": "application/json;" };

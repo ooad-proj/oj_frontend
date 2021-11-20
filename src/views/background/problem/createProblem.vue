@@ -326,9 +326,13 @@
 
             <v-row>
               <v-col cols="2">
-                <div class="tw-bg-red-500">是否需要模板</div>
+                <v-checkbox
+                  v-model="isTemplate"
+                  label="是否需要模板"
+                  class=""
+                ></v-checkbox>
               </v-col>
-              <v-col>
+              <v-col v-if="isTemplate">
                 <v-combobox
                   v-model="select"
                   :items="languages"
@@ -340,7 +344,7 @@
               </v-col>
             </v-row>
 
-            <v-row>
+            <v-row v-if="isTemplate">
               <v-col>
                 <div v-for="(language, index) in select" :key="index">
                   <v-textarea
@@ -498,6 +502,32 @@
                 </v-text-field> -->
               </v-col>
             </v-row>
+
+            <v-row>
+              <v-col>
+                <div
+                  class="
+                    tw-font-bold
+                    tw-bg-gray-50
+                    tw-py-2
+                    tw-px-4
+                    tw-rounded-md
+                    tw-my-4
+                  "
+                >
+                  额外信息
+                </div>
+              </v-col>
+            </v-row>
+
+            <v-row>
+              <v-col md="2">
+                <v-checkbox
+                  v-model="allowDetailedResult"
+                  label="允许学生查看详细结果"
+                ></v-checkbox>
+              </v-col>
+            </v-row>
           </v-container>
 
           <div class="tw-p-10"></div>
@@ -511,7 +541,7 @@
               @click="confirm"
               :disabled="loader"
               :loading="loader"
-              >添加</v-btn
+              >{{ button_two }}</v-btn
             >
             <v-spacer></v-spacer>
           </v-card-actions>
@@ -531,6 +561,9 @@ export default {
     HeadLine() {
       return this.$route.query.ifEdit ? "修改问题" : "添加问题";
     },
+    button_two() {
+      return this.$route.query.ifEdit ? "修改" : "添加";
+    },
   },
   components: {
     SnackBar,
@@ -548,6 +581,8 @@ export default {
   },
   data() {
     return {
+      allowDetailedResult:false,
+      isTemplate: false,
       prevRoute: null,
       test: false,
       //////////////////////////////////////////////
@@ -715,7 +750,8 @@ export default {
             this.select,
             this.testCaseId,
             submitTemplate,
-            scoreRule
+            scoreRule,
+            this.allowDetailedResult
           )
           .then((response) => {
             if (response.code == [0]) {
@@ -743,7 +779,9 @@ export default {
         this.select,
         this.content
       );
-      console.log(submitTemplate);
+      if (!this.isTemplate) {
+        submitTemplate = [];
+      }
       // console.log()
       if (this.$refs.Form.validate()) {
         api.problemFactory
@@ -761,7 +799,8 @@ export default {
             this.select,
             this.testCaseId,
             submitTemplate,
-            scoreRule
+            scoreRule,
+            this.allowDetailedResult
           )
           .then((response) => {
             console.log(response);
@@ -785,6 +824,7 @@ export default {
         .then((response) => {
           console.log(response);
           if (response.code == 0) {
+            this.allowDetailedResult = response.content.allowDetailedResult;
             this.shownId = response.content.shownId;
             this.title = response.content.title;
             this.description = response.content.description;
@@ -802,6 +842,9 @@ export default {
             this.totalScore = response.content.scoreRule.totalScore;
             this.punishRule = response.content.scoreRule.punishRule;
             this.allowPartial = response.content.scoreRule.allowPartial;
+            if(response.content.submitTemplate.length>0){
+              this.isTemplate = true
+            }
           } else {
             //TODO error Page
             let a = 1;
