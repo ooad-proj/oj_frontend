@@ -3,7 +3,7 @@ import http from '../http'
 
 export default {
     testAnswer(problemId,code,testCase,language) {
-        return http.get('/api/submit/standard/'+problemId,{
+        return http.post('/api/submit/standard/'+problemId,{
             code:code,
             testCase:testCase,
             language:language
