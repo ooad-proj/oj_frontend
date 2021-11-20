@@ -20,6 +20,7 @@ const routes = [
   },
   {
     path: '/',
+    redirect: '/home',
     name: 'home',
     component: () => import('../views/foreground/Foreground.vue'),
     children: [
