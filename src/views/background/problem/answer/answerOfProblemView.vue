@@ -66,10 +66,20 @@
                 编辑问题 {{ problemId }} 的答案
               </div>
               <div>
-                <v-divider class="mx-4" vertical></v-divider>
-                <v-btn text @click="addingDialog = true" class="primary"
-                  >添加一条新答案
-                </v-btn>
+                <v-row>
+                  <v-col md="6">
+                    <v-checkbox
+                      v-model="isPublish"
+                      label="公开答案"
+                      class=""
+                    ></v-checkbox>
+                  </v-col>
+                  <v-col md="6">
+                    <v-btn text @click="addingDialog = true" class="primary mt-3"
+                      >添加一条新答案
+                    </v-btn>
+                  </v-col>
+                </v-row>
               </div>
             </div>
 
@@ -89,7 +99,6 @@
                         <div>语言：</div>
 
                         <div>
-
                           <v-select
                             :items="selections"
                             v-model="item.language"
@@ -108,7 +117,7 @@
                         >
                           删除该答案
                         </v-btn>
-                        
+
                         <v-btn
                           color="primary"
                           @click="setAnswer(item)"
@@ -117,8 +126,6 @@
                         >
                       </div>
                     </div>
-
-                 
 
                     <div style="height: 600px" class="tw-overflow-y-auto">
                       <vue-codeditor
@@ -131,7 +138,6 @@
                   </v-tab-item>
                 </v-tabs-items>
               </v-card-text>
-
 
               <v-card-actions>
                 <v-spacer></v-spacer>
@@ -170,6 +176,7 @@ export default {
   computed: {},
   data() {
     return {
+      isPublish: false,
       addtitle: "添加一份新答案",
       addValid: false,
       addLoader: false,
@@ -209,11 +216,12 @@ export default {
           val.isStandard = false;
         }
       });
-      console.log(this.items)
+      console.log(this.items);
     },
     getDataFromApi() {
       api.problemFactory.getAnswerOfProblem(this.problemId).then((response) => {
         if (response.code == 0) {
+          this.isPublish = response.isPublish;
           this.items = response.content;
         }
       });
@@ -235,9 +243,9 @@ export default {
       this.$router.go(-1);
     },
     confirm() {
-      console.log(this.items)
+      console.log(this.items);
       api.problemFactory
-        .editAnswerOfProblem(this.problemId, this.items)
+        .editAnswerOfProblem(this.problemId, this.items, this.isPublish)
         .then((response) => {
           if (response.code == 0) {
             this.$refs.sb.warn("保存成功");
