@@ -388,7 +388,7 @@ export default {
             this.$refs.sb.warn("测试错误");
             this.submitLoader = false;
           });
-        this.results = this.result.content.results;
+        this.results = this.result.content.records;
         this.finalResult = this.result.content.finalResult;
         this.correctNum = this.result.content.correctNum;
         this.totalNum = this.result.content.totalNum;
