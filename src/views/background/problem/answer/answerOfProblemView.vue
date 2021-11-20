@@ -181,17 +181,17 @@ export default {
       addValid: false,
       addLoader: false,
       editItem: {
-        language: "Java",
+        language: "java",
         code: "",
       },
       defaultItem: {
-        language: "Java",
+        language: "java",
         code: "",
       },
       addingDialog: false,
       loader: false,
       dialogDelete: false,
-      selections: ["Java", "C++", "Python", "JavaScript"],
+      selections: ["java","python"],
       problemId: 0,
 
       tab: null,
@@ -201,10 +201,8 @@ export default {
   methods: {
     languagemode(val) {
       let map = {
-        Java: "java",
-        "C++": "c_cpp",
-        JavaScript: "javascript",
-        Python: "python",
+        java: "java",
+        python: "python",
       };
       return map[val];
     },
