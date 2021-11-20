@@ -367,13 +367,13 @@ export default {
             this.testLoader = false;
           });
 
-        if (this.temp.code == 1) {
+        if (temp.code == 1) {
           this.testLoader = false;
           this.standardResult = temp.content.standardResult;
           this.userResult = temp.content.userResult;
           this.$refs.sb.warn("测试完成");
           break;
-        } else if (this.temp.code == 0) {
+        } else if (temp.code == 0) {
           await this.sleep(1000);
         } else {
           this.$refs.sb.warn(this.res_code_map_one[temp.code]);
