@@ -8,7 +8,7 @@
             <div
               class="tw-font-bold tw-text-2xl tw-items-center tw-flex tw-h-full"
             >
-              <div>代码提交</div>
+              <div>代码提交{{ noAnswer }}</div>
             </div>
           </v-col>
 
@@ -52,7 +52,7 @@
                     <v-btn
                       color="primary"
                       @click="testAnswer"
-                      :disabled="testLoader"
+                      :disabled="testLoader && !ifHaveAnswer"
                       :loading="testLoader"
                       >提交测试</v-btn
                     >
@@ -141,7 +141,7 @@
                     <v-btn
                       color="primary"
                       @click="submitAnswer"
-                      :disabled="submitLoader"
+                      :disabled="submitLoader && !ifHaveAnswer"
                       :loading="submitLoader"
                       >提交代码</v-btn
                     >
@@ -214,13 +214,20 @@ export default {
   components: {
     SnackBar,
   },
+  mounted() {
+    this.getIfHaveAnswer();
+  },
   computed: {
     answerClass: function () {
       return "tw-bg-red-100 tw-p-2 tw-h-48 tw-overflow-auto tw-rounded-md";
     },
+    noAnswer: function () {
+      return this.ifHaveAnswer ? "" : "问题没有答案,无法作答";
+    },
   },
   data() {
     return {
+      ifHaveAnswer: false,
       testLoader: false,
       submitLoader: false,
       resultMap: {},
@@ -288,6 +295,20 @@ export default {
     };
   },
   methods: {
+    getIfHaveAnswer() {
+      let map = {
+        0: "成功",
+        "-1": "问题不存在",
+      };
+      api.submitFactory
+        .ifHaveAnswer(this.$route.params.problemId)
+        .then((response) => {
+          if (response.code == 0) {
+            this.ifHaveAnswer = response.content.haveAnswer;
+          }
+          this.$refs.sb.warn(map[response.code]);
+        });
+    },
     testAnswer() {
       this.testLoader = true;
       api.submitFactory
@@ -299,14 +320,17 @@ export default {
         )
         .then((response) => {
           if (response.code == 0) {
-            this.standardResult = response.content.standardResult;
-            this.userResult = response.content.userResult;
-            this.$refs.sb.warn(this.res_code_map_one[response.code]);
+            this.testId = response.content.submitId;
+            this.getTestResult();
             this.isReturn = true;
           } else {
             console.log(response);
           }
           this.$refs.sb.warn(this.res_code_map_one[response.code]);
+          this.testLoader = false;
+        })
+        .catch(() => {
+          this.$refs.sb.warn("提交错误");
           this.testLoader = false;
         });
     },
@@ -315,7 +339,6 @@ export default {
         0: "上传成功,开始测试",
         "-1": "问题不存在",
         "-2": "没有权限回答",
-        "-3": "管理员不允许参加竞赛",
       };
       this.submitLoader = true;
       api.submitFactory
@@ -325,23 +348,46 @@ export default {
           if (response.code == 0) {
             this.submitId = response.content.submitId;
             this.getAnswer();
-            this.$refs.sb.warn(map[response.code]);
-            // let timer = setInterval(() => {
-            //   this.getAnswer();
-            // console.log(new Date().getTime())
-            //   api.submitFactory.getsubmitAnswer(this.submitId).then(resp => {
-            //     console.log(resp);
-            //     if (resp.code == 1) {
-            //       clearInterval(timer)
-            //     }
-            //   })
-            // }, 1000);
           }
+          this.$refs.sb.warn(map[response.code]);
+        })
+        .catch(() => {
+          this.$refs.sb.warn("提交错误");
+          this.submitLoader = false;
         });
+    },
+    async getTestResult() {
+      while (1 + 2 == Number(3)) {
+        let temp = await api.submitFactory
+          .getTestResult(this.testId)
+          .catch(() => {
+            this.$refs.sb.warn("测试错误");
+            this.testLoader = false;
+          });
+
+        this.standardResult = temp.content.standardResult;
+        this.userResult = temp.content.userResult;
+
+        if (this.temp.code == 1) {
+          this.testLoader = false;
+          this.$refs.sb.warn("测试完成");
+
+          break;
+        } else if (this.temp.code == 0) {
+          await this.sleep(1000);
+        } else {
+          this.$refs.sb.warn(this.res_code_map_one[temp.code]);
+        }
+      }
     },
     async getAnswer() {
       while (1 + 2 == Number(3)) {
-        this.result = await api.submitFactory.getsubmitAnswer(this.submitId);
+        this.result = await api.submitFactory
+          .getsubmitAnswer(this.submitId)
+          .catch(() => {
+            this.$refs.sb.warn("测试错误");
+            this.submitLoader = false;
+          });
         this.results = this.result.content.results;
         this.finalResult = this.result.content.finalResult;
         this.correctNum = this.result.content.correctNum;
@@ -351,10 +397,12 @@ export default {
         if (this.result.code == 1) {
           this.submitLoader = false;
           this.$refs.sb.warn("测试完成");
-          
+
           break;
-        } else {
+        } else if (this.result.code == 0) {
           await this.sleep(1000);
+        } else {
+          this.$refs.sb.warn(this.res_code_map_one[this.result.code]);
         }
       }
     },

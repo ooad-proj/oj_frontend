@@ -19,6 +19,17 @@ export default {
         return http.get('/api/record/'+recordId,{
             
         })
+    },
+    getTestResult(recordId){
+        return http.get('/api/record/standard/'+recordId,{
+            
+        })
+    },
+    ifHaveAnswer(problemId){
+        return http.get('/api/submit/haveAnswer/'+problemId,{
+
+        })
     }
+ 
 
 }
