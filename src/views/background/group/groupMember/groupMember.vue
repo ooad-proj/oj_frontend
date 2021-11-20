@@ -352,6 +352,8 @@ export default {
             "-1": "组不存在",
             "-2": "用户不存在",
             "-3": "用户已在组内",
+            "-4": "不能添加老师",
+            "-5": "不能添加本组学助",
           };
           this.$emit("showmsg", map[response.code]);
           this.closeAddingDialog();
