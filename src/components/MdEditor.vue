@@ -1,8 +1,8 @@
 <template>
   <div class=" tw-border tw-border-solid tw-rounded-md">
     <mavon-editor
-      v-model="description"
-      @input="$emit('change', description)"
+      :value="value"
+      @input="em"
       style="z-index: 0; border: none"
       :boxShadow="false"
       :subfield="true"
@@ -14,13 +14,16 @@
 
 <script>
 export default {
-  model: {
-    prop: "description",
-    event: "change",
+  methods: {
+    em(e) {
+      this.$emit('input', e)
+    }
   },
+  props: ['value'],
+
   data() {
     return {
-      description: "",
+      // value: "",
       toolbars: {
         bold: true, // 粗体
         italic: true, // 斜体
