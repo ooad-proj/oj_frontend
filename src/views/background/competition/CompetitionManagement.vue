@@ -37,6 +37,10 @@
               :options.sync="options"
               :server-items-length="totalContest"
               :loading="loading"
+              :footer-props="{
+                showFirstLastPage: true,
+                itemsPerPageOptions: [5, 10, 15],
+              }"
               class="elevation-2"
             >
               <template v-slot:[`item.delete`]="{ item }">

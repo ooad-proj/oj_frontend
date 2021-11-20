@@ -14,6 +14,7 @@
 
 <script>
 export default {
+
   methods: {
     em(e) {
       this.$emit('input', e)
@@ -24,6 +25,7 @@ export default {
   data() {
     return {
       // value: "",
+
       toolbars: {
         bold: true, // 粗体
         italic: true, // 斜体

@@ -31,6 +31,14 @@
         :headers="headers"
         :items="tableData"
         :options.sync="options"
+        :footer-props="{
+          showFirstLastPage: true,
+          firstIcon: 'mdi-arrow-collapse-left',
+          lastIcon: 'mdi-arrow-collapse-right',
+          prevIcon: 'mdi-minus',
+          nextIcon: 'mdi-plus',
+          itemsPerPageOptions: [5, 10, 15],
+        }"
         :server-items-length="totalContest"
         :loading="loading"
         class="elevation-2"
@@ -72,15 +80,19 @@
               <v-form ref="form" v-model="editValid">
                 <v-text-field
                   v-model="editedItem.title"
-                  :rules="[(v) => !!v || '标题不能为空']"
+                  :rules="[
+                    (v) => !!v || '标题不能为空',
+                    (v) => v.length <= 10 || '输入必须小于10个字符',
+                  ]"
                   label="竞赛标题"
-                  :counter="20"
+                  :counter="10"
                   required
                 ></v-text-field>
                 <v-text-field
                   v-model="editedItem.description"
-                  :rules="[]"
+                  :rules="[(v) => v.length <= 10 || '输入必须小于20个字符']"
                   label="竞赛描述"
+                  :counter="20"
                   required
                 ></v-text-field>
                 <v-row>
@@ -153,6 +165,7 @@
                       </template>
                       <v-time-picker
                         v-if="menuTime"
+                        :max="judgeTime ? endTimeInDay : null"
                         v-model="startTimeInDay"
                         full-width
                         @click:minute="$refs.menuTime.save(startTimeInDay)"
@@ -232,6 +245,7 @@
                       <v-time-picker
                         v-if="menuEndTime"
                         v-model="endTimeInDay"
+                        :min="judgeTime ? startTimeInDay : null"
                         full-width
                         @click:minute="$refs.menuEndTime.save(endTimeInDay)"
                       ></v-time-picker>
@@ -270,6 +284,10 @@ export default {
   props: ["groupId"],
   data() {
     return {
+      // config: {
+      //   "items-per-page-options": [5, 10, 15, -1],
+      // },
+      judge: false,
       ///////////////////创建竞赛///////////////////
       ///////////////////修改竞赛///////////////////
       startDay: null,
@@ -306,10 +324,15 @@ export default {
       deleteLoader: false,
       ///////////////////获取数据///////////////////
       allowedDates: (val) => {
-        return new Date(val).getTime() - new Date(Date.now()).getTime() > 0;
+        // return new Date(val).getTime() - new Date(Date.now()).getTime() > 0;
+        if (this.endDay != null) {
+          return new Date(this.endDay).getTime() - new Date(val).getTime() >= 0;
+        } else {
+          return true;
+        }
       },
       allowedEndDates: (val) => {
-        return new Date(val).getTime() - new Date(this.startDay).getTime() > 0;
+        return new Date(val).getTime() - new Date(this.startDay).getTime() >= 0;
       },
       loading: false,
       search: null,
@@ -338,12 +361,17 @@ export default {
           (date.getMonth() + 1 < 10
             ? "0" + (date.getMonth() + 1)
             : date.getMonth() + 1) + "-";
-        let D = date.getDate() + " ";
+        let D = date.getDate();
         let h = date.getHours() + ":";
         let m = date.getMinutes();
         if (parseInt(m) < 10) {
           m = "0" + m;
         }
+        if (parseInt(D) < 10) {
+          D = "0" + D;
+        }
+
+        D = D + " ";
         return [Y + M + D, h + m];
       },
     };
@@ -352,6 +380,23 @@ export default {
     editTitle() {
       return this.editing ? "编辑一个竞赛" : "创建一个竞赛";
     },
+    judgeTime() {
+      if (this.startDay == null || this.endDay == null) {
+        return false;
+      } else if (this.startDay != this.endDay) {
+        return false;
+      } else if (this.startDay == this.endDay) {
+        return true;
+      }
+      return false;
+    },
+    address() {
+      const { startDay, endDay } = this;
+      return {
+        startDay,
+        endDay,
+      };
+    },
   },
   watch: {
     options: {
@@ -359,6 +404,22 @@ export default {
         this.getDataFromApi("");
       },
       deep: true,
+    },
+    address: {
+      handler() {
+        if (
+          this.startDay != null &&
+          this.endDay != null &&
+          this.startDay == this.endDay &&
+          this.judge
+        ) {
+          console.log("执行了");
+          console.log(this.editingDialog);
+          this.startTimeInDay = null;
+          this.endTimeInDay = null;
+        }
+      },
+      immediate: true,
     },
   },
   mounted() {
@@ -370,18 +431,21 @@ export default {
       this.editedItem = Object.assign({}, this.defaultItem);
       this.editing = false;
       this.editingDialog = true;
+      this.judge = true;
     },
     ////////////////////修改/////////////////////
     editItem(item) {
       this.editedIndex = this.tableData.indexOf(item);
       let temp_start = item.startTime.trim().split(" ");
-      let temp_end = item.startTime.trim().split(" ");
+      let temp_end = item.endTime.trim().split(" ");
       this.startDay = temp_start[0];
       this.startTimeInDay = temp_start[1];
       this.endDay = temp_end[0];
       this.endTimeInDay = temp_end[1];
       this.editedItem = Object.assign({}, item);
+      // console.log(this.)
       this.editingDialog = true;
+      console.log(this.startTimeInDay);
     },
     closeEditItem() {
       this.startDay = null;
@@ -392,6 +456,7 @@ export default {
       this.editedIndex = -1;
       this.editedItem = Object.assign({}, this.defaultItem);
       this.editingDialog = false;
+      this.judge = false;
       this.$refs.form.resetValidation();
     },
     submiteditItem() {
@@ -401,41 +466,44 @@ export default {
       let end = date1.getTime();
       this.editedItem.startTime = start;
       this.editedItem.endTime = end;
-      this.editingLoader = true;
-      console.log(this.editedItem)
-      if (this.editing) {
-        api.contestFactory
-          .changeContestBasicInfo(
-            this.editedItem.contestId,
-            this.editedItem.title,
-            this.editedItem.description,
-            this.editedItem.startTime,
-            this.editedItem.endTime
-          )
-          .then((response) => {
-            let map = { 0: "修改成功", "-1": "失败" };
-            this.editingLoader = false;
-            this.closeEditItem();
-            this.getDataFromApi("");
-            this.$emit("showmsg", map[response.code]);
-          });
-      } else {
-        api.contestFactory
-          .addContest(
-            this.groupId,
-            this.editedItem.title,
-            this.editedItem.description,
-            this.editedItem.startTime,
-            this.editedItem.endTime
-          )
-          .then((response) => {
-            let map = { 0: "添加成功", "-1": "失败" };
+      console.log(this.startTimeInDay);
+      console.log(this.editedItem);
+      if (this.$refs.form.validate()) {
+        this.editingLoader = true;
+        if (this.editing) {
+          api.contestFactory
+            .changeContestBasicInfo(
+              this.editedItem.contestId,
+              this.editedItem.title,
+              this.editedItem.description,
+              this.editedItem.startTime,
+              this.editedItem.endTime
+            )
+            .then((response) => {
+              let map = { 0: "修改成功", "-1": "失败" };
+              this.editingLoader = false;
+              this.closeEditItem();
+              this.getDataFromApi("");
+              this.$emit("showmsg", map[response.code]);
+            });
+        } else {
+          api.contestFactory
+            .addContest(
+              this.groupId,
+              this.editedItem.title,
+              this.editedItem.description,
+              this.editedItem.startTime,
+              this.editedItem.endTime
+            )
+            .then((response) => {
+              let map = { 0: "添加成功", "-1": "失败" };
 
-            this.editingLoader = false;
-            this.closeEditItem();
-            this.getDataFromApi("");
-            this.$emit("showmsg", map[response.code]);
-          });
+              this.editingLoader = false;
+              this.closeEditItem();
+              this.getDataFromApi("");
+              this.$emit("showmsg", map[response.code]);
+            });
+        }
       }
     },
     ////////////////////删除/////////////////////

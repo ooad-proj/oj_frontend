@@ -24,6 +24,10 @@
         :options.sync="options"
         :loading="loading"
         class="elevation-2"
+        :footer-props="{
+          showFirstLastPage: true,
+          itemsPerPageOptions: [5, 10, 15],
+        }"
       >
         <template v-slot:[`item.delete`]="{ item }">
           <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>

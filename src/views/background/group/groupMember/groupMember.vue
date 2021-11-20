@@ -3,8 +3,14 @@
     <div class="tw-flex tw-justify-between pa-5 tw-w-full">
       <div class="tw-text-xl tw-font-bold">班级用户管理</div>
 
-      <div >
-        <v-btn color="primary" dark class="mx-1" @click="addingDialog = true" v-if="checkTeacher">
+      <div>
+        <v-btn
+          color="primary"
+          dark
+          class="mx-1"
+          @click="addingDialog = true"
+          v-if="checkTeacher"
+        >
           添加学生到组
         </v-btn>
         <v-btn
@@ -24,6 +30,10 @@
       :options.sync="options"
       :server-items-length="totalUser"
       :loading="loading"
+      :footer-props="{
+        showFirstLastPage: true,
+        itemsPerPageOptions: [5, 10, 15],
+      }"
       class="elevation-2"
     >
       <template v-slot:[`item.edit`]="{ item }">
@@ -214,20 +224,22 @@
 import api from "@/api/api";
 import DeleteDialog from "@/components/DeleteDialog.vue";
 export default {
-  computed:{
-    checkTeacher: function(){
+  computed: {
+    checkTeacher: function () {
       // return true
-      return this.myrole == 'teacher' ? true : false
+      return this.myrole == "teacher" ? true : false;
     },
-      headerToShow: function(){
-      return this.myrole == 'teacher'? this.userHeaders:this.headerForAssistant
-    }
+    headerToShow: function () {
+      return this.myrole == "teacher"
+        ? this.userHeaders
+        : this.headerForAssistant;
+    },
   },
   components: {
     DeleteDialog,
   },
   data: () => ({
-    myrole:null,
+    myrole: null,
     respMap: {
       0: "成功",
       "-1": "用户已存在",
@@ -277,15 +289,15 @@ export default {
     choosen: 0,
     userHeaders: [
       { text: "用户id", align: "start", sortable: false, value: "id" },
-      { text: "用户名", value: "name"   ,sortable: false,},
-      { text: "用户邮箱", value: "mail"  ,sortable: false,},
+      { text: "用户名", value: "name", sortable: false },
+      { text: "用户邮箱", value: "mail", sortable: false },
       { text: "编辑用户", value: "edit", sortable: false },
       { text: "删除用户", value: "actions", sortable: false },
     ],
     headerForAssistant: [
       { text: "用户id", align: "start", sortable: false, value: "id" },
-      { text: "用户名", value: "name"   ,sortable: false,},
-      { text: "用户邮箱", value: "mail"  ,sortable: false,},
+      { text: "用户名", value: "name", sortable: false },
+      { text: "用户邮箱", value: "mail", sortable: false },
     ],
   }),
   created() {},
@@ -300,7 +312,7 @@ export default {
   mounted() {
     this.groupId = this.$route.params.groupId;
     this.getDataFromApi();
-    this.getMyRole()
+    this.getMyRole();
   },
   methods: {
     getMyRole() {

@@ -8,6 +8,10 @@
           :items="tableData"
           hide-default-footer
           :loading="loading"
+          :footer-props="{
+            showFirstLastPage: true,
+            itemsPerPageOptions: [5, 10, 15],
+          }"
         >
           <template v-slot:[`item.enter`]="{ item }">
             <v-btn text color="primary" @click="goInProblem(item)">
@@ -73,20 +77,20 @@ export default {
       api.problemFactory
         .getAnswerableProblem(this.page, this.itemsPerPage, searchText)
         .then((response) => {
-          console.log(response)
+          console.log(response);
           this.tableData = response.content.list;
           this.totalPage = response.content.totalPage;
           this.totalAmont = response.content.totalAmont;
-          console.log(response)
+          console.log(response);
           this.loading = false;
         });
     },
-    goInProblem(item){
+    goInProblem(item) {
       this.$router.push({
         name: "problemPage",
         params: { problemId: item.problemId },
       });
-    }
+    },
   },
 };
 </script>

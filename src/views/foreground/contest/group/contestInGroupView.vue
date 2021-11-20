@@ -8,6 +8,10 @@
           :items="tableData"
           hide-default-footer
           :loading="loading"
+          :footer-props="{
+            showFirstLastPage: true,
+            itemsPerPageOptions: [5, 10, 15],
+          }"
         >
           <template v-slot:[`item.enter`]="{ item }">
             <v-btn text color="primary" @click="goInProblem(item)">

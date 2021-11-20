@@ -462,7 +462,7 @@
                   <template v-slot:activator="{ on, attrs }">
                     <v-text-field
                       v-model="punishRule"
-                      v-bind="attrs" 
+                      v-bind="attrs"
                       v-on="on"
                       :rules="[
                         (v) => !!v || '罚分规则不能为空',
@@ -538,7 +538,7 @@ export default {
   },
   mounted() {
     if (this.$route.query.ifEdit) {
-      this.getDataFromAip();
+      this.getDataFromApi();
     }
   },
   beforeRouteEnter(to, from, next) {
@@ -779,7 +779,7 @@ export default {
         this.$refs.sb.warn("请重新检查表单");
       }
     },
-    getDataFromAip() {
+    getDataFromApi() {
       api.problemFactory
         .getProblemInfo(this.$route.query.problemId)
         .then((response) => {
@@ -807,6 +807,7 @@ export default {
             let a = 1;
             console.log(a);
           }
+          console.log("???????" + this.description);
         });
     },
   },

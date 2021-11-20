@@ -27,7 +27,7 @@
                   >
                   </v-text-field>
                 </div>
-                <v-btn color="primary mx-1">添加问题</v-btn>
+                <v-btn color="primary mx-1" @click="addPublicProblem">添加问题</v-btn>
               </div>
             </div>
 
@@ -37,12 +37,16 @@
               :options.sync="options"
               :server-items-length="totalProblem"
               :loading="loading"
+              :footer-props="{
+                showFirstLastPage: true,
+                itemsPerPageOptions: [5, 10, 15],
+              }"
               class="elevation-2"
             >
               <template v-slot:[`item.delete`]="{ item }">
                 <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
               </template>
-        
+
               <template v-slot:[`item.revise`]="{ item }">
                 <v-icon small class="mr-2" @click="editItem(item)">
                   mdi-pencil
@@ -54,7 +58,6 @@
                   mdi-file-edit-outline
                 </v-icon>
               </template>
-
             </v-data-table>
           </v-card>
         </v-col>
@@ -116,7 +119,7 @@ export default {
       api.problemFactory
         .getMyProblem(page, itemsPerPage, searchText)
         .then((response) => {
-          console.log(response)
+          console.log(response);
           this.tableData = response.content.list;
           this.totalProblem = response.content.totalAmount;
           this.loading = false;
@@ -133,8 +136,8 @@ export default {
       api.problemFactory
         .deleteProblem(this.deleteProblemId)
         .then((response) => {
-            let map = {0:'成功',"-1":"问题不存在"}
-            this.$refs.sb.warn(map[response.code]);
+          let map = { 0: "成功", "-1": "问题不存在" };
+          this.$refs.sb.warn(map[response.code]);
 
           this.closeDelete();
           this.getDataFromApi("");
@@ -144,7 +147,7 @@ export default {
       this.dialogDelete = false;
       this.deleteProblemId = null;
     },
-    editItem(item){
+    editItem(item) {
       this.$router.push({
         name: "createProblem",
         params: {
@@ -156,12 +159,18 @@ export default {
         },
       });
     },
-    editAnswer(item){
+    editAnswer(item) {
       this.$router.push({
         name: "answerOfProblem",
         params: {
           problemId: item.problemId,
         },
+      });
+    },
+    addPublicProblem(){
+      this.$router.push({
+        name: "createProblem",
+        params: { contestId: 0 },
       });
     }
   },

@@ -11,7 +11,12 @@
             <div class="tw-flex tw-justify-between tw-items-center pa-5">
               <div class="tw-font-bold tw-text-xl">我管理的群组</div>
               <div>
-                <v-btn color="primary" @click="addGroup" v-if="myrole =='teacher'">添加群组</v-btn>
+                <v-btn
+                  color="primary"
+                  @click="addGroup"
+                  v-if="myrole == 'teacher'"
+                  >添加群组</v-btn
+                >
               </div>
             </div>
 
@@ -33,7 +38,11 @@
                   <v-btn color="primary" text @click="closeAddGroup"
                     >取消</v-btn
                   >
-                  <v-btn color="primary" text @click="confirmAddGroup" :disabled="!addValid"
+                  <v-btn
+                    color="primary"
+                    text
+                    @click="confirmAddGroup"
+                    :disabled="!addValid"
                     >确定</v-btn
                   >
                   <v-spacer></v-spacer>
@@ -47,6 +56,10 @@
               :options.sync="options"
               :server-items-length="totalgroup"
               :loading="loading"
+              :footer-props="{
+                showFirstLastPage: true,
+                itemsPerPageOptions: [5, 10, 15],
+              }"
               class="elevation-2"
             >
               <template v-slot:[`item.actions`]="{ item }">
@@ -84,7 +97,7 @@ export default {
   },
   data() {
     return {
-      myrole:null,
+      myrole: null,
       addValid: false,
       groupName: "",
       add_group: false,
@@ -105,10 +118,16 @@ export default {
           sortable: false,
           value: "groupId",
         },
-        { text: "群组名称", value: "groupName" ,sortable: false,},
-        { text: "当前人数", value: "memberNum" , sortable: false,},
-        { text: "学助人数", value: "assistantNum", sortable: false,},
-        { text: "进入群组", value: "actions", sortable: false ,class:"tw-w-48",align: "center"},
+        { text: "群组名称", value: "groupName", sortable: false },
+        { text: "当前人数", value: "memberNum", sortable: false },
+        { text: "学助人数", value: "assistantNum", sortable: false },
+        {
+          text: "进入群组",
+          value: "actions",
+          sortable: false,
+          class: "tw-w-48",
+          align: "center",
+        },
       ],
     };
   },
@@ -146,10 +165,10 @@ export default {
     },
     confirmAddGroup() {
       api.groupFactory.createGroup(this.groupName).then((response) => {
-        if(response.code ==0){
-           this.$refs.snkBar.warn("成功");
-        }else{
-           this.$refs.snkBar.warn("组已存在");
+        if (response.code == 0) {
+          this.$refs.snkBar.warn("成功");
+        } else {
+          this.$refs.snkBar.warn("组已存在");
         }
         this.getDataFromApi();
         this.closeAddGroup();

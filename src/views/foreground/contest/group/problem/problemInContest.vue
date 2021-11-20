@@ -62,6 +62,10 @@
           :items="tableData"
           hide-default-footer
           :loading="loading"
+          :footer-props="{
+            showFirstLastPage: true,
+            itemsPerPageOptions: [5, 10, 15],
+          }"
         >
           <template v-slot:[`item.enter`]="{ item }">
             <v-btn text color="primary" @click="goInProblem(item)">
@@ -143,8 +147,9 @@ export default {
         this.endTime = response.content.contest.endTime;
         this.title = response.content.contest.title;
         this.nowTime = new Date(Date.now()).getTime();
-        this.value =  (this.nowTime - this.startTime) / (this.endTime - this.startTime);
-            console.log(response)
+        this.value =
+          (this.nowTime - this.startTime) / (this.endTime - this.startTime);
+        console.log(response);
       });
     },
     goInProblem(item) {

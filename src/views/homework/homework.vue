@@ -11,6 +11,10 @@
       <v-data-table
         :headers="headers"
         :items="desserts"
+        :footer-props="{
+          showFirstLastPage: true,
+          itemsPerPageOptions: [5, 10, 15],
+        }"
         class="elevation-5 tw-mt-28"
         mt-5
         pa-5
@@ -85,7 +89,7 @@
                     ></v-text-field>
 
                     <v-radio-group v-model="editedItem.city" row mandatory>
-                      <p class=" tw-mt-4 tw-mr-2">City:</p>
+                      <p class="tw-mt-4 tw-mr-2">City:</p>
                       <v-radio label="Guang Zhou" value="Guang Zhou"></v-radio>
                       <v-radio label="Shen Zhen" value="Shen Zhen"></v-radio>
                     </v-radio-group>
@@ -301,7 +305,7 @@ export default {
       return this.editedIndex === -1 ? "New Item" : "Edit Item";
     },
     items() {
-      return this.editedItem.city=="Guang Zhou" ? this.itemsA : this.itemsB;
+      return this.editedItem.city == "Guang Zhou" ? this.itemsA : this.itemsB;
     },
   },
 
@@ -337,10 +341,42 @@ export default {
 
     initialize() {
       this.desserts = [
-        {name: "湖畔宿舍",city: "Shen Zhen",district: "NAN SHAN",date: "2021-10-16",etime: "01:51",price: 4,roomtp: "Standard Room",},
-        {name: "广州宾馆",city: "Guang Zhou",district: "NAN SHA",date: "2021-10-16",etime: "05:33",price: 3500,roomtp: "King Bed Room",},
-        {name: "广州宾馆",city: "Guang Zhou",district: "NAN SHA",date: "2021-10-16",etime: "05:33",price: 2950,roomtp: "King Bed Room",},
-        {name: "广州宾馆",city: "Guang Zhou",district: "NAN SHA",date: "2021-10-16",etime: "05:33",price: 2800,roomtp: "King Bed Room",},
+        {
+          name: "湖畔宿舍",
+          city: "Shen Zhen",
+          district: "NAN SHAN",
+          date: "2021-10-16",
+          etime: "01:51",
+          price: 4,
+          roomtp: "Standard Room",
+        },
+        {
+          name: "广州宾馆",
+          city: "Guang Zhou",
+          district: "NAN SHA",
+          date: "2021-10-16",
+          etime: "05:33",
+          price: 3500,
+          roomtp: "King Bed Room",
+        },
+        {
+          name: "广州宾馆",
+          city: "Guang Zhou",
+          district: "NAN SHA",
+          date: "2021-10-16",
+          etime: "05:33",
+          price: 2950,
+          roomtp: "King Bed Room",
+        },
+        {
+          name: "广州宾馆",
+          city: "Guang Zhou",
+          district: "NAN SHA",
+          date: "2021-10-16",
+          etime: "05:33",
+          price: 2800,
+          roomtp: "King Bed Room",
+        },
       ];
     },
 
