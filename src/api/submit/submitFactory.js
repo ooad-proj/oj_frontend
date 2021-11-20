@@ -5,7 +5,7 @@ export default {
     testAnswer(problemId,code,testCase,language) {
         return http.post('/api/submit/standard/'+problemId,{
             code:code,
-            testCase:testCase,
+            testcase:testCase,
             language:language
         })
     },
