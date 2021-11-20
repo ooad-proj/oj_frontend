@@ -305,7 +305,7 @@ export default {
         .then((response) => {
           if (response.code == 0) {
             this.ifHaveAnswer = response.content.haveAnswer;
-             this.$refs.sb.warn("存在答案,可以答题");
+            this.$refs.sb.warn("存在答案,可以答题");
           } else {
             this.$refs.sb.warn(map[response.code]);
           }
@@ -367,13 +367,11 @@ export default {
             this.testLoader = false;
           });
 
-        this.standardResult = temp.content.standardResult;
-        this.userResult = temp.content.userResult;
-
         if (this.temp.code == 1) {
           this.testLoader = false;
+          this.standardResult = temp.content.standardResult;
+          this.userResult = temp.content.userResult;
           this.$refs.sb.warn("测试完成");
-
           break;
         } else if (this.temp.code == 0) {
           await this.sleep(1000);
