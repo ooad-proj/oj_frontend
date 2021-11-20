@@ -332,7 +332,7 @@
                   class=""
                 ></v-checkbox>
               </v-col>
-              <v-col v-if="isTemplate">
+              <v-col>
                 <v-combobox
                   v-model="select"
                   :items="languages"
