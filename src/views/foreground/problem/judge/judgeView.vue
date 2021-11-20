@@ -262,10 +262,10 @@ export default {
         PINK: "tw-bg-pink-600",
       },
       code: "",
-      select: "Java",
+      select: "java",
       tab: null,
       title: ["测试", "提交"],
-      selections: ["Java", "C++", "Python", "JavaScript"],
+      selections: ["java", "python"],
       standardResult: {
         isCorrect: "",
         timeCost: "",
