@@ -15,8 +15,9 @@
           </div>
 
           <v-progress-linear
-            v-model="value"
+            :value="value"
             color="primary"
+            
             height="25"
             class="mx-5"
           >
