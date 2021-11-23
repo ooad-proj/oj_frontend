@@ -8,7 +8,7 @@
             <div
               class="tw-font-bold tw-text-2xl tw-items-center tw-flex tw-h-full"
             >
-              <div>代码提交{{ noAnswer }}</div>
+              <div>代码提交</div>
             </div>
           </v-col>
 
@@ -25,9 +25,10 @@
           <v-col cols="6">
             <div style="height: 600px" class="tw-overflow-y-auto">
               <vue-codeditor
-                class="scro"
+        
                 style="font-size: 16px; min-height: 600px"
                 theme="katzenmilch"
+                :mode="select"
                 v-model="code"
               />
             </div>
@@ -48,11 +49,12 @@
               <v-tab-item>
                 <div class="tw-flex tw-justify-between tw-items-center tw-p-2">
                   <div class="">样例测试</div>
+                  <div>{{ noAnswer }}</div>
                   <div>
                     <v-btn
                       color="primary"
                       @click="testAnswer"
-                      :disabled="testLoader && !ifHaveAnswer"
+                      :disabled="testLoader || !ifHaveAnswer"
                       :loading="testLoader"
                       >提交测试</v-btn
                     >
@@ -76,15 +78,14 @@
                   <v-col md="6">
                     <div class="tw-p-2">执行结果</div>
                     <div
-                      class="
-                        tw-bg-gray-100
-                        tw-p-2
-                        tw-h-48
-                        tw-overflow-auto
-                        tw-rounded-md
+                      class="tw-p-2 tw-h-48 tw-overflow-auto tw-rounded-md"
+                      :class="
+                        userResult.correct
+                          ? 'tw-bg-gray-100 '
+                          : 'tw-bg-red-100 tw-text-red-600'
                       "
                     >
-                      <div
+                      <!-- <div
                         class="
                           tw-px-2 tw-py-1 tw-text-white tw-rounded-md tw-w-min
                         "
@@ -97,22 +98,21 @@
                         {{ userResult.code }}
                       </div>
                       <div>{{ userResult.timeCost }}</div>
-                      <div>{{ userResult.memoryCost }}</div>
+                      <div>{{ userResult.memoryCost }}</div> -->
                       <pre class="tw-font-mono">{{ userResult.message }}</pre>
                     </div>
                   </v-col>
                   <v-col md="6">
                     <div class="tw-p-2">标准结果</div>
                     <div
-                      class="
-                        tw-bg-gray-100
-                        tw-p-2
-                        tw-h-48
-                        tw-overflow-auto
-                        tw-rounded-md
+                      class="tw-p-2 tw-h-48 tw-overflow-auto tw-rounded-md"
+                      :class="
+                        userResult.correct
+                          ? 'tw-bg-gray-100 '
+                          : 'tw-bg-red-100 tw-text-red-600'
                       "
                     >
-                      <div
+                      <!-- <div
                         class="
                           tw-px-2 tw-py-1 tw-text-white tw-rounded-md tw-w-min
                         "
@@ -125,7 +125,7 @@
                         {{ standardResult.code }}
                       </div>
                       <div>{{ standardResult.timeCost }}</div>
-                      <div>{{ standardResult.memoryCost }}</div>
+                      <div>{{ standardResult.memoryCost }}</div> -->
                       <pre class="tw-font-mono">{{
                         standardResult.message
                       }}</pre>
@@ -148,10 +148,10 @@
                   </div>
                 </div>
 
-                <div class="tw-p-2">
-                  <v-row>
+                <div class="">
+                  <!-- <v-row>
                     <v-col md="4">
-                      <div>结果:{{ this.finalResult }}</div>
+                      <div>结果:{{ this.finialResult }}</div>
                     </v-col>
 
                     <v-col md="4">
@@ -161,21 +161,24 @@
                     <v-col md="4">
                       <div>全部数目:{{ this.totalNum }}</div>
                     </v-col>
-                  </v-row>
+                  </v-row> -->
+                  <div v-if="this.ifsubmit" class=" tw-px-4 tw-py-2 tw-my-2 tw-text-white tw-rounded-md tw-border-dashed" :class="finialResult == 'AC' ? 'tw-text-green-500 tw-border-green-500': 'tw-text-red-500 tw-border-red-500'">
+                    正确数：{{this.correctNum}}/{{this.totalNum}}
+                  </div>
                 </div>
 
                 <div class="tw-overflow-y-scroll" style="height: 400px">
-                  <v-expansion-panels flat>
+                  <v-expansion-panels flat v-if="this.ifsubmit">
                     <v-expansion-panel
                       v-for="(item, i) in results"
                       :key="i"
-                      class="grey lighten-4"
+                      class="grey lighten-4" 
                     >
                       <v-expansion-panel-header>
                         <div class="tw-flex tw-justify-around">
                           <div>{{ item.id }}</div>
-                          <div>{{ item.timeCost }}</div>
-                          <div>{{ item.memoryCost }}</div>
+                          <div>{{ item.timeCost }}ms</div>
+                          <div>{{ item.memoryCost }}MB</div>
                           <div
                             class="
                               tw-px-2
@@ -191,8 +194,18 @@
                         </div>
                       </v-expansion-panel-header>
                       <v-expansion-panel-content>
-                        <div class="tw-bg-gray-200 tw-rounded-md tw-p-2">
+                        <!-- <div class="tw-bg-gray-200 tw-rounded-md tw-p-2">
                           {{ item.message }}
+                        </div> -->
+                        <div
+                          class="tw-p-2 tw-overflow-auto tw-rounded-md"
+                          :class="
+                            item.correct
+                              ? 'tw-bg-gray-100 '
+                              : 'tw-bg-red-100 tw-text-red-600'
+                          "
+                        >
+                          <pre class="tw-font-mono">{{ item.message }}</pre>
                         </div>
                       </v-expansion-panel-content>
                     </v-expansion-panel>
@@ -222,16 +235,18 @@ export default {
       return "tw-bg-red-100 tw-p-2 tw-h-48 tw-overflow-auto tw-rounded-md";
     },
     noAnswer: function () {
-      return this.ifHaveAnswer ? "" : "问题没有答案,无法作答";
+      return this.ifHaveAnswer ? "" : "问题没有答案,无法测试";
     },
   },
   data() {
     return {
+      ifsubmit:false,
       ifHaveAnswer: false,
       testLoader: false,
       submitLoader: false,
       resultMap: {},
-      finalResult: 0,
+
+      finialResult: "AC",
       correctNum: 0,
       totalNum: 0,
       results: [
@@ -261,13 +276,18 @@ export default {
         GRAY: "tw-bg-gray-600",
         PINK: "tw-bg-pink-600",
       },
+      // resultMap:{
+      //   "WA":"RED",
+      //   "MLE":"MLE",
+      //   "T"
+      // },
       code: "",
       select: "java",
       tab: null,
       title: ["测试", "提交"],
       selections: ["java", "python"],
       standardResult: {
-        isCorrect: "",
+        correct: true,
         timeCost: "",
         memoryCost: "",
         code: "",
@@ -276,7 +296,7 @@ export default {
         color: "GRAY",
       },
       userResult: {
-        isCorrect: "",
+        correct: true,
         timeCost: "",
         memoryCost: "",
         code: "",
@@ -305,7 +325,6 @@ export default {
         .then((response) => {
           if (response.code == 0) {
             this.ifHaveAnswer = response.content.haveAnswer;
-            this.$refs.sb.warn("存在答案,可以答题");
           } else {
             this.$refs.sb.warn(map[response.code]);
           }
@@ -324,12 +343,11 @@ export default {
           if (response.code == 0) {
             this.testId = response.content.submitId;
             this.getTestResult();
+            this.$refs.sb.warn("提交成功,开始测试");
             this.isReturn = true;
           } else {
             console.log(response);
           }
-          this.$refs.sb.warn(this.res_code_map_one[response.code]);
-          this.testLoader = false;
         })
         .catch(() => {
           this.$refs.sb.warn("提交错误");
@@ -372,6 +390,7 @@ export default {
           this.standardResult = temp.content.standardResult;
           this.userResult = temp.content.userResult;
           this.$refs.sb.warn("测试完成");
+          
           break;
         } else if (temp.code == 0) {
           await this.sleep(1000);
@@ -389,7 +408,7 @@ export default {
             this.submitLoader = false;
           });
         this.results = this.result.content.records;
-        this.finalResult = this.result.content.finalResult;
+        this.finialResult = this.result.content.finialResult;
         this.correctNum = this.result.content.correctNum;
         this.totalNum = this.result.content.totalNum;
         console.log(this.results);
@@ -397,7 +416,7 @@ export default {
         if (this.result.code == 1) {
           this.submitLoader = false;
           this.$refs.sb.warn("测试完成");
-
+          this.ifsubmit = true;
           break;
         } else if (this.result.code == 0) {
           await this.sleep(1000);
