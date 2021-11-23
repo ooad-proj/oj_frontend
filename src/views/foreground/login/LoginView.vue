@@ -67,7 +67,7 @@ export default {
     login() {
       api.authFactory.login(this.id, this.password).then(resp => {
         if (resp.code == 0) {
-          this.$router.push('/')
+          this.$router.push('/home')
           location.reload()
         } else if (resp.code == -1) {
           this.startWarn('用户不存在')
