@@ -31,8 +31,10 @@ export default {
         })
     },
     getSubmitTimes(userId) {
-        return http.get('api/submit/get/times' + userId)
+        return http.get('api/submit/get/times/' + userId)
+    },
+    getSubmitAllTimes(userId) {
+        return http.get('api/submit/get/allTimes/' + userId)
     }
- 
 
 }

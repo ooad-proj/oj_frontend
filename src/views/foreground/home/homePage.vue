@@ -5,7 +5,7 @@
       <v-sparkline
         :value="value"
         :gradient="['#009688', '#eceff1']"
-        smooth="2"
+        smooth="4"
         padding="0"
         line-width="2"
         stroke-linecap="round"
@@ -58,26 +58,27 @@
 </template>
 
 <script>
-// const gradients = [
-//   ['#222'],
-//   ['#42b3f4'],
-//   ['red', 'orange', 'yellow'],
-//   ['purple', 'violet'],
-//   ['#00c6ff', '#F0F', '#FF0'],
-//   ['#f72047', '#ffd200', '#1feaea'],
-// ]
+import api from '../../../api/api'
 
 export default {
   mounted () {
     window.addEventListener('scroll', this.handleScroll)
+    this.getDataFromApi()
   },
   data() {
     return {
       filter: 0,
-      value: [4,120,0,1,0,2,58,47,15,2,3,0,0,0,0,14,59],
+      value: [0,0],
     }
   },
   methods: {
+    getDataFromApi() {
+      Promise.all([
+        api.submitFactory.getSubmitTimes(null)
+      ]).then((resps) => {
+        this.value = resps[0].content.data
+      })
+    },
     handleScroll () {
       let height = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
       if (height < 400) {

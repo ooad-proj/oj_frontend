@@ -7,7 +7,6 @@
           :active="loading"
           :indeterminate="loading"
           absolute
-          color="deep-purple accent-4"
         ></v-progress-linear>
         <div
           class="tw-grid tw-grid-cols-4 tw-gap-4 tw-p-6 tw-items-start tw-h-96"

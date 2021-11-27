@@ -6,7 +6,9 @@
     :lineOptions="{ regionFill: 1 }"
     :height="height"
     :colors="['#009688']"
-    :dataSets="this.dataStd"
+    :dataSets="dataStd"
+    :discreteDomains="false"
+    :axisOptions="{ xIsSeries: true }"
   >
   </vue-frappe>
 </template>
@@ -14,15 +16,14 @@
 <script>
 export default {
   props: {
-    labels: Array,
-    data: Array,
     height: Number
   },
   data() {
     return {
+      labels : ["0","0"],
       dataStd: [
         {
-          values: this.data,
+          values: [0,0],
         },
       ],
     };

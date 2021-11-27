@@ -18,7 +18,7 @@
               <div class="tw-w-32">姓名：</div>
               <div class="tw-w-48">{{ basic.name }}</div>
             </div>
-            <div class="tw-flex tw-flex-row tw-p-3">
+            <div class="tw-flex tw-flex-row tw-p-3 ">
               <div class="tw-w-32">邮箱：</div>
               <div class="tw-w-48">{{ basic.mail }}</div>
             </div>
@@ -29,7 +29,7 @@
       <v-row
         ><v-col
           ><v-card class="pa-4">
-            <p class="tw-text-bg tw-font-bold">群组信息</p>
+            <p class="tw-text-bg tw-font-bold tw-divi">群组信息</p>
             <div class="tw-p-3">
               <p>
                 您是 <span class="tw-text-teal-600">{{ roleMap[role] }}</span>
@@ -46,8 +46,18 @@
       <v-row>
         <v-col>
           <v-card class="pa-4">
-            <p class="tw-text-bg tw-font-bold">NMSL</p>
-            <line-chart :height="300" :data="chart.data" :labels="chart.labels"></line-chart>
+            <p class="tw-text-bg tw-font-bold">提交概述</p>
+            <v-row>
+              <v-col>
+                <div class="tw-p-3">
+                  <p>提交总数：{{record.answerNum}}</p>
+                  <p>正确数：{{record.correctNum}}</p>
+                  <p>正确率：{{record.correctRate}}</p>
+                </div>
+              </v-col>
+              <v-col cols="8"><line-chart ref="chart" :height="300"></line-chart></v-col>
+            </v-row>
+            
           </v-card>
         </v-col>
       </v-row>
@@ -61,16 +71,26 @@ import LineChart from "@/components/LineChart.vue"
 export default {
   components: {LineChart},
   methods: {
+    fliterLabel(label) {
+      return label
+    },
     getInfo() {
       Promise.all([
         api.authFactory.getInfo(),
         api.authFactory.getGroups(),
         api.authFactory.getRole(),
+        api.submitFactory.getSubmitAllTimes()
       ]).then((resps) => {
         let info = resps[0];
         this.basic = info.content;
+        api.submitFactory.getSubmitTimes(this.basic.id).then(resp => {
+          console.log(resp.content.data)
+          this.$refs.chart.dataStd[0].values = resp.content.data
+          this.$refs.chart.labels = this.fliterLabel(resp.content.labels)
+        })
         this.group = resps[1].content;
         this.role = resps[2].content;
+        this.record = resps[3].content;
       });
     },
   },
@@ -89,11 +109,12 @@ export default {
         teacher: "教师",
       },
       group: {},
-      record: {},
-      chart: {
-        labels: [1,2,3],
-        data: [1,2,3]
-      }
+      record: {
+        answerNum: 0,
+        correctNum: 0,
+        correctRate: 0
+      },
+
     };
   },
   mounted() {
