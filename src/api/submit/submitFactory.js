@@ -29,6 +29,9 @@ export default {
         return http.get('/api/submit/haveAnswer/'+problemId,{
 
         })
+    },
+    getSubmitTimes(userId) {
+        return http.get('api/submit/get/times' + userId)
     }
  
 
