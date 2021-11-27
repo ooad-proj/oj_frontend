@@ -60,6 +60,11 @@ const routes = [
         component: () => import('../views/foreground/contest/group/contestInGroupView.vue'),
       },
       {
+        path: 'contest/rank/:contestId',
+        name:'contestRank',
+        component: () => import('../views/foreground/contest/group/contestRankView.vue'),
+      },
+      {
         path: 'contest/:groupId/:contestId',
         name:'problemIncontest',
         component: () => import('../views/foreground/contest/group/problem/problemInContest.vue'),
@@ -68,6 +73,16 @@ const routes = [
         path: 'home',
         name:'homePage',
         component: () => import('../views/foreground/home/homePage.vue'),
+      },
+      {
+        path: 'rank',
+        name:'rankPage',
+        component: () => import('../views/foreground/rank/rank.vue'),
+      },
+      {
+        path: 'record',
+        name:'recordPage',
+        component: () => import('../views/foreground/record/record.vue'),
       },
     ]
   },

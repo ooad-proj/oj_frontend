@@ -13,10 +13,18 @@
             itemsPerPageOptions: [5, 10, 15],
           }"
         >
+        
           <template v-slot:[`item.enter`]="{ item }">
             <v-btn text color="primary" @click="goInProblem(item)">
               <v-icon left>mdi-door-open</v-icon>
               进入竞赛
+            </v-btn>
+          </template>
+
+          <template v-slot:[`item.rank`]="{ item }">
+            <v-btn text color="primary" @click="goInRank(item)">
+              <v-icon left>mdi-magnify</v-icon>
+              查看排名
             </v-btn>
           </template>
         </v-data-table>
@@ -51,6 +59,7 @@ export default {
         { text: "我的分数", value: "myScore", sortable: false },
         { text: "总分数", value: "totalScore", sortable: false },
         { text: "进入竞赛", value: "enter", sortable: false },
+         { text: "查看排名", value: "rank", sortable: false },
       ],
       loading: false,
       page: 1,
@@ -114,6 +123,14 @@ export default {
     goInProblem(item) {
       this.$router.push({
         name: "problemIncontest",
+        params: {
+          contestId: item.contestId,
+        },
+      });
+    },
+    goInRank(item) {
+      this.$router.push({
+        name: "contestRank",
         params: {
           contestId: item.contestId,
         },

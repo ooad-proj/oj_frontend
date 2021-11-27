@@ -4,9 +4,27 @@
       <div class="tw-text-xl tw-font-bold">组详情</div>
 
       <div>
-        <v-btn color="primary" @click="editGroupName" class="mx-1" v-if="checkTeacher"
+        <v-btn
+          color="primary"
+          @click="releaseAnnouncement"
+          class="mx-1"
+          v-if="checkTeacher"
+          >发布公告</v-btn
+        >
+        <v-btn
+          color="primary"
+          @click="editGroupName"
+          class="mx-1"
+          v-if="checkTeacher"
           >修改组名</v-btn
-        ><v-btn color="error" @click="deleteGroup" class="mx-1" v-if="checkTeacher">删除本组</v-btn>
+        >
+        <v-btn
+          color="error"
+          @click="deleteGroup"
+          class="mx-1"
+          v-if="checkTeacher"
+          >删除本组</v-btn
+        >
       </div>
     </div>
     <v-container fluid class="tw-px-8">
@@ -82,20 +100,81 @@
         </v-row>
       </v-card>
     </v-dialog>
+
+    <v-dialog v-model="releaseDialog" max-width="800px" max-height="600px">
+      <v-card class="pa-5">
+        <v-row>
+          <v-col>
+            <v-card-title class="text-h5">发布公告</v-card-title>
+            <v-card-text>
+              <v-form ref="releaseForm" v-model="releaseValid">
+                <v-text-field
+                  v-model="releaseName"
+                  :rules="[
+                    (v) => !!v || '公告名不能为空',
+                    (v) => v.length < 10 || '公告名不能超过10个字符',
+                  ]"
+                  label="请输入公告名"
+                  required
+                ></v-text-field>
+                <v-input
+                  v-model="releaseContent"
+                  :rules="[
+                    (v) => !!v || '公告内容不能为空',
+                    (v) => v.length < 500 || '公告内容不能超过500个',
+                  ]"
+                  :count="500"
+                  required
+                >
+                  <md-editor class="tw-w-full" v-model="releaseContent" />
+                </v-input>
+                <v-checkbox
+                  v-model="isMail"
+                  label="是否需要邮件通知"
+                  class=""
+                ></v-checkbox>
+              </v-form>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="primary" text @click="cancelRelease()">取消</v-btn>
+              <v-btn
+                color="primary"
+                text
+                :loading="releaseLoading"
+                :disabled="releaseLoading"
+                @click="confirmRelease()"
+                >确定</v-btn
+              >
+              <v-spacer></v-spacer>
+            </v-card-actions>
+          </v-col>
+        </v-row>
+      </v-card>
+    </v-dialog>
   </v-card>
 </template>
 
 <script>
+import MdEditor from "@/components/MdEditor.vue";
 import api from "@/api/api";
 import DeleteDialog from "@/components/DeleteDialog.vue";
 export default {
   props: ["groupId"],
   components: {
     DeleteDialog,
+    MdEditor,
   },
   data() {
     return {
-      myrole:null,
+      releaseLoading: false,
+      releaseName: "",
+      isMail: false,
+      releaseDialog: false,
+      releaseValid: false,
+      releaseContent: "",
+
+      myrole: null,
       name: null,
       memberNum: null,
       assistantNum: null,
@@ -111,23 +190,61 @@ export default {
     this.getDataFromApi();
     this.getMyRole();
   },
-  computed:{
-    checkTeacher: function(){
-      return this.myrole == 'teacher'
-    }
+  computed: {
+    checkTeacher: function () {
+      return this.myrole == "teacher";
+    },
   },
   methods: {
+    releaseAnnouncement() {
+      this.releaseDialog = true;
+    },
+    cancelRelease() {
+      this.isMail = false;
+      this.releaseName = "";
+      this.releaseContent = "";
+      this.$refs.releaseForm.resetValidation();
+      this.releaseDialog = false;
+    },
+    confirmRelease() {
+      let temp_map = {
+        0: "成功",
+        "-1": "失败",
+      };
+
+      if (this.$refs.releaseForm.validate()) {
+        this.releaseLoading = true;
+        api.forumFactory
+          .addForum(
+            this.groupId,
+            this.releaseName,
+            this.releaseContent,
+            true,
+            this.isMail
+          )
+          .then((response) => {
+            this.$emit("editName", temp_map[response.code]);
+            this.releaseLoading = false;
+            this.cancelRelease();
+          })
+          .catch(() => {
+            this.$emit("editName", "未知错误");
+            this.releaseLoading = false;
+            this.cancelRelease();
+          });
+      }
+    },
     getMyRole() {
       api.authFactory.getRole().then((response) => {
         this.myrole = response.content;
       });
     },
     getDataFromApi() {
-      api.groupFactory.getDataInGroup(this.groupId).then((response)=>{
-        this.name = response.content.groupName
-        this.memberNum = response.content.memberNum
-        this.assistantNum = response.content.assistantNum
-      })
+      api.groupFactory.getDataInGroup(this.groupId).then((response) => {
+        this.name = response.content.groupName;
+        this.memberNum = response.content.memberNum;
+        this.assistantNum = response.content.assistantNum;
+      });
     },
     closeEditingDialog() {
       this.editingDialog = false;
