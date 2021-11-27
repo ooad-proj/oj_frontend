@@ -42,13 +42,24 @@
           </v-card></v-col
         ></v-row
       >
+
+      <v-row>
+        <v-col>
+          <v-card class="pa-4">
+            <p class="tw-text-bg tw-font-bold">NMSL</p>
+            <line-chart :height="300" :data="chart.data" :labels="chart.labels"></line-chart>
+          </v-card>
+        </v-col>
+      </v-row>
     </v-container>
   </div>
 </template>
 
 <script>
 import api from "../../../api/api";
+import LineChart from "@/components/LineChart.vue"
 export default {
+  components: {LineChart},
   methods: {
     getInfo() {
       Promise.all([
@@ -79,6 +90,10 @@ export default {
       },
       group: {},
       record: {},
+      chart: {
+        labels: [1,2,3],
+        data: [1,2,3]
+      }
     };
   },
   mounted() {

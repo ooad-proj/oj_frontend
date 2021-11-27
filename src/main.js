@@ -11,6 +11,8 @@ import vueCodeditor from "vue-codeditor";
 Vue.component(vueCodeditor)
 Vue.config.productionTip = false
 Vue.use(mavonEditor)
+import Chart from 'vue2-frappe'
+Vue.use(Chart)
 let vue = new Vue({
   store,
   router,
