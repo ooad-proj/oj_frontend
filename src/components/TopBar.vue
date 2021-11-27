@@ -10,10 +10,10 @@
       <button class=" tw-rounded-md tw-transition-all hover:tw-bg-gray-500 tw-p-2 tw-px-1 sm:tw-px-4" @click="$router.push('/problemSet')">
         <v-icon class=" white--text">mdi-file-question</v-icon> <span class=" tw-hidden sm:tw-inline">问题</span>
       </button>
-      <button class=" tw-rounded-md tw-transition-all hover:tw-bg-gray-500 tw-p-2 tw-px-1 sm:tw-px-4" @click="$router.push('/')">
+      <button class=" tw-rounded-md tw-transition-all hover:tw-bg-gray-500 tw-p-2 tw-px-1 sm:tw-px-4" @click="$router.push('/record')">
         <v-icon class=" white--text">mdi-format-list-bulleted</v-icon> <span class=" tw-hidden sm:tw-inline">记录</span>
       </button>
-      <button class=" tw-rounded-md tw-transition-all hover:tw-bg-gray-500 tw-p-2 tw-px-1 sm:tw-px-4" @click="$router.push('/')">
+      <button class=" tw-rounded-md tw-transition-all hover:tw-bg-gray-500 tw-p-2 tw-px-1 sm:tw-px-4" @click="$router.push('/rank')">
         <v-icon class=" white--text">mdi-chevron-triple-up</v-icon> <span class=" tw-hidden sm:tw-inline">排名</span>
       </button>
       <button class=" tw-rounded-md tw-transition-all hover:tw-bg-gray-500 tw-p-2 tw-px-1 sm:tw-px-4" @click="$router.push('/contest')">
