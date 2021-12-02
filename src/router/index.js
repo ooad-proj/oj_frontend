@@ -84,6 +84,16 @@ const routes = [
         name:'recordPage',
         component: () => import('../views/foreground/record/record.vue'),
       },
+      {
+        path: 'forum/:groupId',
+        name:'forumPage',
+        component: () => import('../views/foreground/forum/forumView.vue'),
+      },
+      {
+        path: 'forum/:groupId/:postId',
+        name:'commentPage',
+        component: () => import('../views/foreground/forum/comment/comment.vue'),
+      },
     ]
   },
   {

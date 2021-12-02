@@ -167,6 +167,8 @@ export default {
   },
   data() {
     return {
+      publicContent:[],
+
       releaseLoading: false,
       releaseName: "",
       isMail: false,
@@ -245,6 +247,7 @@ export default {
         this.memberNum = response.content.memberNum;
         this.assistantNum = response.content.assistantNum;
       });
+
     },
     closeEditingDialog() {
       this.editingDialog = false;
