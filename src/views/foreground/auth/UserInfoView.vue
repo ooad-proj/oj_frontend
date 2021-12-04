@@ -84,9 +84,10 @@ export default {
         let info = resps[0];
         this.basic = info.content;
         api.submitFactory.getSubmitTimes(this.basic.id).then(resp => {
-          console.log(resp.content.data)
           this.$refs.chart.dataStd[0].values = resp.content.data
-          this.$refs.chart.labels = this.fliterLabel(resp.content.labels)
+          this.$refs.chart.labels = this.fliterLabel(resp.content.label)
+          // this.$refs.chart.dataStd[0].values = [1,2,3]
+          // this.$refs.chart.labels = this.fliterLabel(['1','2','3'])
         })
         this.group = resps[1].content;
         this.role = resps[2].content;

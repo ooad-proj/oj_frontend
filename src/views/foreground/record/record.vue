@@ -104,9 +104,9 @@ export default {
   data() {
     return {
       searchLoading:false,
-      userId: null,
-      problemId: null,
-      stateCode: null,
+      userId: "",
+      problemId: "",
+      stateCode: "",
       options: {},
       loading: false,
       totalPage: 100,
