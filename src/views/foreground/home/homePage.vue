@@ -74,7 +74,7 @@ export default {
   methods: {
     getDataFromApi() {
       Promise.all([
-        api.submitFactory.getSubmitTimes(null)
+        api.submitFactory.getSubmitTimes("")
       ]).then((resps) => {
         this.value = resps[0].content.data
       })

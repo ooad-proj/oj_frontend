@@ -14,7 +14,7 @@
         @click="$router.push('/home')"
       >
         <v-icon class="white--text">mdi-home</v-icon>
-        <span class="tw-hidden sm:tw-inline">首页</span>
+        <span class="tw-hidden lg:tw-inline">首页</span>
       </button>
       <button
         class="
@@ -26,7 +26,7 @@
         @click="$router.push('/problemSet')"
       >
         <v-icon class="white--text">mdi-file-question</v-icon>
-        <span class="tw-hidden sm:tw-inline">问题</span>
+        <span class="tw-hidden lg:tw-inline">问题</span>
       </button>
       <button
         class="
@@ -38,7 +38,7 @@
         @click="$router.push('/record')"
       >
         <v-icon class="white--text">mdi-format-list-bulleted</v-icon>
-        <span class="tw-hidden sm:tw-inline">记录</span>
+        <span class="tw-hidden lg:tw-inline">记录</span>
       </button>
       <button
         class="
@@ -50,7 +50,7 @@
         @click="$router.push('/rank')"
       >
         <v-icon class="white--text">mdi-chevron-triple-up</v-icon>
-        <span class="tw-hidden sm:tw-inline">排名</span>
+        <span class="tw-hidden lg:tw-inline">排名</span>
       </button>
       <button
         class="
@@ -62,7 +62,7 @@
         @click="$router.push('/contest')"
       >
         <v-icon class="white--text">mdi-trophy</v-icon>
-        <span class="tw-hidden sm:tw-inline">竞赛</span>
+        <span class="tw-hidden lg:tw-inline">竞赛</span>
       </button>
 
       <button
@@ -75,7 +75,7 @@
         @click="$router.push('/forum/0')"
       >
         <v-icon class="white--text">mdi-chat-processing-outline</v-icon>
-        <span class="tw-hidden sm:tw-inline">讨论</span>
+        <span class="tw-hidden lg:tw-inline">讨论</span>
       </button>
       <!-- <v-btn depressed class=" darken-3 grey white--text" href="/#/home">
         <v-icon>mdi-home</v-icon><span class=" tw-hidden">首页</span>
