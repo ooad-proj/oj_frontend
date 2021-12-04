@@ -158,7 +158,7 @@
                   :count="500"
                   required
                 >
-                  <md-editor class="tw-w-full" v-model="info.content" />
+                  <md-editor class="tw-w-full" v-model="editInfo.content" />
                 </v-input>
                 <v-checkbox
                   v-model="editInfo.goPublic"
@@ -382,6 +382,7 @@ export default {
       this.editDialog = false;
     },
     confirmEdit() {
+      console.log(this.editInfo.content)
       api.forumFactory.editPost(this.$route.params.postId,this.editInfo).then((resposne)=>{
         if(resposne.code == 0){
           this.$refs.sb.warn("成功")

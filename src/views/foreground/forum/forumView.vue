@@ -234,7 +234,7 @@ export default {
       if (this.$refs.releaseForm.validate()) {
         this.releaseLoading = true;
         api.forumFactory
-          .addForum(0, this.releaseName, this.releaseContent, this.isPublic, this.isMail)
+          .addForum(this.$route.params.groupId, this.releaseName, this.releaseContent, this.isPublic, this.isMail)
           .then((response) => {
             this.$emit("editName", temp_map[response.code]);
             this.releaseLoading = false;
