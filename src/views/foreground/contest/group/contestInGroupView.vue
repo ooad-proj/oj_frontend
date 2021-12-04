@@ -2,7 +2,14 @@
   <div>
     <v-container grid-list-xs>
       <v-card class="pa-5">
-        <p class="tw-text-xl tw-font-bold">竞赛页</p>
+        <div class="tw-flex tw-justify-between tw-items-center">
+          <div>
+            <p class="tw-text-xl tw-font-bold">竞赛页</p>
+          </div>
+
+          <v-btn color="primary" @click="goToForum()">讨论版</v-btn>
+        </div>
+
         <v-data-table
           :headers="headers"
           :items="tableData"
@@ -13,7 +20,6 @@
             itemsPerPageOptions: [5, 10, 15],
           }"
         >
-        
           <template v-slot:[`item.enter`]="{ item }">
             <v-btn text color="primary" @click="goInProblem(item)">
               <v-icon left>mdi-door-open</v-icon>
@@ -59,7 +65,7 @@ export default {
         { text: "我的分数", value: "myScore", sortable: false },
         { text: "总分数", value: "totalScore", sortable: false },
         { text: "进入竞赛", value: "enter", sortable: false },
-         { text: "查看排名", value: "rank", sortable: false },
+        { text: "查看排名", value: "rank", sortable: false },
       ],
       loading: false,
       page: 1,
@@ -133,6 +139,14 @@ export default {
         name: "contestRank",
         params: {
           contestId: item.contestId,
+        },
+      });
+    },
+    goToForum() {
+      this.$router.push({
+        name: "forumPage",
+        params: {
+          groupId: this.$route.params.groupId,
         },
       });
     },
