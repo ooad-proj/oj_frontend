@@ -123,6 +123,7 @@ export default {
           value: "resultId",
         },
         { text: "用户Id", value: "userId", sortable: false },
+        { text: "问题Id", value: "problemId", sortable: false },
         { text: "提交时间", value: "submitTime", sortable: false },
         { text: "成绩", value: "score", sortable: false },
       ],
@@ -147,6 +148,10 @@ export default {
         .then((response) => {
             console.log(response)
           this.tableData = response.content.list;
+          this.tableData.forEach((item)=>{
+            item.submitTime = this.timestampToTime(item.submitTime/1000)
+            return item
+          })
           this.totalAmont = response.content.totalAmont;
           this.totalPage = response.content.totalPage;
           this.loading = false;
@@ -158,6 +163,21 @@ export default {
           this.loading = false;
         });
     },
+    timestampToTime(timestamp) {
+        let date = new Date(parseInt(timestamp)); //时间戳为10位需*1000，时间戳为13位的话不需乘1000
+        let Y = date.getFullYear() + "-";
+        let M =
+          (date.getMonth() + 1 < 10
+            ? "0" + (date.getMonth() + 1)
+            : date.getMonth() + 1) + "-";
+        let D = date.getDate() + " ";
+        let h = date.getHours() + ":";
+        let m = date.getMinutes();
+        if (parseInt(m) < 10) {
+          m = "0" + m;
+        }
+        return Y + M + D + h + m;
+      },
   },
 };
 </script>
