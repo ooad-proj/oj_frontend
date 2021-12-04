@@ -149,7 +149,8 @@ export default {
         this.title = response.content.contest.title;
         this.nowTime = new Date(Date.now()).getTime();
         this.value =
-          (this.nowTime - this.startTime) / (this.endTime - this.startTime);
+          (this.nowTime - this.startTime) / (this.endTime - this.startTime)*100;
+        this.value = this.value > 100 ? 100 : this.value
         console.log(response);
       });
     },

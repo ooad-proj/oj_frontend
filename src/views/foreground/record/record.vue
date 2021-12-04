@@ -80,6 +80,9 @@
           <template v-slot:[`item.resultId`]="{ item }">
             <div @click="goDetail(item)">{{ item.resultId }}</div>
           </template>
+          <template v-slot:[`item.stateCode`]="{ item }">
+            <div :class="colorMap[item.stateCode]" class=" tw-font-bold">{{ item.stateCode }}</div>
+          </template>
         </v-data-table>
 
         <div class="text-center pt-2">
@@ -106,6 +109,14 @@ export default {
   },
   data() {
     return {
+         colorMap: {
+        WA: "tw-text-red-600",
+        MLE: "tw-text-yellow-600",
+        TLE: "tw-text-yellow-600",
+        RE: "tw-text-yellow-600",
+        AC: "tw-text-green-600",
+        CE: "tw-text-purple-600",
+      },
       searchLoading: false,
       userId: "",
       problemId: "",
@@ -128,6 +139,7 @@ export default {
         { text: "用户Id", value: "userId", sortable: false },
         { text: "问题Id", value: "problemId", sortable: false },
         { text: "提交时间", value: "submitTime", sortable: false },
+         { text: "状态码", value: "stateCode", sortable: false},
         { text: "成绩", value: "score", sortable: false },
       ],
     };

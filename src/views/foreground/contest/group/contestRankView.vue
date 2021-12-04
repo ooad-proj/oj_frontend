@@ -150,7 +150,9 @@ export default {
       if (h !== "00") res += `${h}:`;
       if (m !== "00") res += `${m}:`;
       res += `${s}`;
-
+      if(value==0){
+        return "--:--:--"
+      }
       return res;
     },
     getDataFromApi() {
