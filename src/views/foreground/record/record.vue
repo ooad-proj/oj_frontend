@@ -58,7 +58,7 @@
               :loading="searchLoading"
               :disabled="searchLoading"
               color="primary"
-              class="ma-3 white--text "
+              class="ma-3 white--text"
               @click="getDataFromApi(1)"
             >
               搜索
@@ -77,6 +77,9 @@
             itemsPerPageOptions: [5, 10, 15],
           }"
         >
+          <template v-slot:[`item.resultId`]="{ item }">
+            <div @click="goDetail(item)">{{ item.resultId }}</div>
+          </template>
         </v-data-table>
 
         <div class="text-center pt-2">
@@ -103,7 +106,7 @@ export default {
   },
   data() {
     return {
-      searchLoading:false,
+      searchLoading: false,
       userId: "",
       problemId: "",
       stateCode: "",
@@ -139,24 +142,30 @@ export default {
   },
   methods: {
     getDataFromApi(val) {
-        if(val==1){
-            this.searchLoading = true
-        }
+      if (val == 1) {
+        this.searchLoading = true;
+      }
       this.loading = true;
       api.recordFactory
-        .getRecord(this.userId,this.problemId,this.stateCode,this.page, this.itemsPerPage)
+        .getRecord(
+          this.userId,
+          this.problemId,
+          this.stateCode,
+          this.page,
+          this.itemsPerPage
+        )
         .then((response) => {
-            console.log(response)
+          console.log(response);
           this.tableData = response.content.list;
-          this.tableData.forEach((item)=>{
-            item.submitTime = this.timestampToTime(item.submitTime/1000)
-            return item
-          })
+          this.tableData.forEach((item) => {
+            item.submitTime = this.timestampToTime(item.submitTime / 1000);
+            return item;
+          });
           this.totalAmont = response.content.totalAmont;
           this.totalPage = response.content.totalPage;
           this.loading = false;
           this.searchLoading = false;
-          console.log(this.tableData)
+          console.log(this.tableData);
         })
         .catch(() => {
           this.$refs.sb.warn("未知错误");
@@ -164,20 +173,29 @@ export default {
         });
     },
     timestampToTime(timestamp) {
-        let date = new Date(parseInt(timestamp)); //时间戳为10位需*1000，时间戳为13位的话不需乘1000
-        let Y = date.getFullYear() + "-";
-        let M =
-          (date.getMonth() + 1 < 10
-            ? "0" + (date.getMonth() + 1)
-            : date.getMonth() + 1) + "-";
-        let D = date.getDate() + " ";
-        let h = date.getHours() + ":";
-        let m = date.getMinutes();
-        if (parseInt(m) < 10) {
-          m = "0" + m;
-        }
-        return Y + M + D + h + m;
-      },
+      let date = new Date(parseInt(timestamp)); //时间戳为10位需*1000，时间戳为13位的话不需乘1000
+      let Y = date.getFullYear() + "-";
+      let M =
+        (date.getMonth() + 1 < 10
+          ? "0" + (date.getMonth() + 1)
+          : date.getMonth() + 1) + "-";
+      let D = date.getDate() + " ";
+      let h = date.getHours() + ":";
+      let m = date.getMinutes();
+      if (parseInt(m) < 10) {
+        m = "0" + m;
+      }
+      return Y + M + D + h + m;
+    },
+    goDetail(val) {
+      console.log("asdsad");
+      this.$router.push({
+        name: "recordDetail",
+        params: {
+          resultId: val.resultId,
+        },
+      });
+    },
   },
 };
 </script>

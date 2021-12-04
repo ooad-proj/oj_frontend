@@ -94,6 +94,11 @@ const routes = [
         name:'commentPage',
         component: () => import('../views/foreground/forum/comment/comment.vue'),
       },
+      {
+        path: 'record/:resultId',
+        name:'recordDetail',
+        component: () => import('../views/foreground/record/recordDetail.vue'),
+      },
     ]
   },
   {
