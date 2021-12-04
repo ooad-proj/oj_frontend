@@ -39,7 +39,7 @@
 
         <div
           v-for="item in publicContent"
-          :key="item.postId"
+          :key="-item.postId"
           :title="item.title"
           class="
             tw-rounded-sm tw-border-2 tw-border-solid tw-border-gray-200 tw-p-4
