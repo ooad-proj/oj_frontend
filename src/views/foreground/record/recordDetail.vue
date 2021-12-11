@@ -45,6 +45,15 @@
           </v-expansion-panel>
         </v-expansion-panels>
       </div>
+      <div class="tw-mt-5">
+        <vue-codeditor
+          style="font-size: 16px; min-height: 600px"
+          theme="katzenmilch"
+          :mode="select"
+          :readonly="'true'"
+          v-model="code"
+        />
+      </div>
     </v-card>
   </v-container>
 </template>
@@ -146,6 +155,7 @@ export default {
         .getsubmitAnswer(this.$route.params.resultId)
         .then((response) => {
           this.results = response.content.records;
+          this.code = response.content.code;
           console.log(response);
         });
     },
