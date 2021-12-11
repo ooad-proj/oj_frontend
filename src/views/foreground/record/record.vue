@@ -1,11 +1,11 @@
 <template>
   <div>
     <SnackBar ref="sb"></SnackBar>
-    <v-container grid-list-xs>
+    <v-container grid-list-xs fluid class=" tw-px-10">
       <v-card class="pa-5">
         <p class="tw-text-xl tw-font-bold">提交记录</p>
         <v-row>
-          <v-col md="3">
+          <v-col md="2">
             <v-row>
               <v-col cols="4">
                 <div class="tw-mt-6 tw-ml-8">用户:</div>
@@ -21,7 +21,7 @@
             </v-row>
           </v-col>
 
-          <v-col md="3">
+          <v-col md="2">
             <v-row>
               <v-col cols="4">
                 <div class="tw-mt-6 tw-ml-8">问题:</div>
@@ -37,7 +37,7 @@
             </v-row>
           </v-col>
 
-          <v-col md="3">
+          <v-col md="2">
             <v-row>
               <v-col cols="4">
                 <div class="tw-mt-6 tw-ml-8">状态:</div>
@@ -53,7 +53,39 @@
             </v-row>
           </v-col>
 
-          <v-col md="3">
+          <v-col md="2">
+            <v-row>
+              <v-col cols="4">
+                <div class="tw-mt-6 tw-ml-8">组Id:</div>
+              </v-col>
+              <v-col cols="6">
+                <v-text-field
+                  v-model="groupId"
+                  label="组Id"
+                  single-line
+                ></v-text-field>
+              </v-col>
+              <v-spacer></v-spacer>
+            </v-row>
+          </v-col>
+
+          <v-col md="2">
+            <v-row>
+              <v-col cols="4">
+                <div class="tw-mt-6 tw-ml-8">竞赛:</div>
+              </v-col>
+              <v-col cols="6">
+                <v-text-field
+                  v-model="contestId"
+                  label="竞赛Id"
+                  single-line
+                ></v-text-field>
+              </v-col>
+              <v-spacer></v-spacer>
+            </v-row>
+          </v-col>
+
+          <v-col md="2">
             <v-btn
               :loading="searchLoading"
               :disabled="searchLoading"
@@ -72,9 +104,9 @@
           :items="tableData"
           hide-default-footer
           :loading="loading"
+          :items-per-page="itemsPerPage"
           :footer-props="{
             showFirstLastPage: true,
-            itemsPerPageOptions: [5, 10, 15],
           }"
         >
           <template v-slot:[`item.resultId`]="{ item }">
@@ -109,6 +141,10 @@ export default {
   },
   data() {
     return {
+
+      contestId: '',
+      groupId: '',
+
          colorMap: {
         WA: "tw-text-red-600",
         MLE: "tw-text-yellow-600",
@@ -117,6 +153,7 @@ export default {
         AC: "tw-text-green-600",
         CE: "tw-text-purple-600",
       },
+
       searchLoading: false,
       userId: "",
       problemId: "",
@@ -128,7 +165,7 @@ export default {
       tableData: [],
       page: 1,
       pageCount: 0,
-      itemsPerPage: 10,
+      itemsPerPage: 13,
       headers: [
         {
           text: "提交Id",
@@ -137,6 +174,8 @@ export default {
           value: "resultId",
         },
         { text: "用户Id", value: "userId", sortable: false },
+        { text: "班级Id", value: "groupId", sortable: false },
+        { text: "竞赛Id", value: "contestId", sortable: false },
         { text: "问题Id", value: "problemId", sortable: false },
         { text: "提交时间", value: "submitTime", sortable: false },
          { text: "状态码", value: "stateCode", sortable: false},
@@ -163,12 +202,15 @@ export default {
           this.userId,
           this.problemId,
           this.stateCode,
+          this.groupId,
+          this.contestId,
           this.page,
           this.itemsPerPage
         )
         .then((response) => {
           console.log(response);
           this.tableData = response.content.list;
+          console.log(this.tableData)
           this.tableData.forEach((item) => {
             item.submitTime = this.timestampToTime(item.submitTime / 1000);
             return item;
