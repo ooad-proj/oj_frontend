@@ -1,5 +1,6 @@
 <template>
   <div>
+    <SnackBar ref="sb"></SnackBar>
     <v-container grid-list-xs>
       <v-card class="pa-5">
         <p class="tw-text-xl tw-font-bold">竞赛排名</p>
@@ -54,8 +55,12 @@
   </div>
 </template>
 <script>
+import SnackBar from "@/components/SnackBar.vue";
 import api from "@/api/api";
 export default {
+   components: {
+    SnackBar,
+  },
   computed: {
     itemWich: function () {
       return "tw-bg-red-100 tw-p-2 tw-h-48 tw-overflow-auto tw-rounded-md";
@@ -75,45 +80,13 @@ export default {
         PINK: "tw-text-pink-600",
       },
       options: {},
-      problems: ["A", "B", "C", "D"],
+      problems: [],
       headers: [
-        {
-          text: "用户名",
-          align: "start",
-          sortable: false,
-          value: "userName",
-        },
-        { text: "A", value: "A", sortable: false },
-        { text: "B", value: "B", sortable: false },
-        { text: "C", value: "C", sortable: false },
-        { text: "D", value: "D", sortable: false },
-        { text: "E", value: "E", sortable: false },
-        { text: "F", value: "F", sortable: false },
-        { text: "G", value: "G", sortable: false },
-        { text: "H", value: "H", sortable: false },
-        { text: "I", value: "I", sortable: false },
-        { text: "总分", value: "totalScore", sortable: false },
       ],
       loading: false,
       page: 1,
       itemsPerPage: 10,
       tableData: [
-        {
-          userName: "aaa",
-          A: { color: "GREEN", score: 75, time: 798320000 },
-          B: { color: "ORANGE", score: 75, time: 798320000 },
-          C: { color: "RED", score: 75, time: 798320000 },
-          D: { color: "GREEN", score: 75, time: 798320000 },
-          totalScore: { color: "GREEN", score: 100, time: 798320000 },
-        },
-        {
-          userName: "aaa",
-          A: { color: "GREEN", score: 75, time: 798320000 },
-          B: { color: "GREEN", score: 75, time: 798320000 },
-          C: { color: "GREEN", score: 75, time: 798320000 },
-          D: { color: "GREEN", score: 75, time: 798320000 },
-          totalScore: { color: "GREEN", score: 100, time: 798320000 },
-        },
       ],
       totalPage: 0,
     };
@@ -150,7 +123,9 @@ export default {
       if (h !== "00") res += `${h}:`;
       if (m !== "00") res += `${m}:`;
       res += `${s}`;
-
+      if(value==0){
+        return "--:--:--"
+      }
       return res;
     },
     getDataFromApi() {
@@ -158,6 +133,10 @@ export default {
       api.rankFactory
         .getRankInContest(this.$route.params.contestId)
         .then((response) => {
+          if (response.content == null){ 
+            this.loading =false
+            return;
+          }
           this.tableData = response.content.tableData;
           this.problems = response.content.problems;
           this.headers = [
@@ -175,6 +154,10 @@ export default {
           this.totalPage = response.content.totalPage
           console.log(this.totalPage)
           this.loading = false
+        }).catch((reject)=>{
+          console.log(reject)
+          this.loading = false
+          this.$refs.sb.warn("未知错误")
         });
     },
   },
