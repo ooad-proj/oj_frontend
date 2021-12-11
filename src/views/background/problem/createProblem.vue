@@ -347,11 +347,24 @@
             <v-row v-if="isTemplate">
               <v-col>
                 <div v-for="(language, index) in select" :key="index">
-                  <v-textarea
+                  <!-- <v-divider my-5></v-divider> -->
+                  <div class="tw-font-bold tw-text-xl tw-my-5">
+                    {{ language }}的模板
+                  </div>
+                  <div>
+                    <vue-codeditor
+                      style="font-size: 16px; min-height: 600px"
+                      theme="katzenmilch"
+                      :mode="language"
+                      v-model="content[language]"
+                    />
+                  </div>
+
+                  <!-- <v-textarea
                     outlined
                     :label="language + '模板'"
                     v-model="content[language]"
-                  ></v-textarea>
+                  ></v-textarea> -->
                 </div>
               </v-col>
             </v-row>
@@ -418,7 +431,7 @@
                     @click="uploadSample"
                     >上传样例</v-btn
                   >
-                  <v-btn color="primary">下载样例</v-btn>
+                  <v-btn color="primary" @click="download()">下载样例</v-btn>
                 </div>
               </v-col>
             </v-row>
@@ -553,6 +566,7 @@
 </template>
 
 <script>
+import urlFactory from "@/api/url/urlFactory.js";
 import api from "@/api/api";
 import SnackBar from "../../../components/SnackBar.vue";
 import MdEditor from "../../../components/MdEditor.vue";
@@ -581,7 +595,7 @@ export default {
   },
   data() {
     return {
-      allowDetailedResult:false,
+      allowDetailedResult: false,
       isTemplate: false,
       prevRoute: null,
       test: false,
@@ -595,11 +609,9 @@ export default {
       languages: ["python", "java"],
       select: ["java"],
 
-
-
       content: {
-        python: "asddsa",
-        java: "",
+        python: "##--##--template starts here\n\n\n\n\n##--##--template ends here\n",
+        java: "//--//--template starts here\n\n\n\n\n//--//--template ends here\n",
       },
       ////////////////////////样例文件//////////////////////
       testCaseAmount: null,
@@ -637,6 +649,15 @@ export default {
     };
   },
   methods: {
+    download() {
+      let url = urlFactory.sample_Download_URL;
+      url = url + this.testCaseId;
+      let link = document.createElement("a");
+      link.style.display = "none";
+      link.href = url;
+      document.body.appendChild(link);
+      link.click();
+    },
     confirm() {
       this.$route.query.ifEdit ? this.submitEdit() : this.submit();
     },
@@ -830,8 +851,8 @@ export default {
             this.totalScore = response.content.scoreRule.totalScore;
             this.punishRule = response.content.scoreRule.punishRule;
             this.allowPartial = response.content.scoreRule.allowPartial;
-            if(response.content.submitTemplate.length>0){
-              this.isTemplate = true
+            if (response.content.submitTemplate.length > 0) {
+              this.isTemplate = true;
             }
           } else {
             //TODO error Page
@@ -839,6 +860,7 @@ export default {
             console.log(a);
           }
           console.log("???????" + this.description);
+          console.log("asdasdas");
         });
     },
   },

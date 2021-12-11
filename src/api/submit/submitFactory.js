@@ -39,6 +39,11 @@ export default {
         return http.get('api/submit/get/allTimes/' , {
             userId: userId
         })
+    },
+    getTemplate(problemId){
+        return http.get('/api/submit/template/' + problemId ,{
+                
+        })
     }
 
 }
