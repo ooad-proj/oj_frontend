@@ -39,7 +39,7 @@
                     : 'tw-bg-red-100 tw-text-red-600'
                 "
               >
-                <pre class="tw-font-mono">{{ item.message }}</pre>
+                <pre class="tw-font-mono tw-text-xs">{{ item.message }}</pre>
               </div>
             </v-expansion-panel-content>
           </v-expansion-panel>

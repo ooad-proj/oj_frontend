@@ -35,19 +35,43 @@
       <v-container grid-list-xs>
         <v-row>
           <v-col md="8">
-            <v-card>
-              <p class=" tw-text-xl tw-font-bold pa-5 tw-h-48">STH1</p>
+            <v-card class=" pa-5 tw-my-4">
+              <p class=" tw-text-xl tw-font-bold">最近公告</p>
+              <div class=" tw-flex tw-justify-between tw-p-2 tw-border tw-border-solid">
+                <div>标题</div>
+                <div>发布者</div>
+              </div>
+              <div @click="$router.push({name: 'commentPage',params: {groupId: 0,postId: i.postId,},})" v-for="i in announcements" :key="i.postId" class=" tw-flex tw-justify-between tw-p-2 tw-border tw-border-solid">
+                <div>{{i.title}}</div>
+                <div>{{i.userName}}</div>
+              </div>
             </v-card>
-            <v-card>
-              <p class=" tw-text-xl tw-font-bold pa-5 tw-h-96">STH1</p>
+            <v-card class=" pa-5 tw-my-4">
+              <p class=" tw-text-xl tw-font-bold">排名</p>
+              <div class=" tw-flex tw-justify-between tw-p-2 tw-border tw-border-solid">
+                <div>用户名</div>
+                <div>正确率</div>
+              </div>
+              <div v-for="(i,index) in rank" :key="index" class=" tw-flex tw-justify-between tw-p-2 tw-border tw-border-solid">
+                <div>{{i.rank}} {{i.userName}}</div>
+                <div>{{i.correctRate}}</div>
+              </div>
             </v-card>
           </v-col>
           <v-col md="4">
-            <v-card>
-              <p class=" tw-text-xl tw-font-bold pa-5 tw-h-64">STH1</p>
+            <v-card class=" pa-5 tw-my-4">
+              <p class=" tw-text-xl tw-font-bold">临期比赛</p>
+              <div class=" tw-flex tw-justify-between tw-p-2 tw-border tw-border-solid">
+                <div>竞赛名</div>
+                <div>剩余时间</div>
+              </div>
+              <div v-for="(i,index) in ddls" :key="index" class=" tw-flex tw-justify-between tw-p-2 tw-border tw-border-solid">
+                <div>{{i.title}}</div>
+                <div>{{formatSeconds(i.timeLeft / 1000)}}</div>
+              </div>
             </v-card>
-            <v-card>
-              <p class=" tw-text-xl tw-font-bold pa-5 tw-h-48">STH1</p>
+            <v-card class=" pa-5 tw-my-4">
+              <p class=" tw-text-xl tw-font-bold">STH1</p>
             </v-card>
           </v-col>
         </v-row>
@@ -69,14 +93,47 @@ export default {
     return {
       filter: 0,
       value: [0,0],
+      announcements: [],
+      rank: [],
+      ddls: []
     }
   },
   methods: {
+    formatSeconds(value) {
+      let result = parseInt(value);
+      let h =
+        Math.floor(result / 3600) < 10
+          ? "0" + Math.floor(result / 3600)
+          : Math.floor(result / 3600);
+      let m =
+        Math.floor((result / 60) % 60) < 10
+          ? "0" + Math.floor((result / 60) % 60)
+          : Math.floor((result / 60) % 60);
+      let s =
+        Math.floor(result % 60) < 10
+          ? "0" + Math.floor(result % 60)
+          : Math.floor(result % 60);
+
+      let res = "";
+      if (h !== "00") res += `${h}:`;
+      if (m !== "00") res += `${m}:`;
+      res += `${s}`;
+      if(value==0){
+        return "--:--:--"
+      }
+      return res;
+    },
     getDataFromApi() {
       Promise.all([
-        api.submitFactory.getSubmitTimes("")
+        api.submitFactory.getSubmitTimes(""),
+        api.forumFactory.getPublic(0,5),
+        api.rankFactory.getRank(1,10),
+        api.contestFactory.getContestWithDDL(5)
       ]).then((resps) => {
         this.value = resps[0].content.data
+        this.announcements = resps[1].content
+        this.rank = resps[2].content.list
+        this.ddls = resps[3].content
       })
     },
     handleScroll () {

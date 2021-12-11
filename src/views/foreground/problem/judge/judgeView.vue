@@ -99,7 +99,7 @@
                       </div>
                       <div>{{ userResult.timeCost }}</div>
                       <div>{{ userResult.memoryCost }}</div> -->
-                      <pre class="tw-font-mono">{{ userResult.message }}</pre>
+                      <pre class="tw-font-mono tw-text-xs">{{ userResult.message }}</pre>
                     </div>
                   </v-col>
                   <v-col md="6">
@@ -126,7 +126,7 @@
                       </div>
                       <div>{{ standardResult.timeCost }}</div>
                       <div>{{ standardResult.memoryCost }}</div> -->
-                      <pre class="tw-font-mono">{{
+                      <pre class="tw-font-mono tw-text-xs">{{
                         standardResult.message
                       }}</pre>
                     </div>
@@ -220,7 +220,7 @@
                               : 'tw-bg-red-100 tw-text-red-600'
                           "
                         >
-                          <pre class="tw-font-mono">{{ item.message }}</pre>
+                          <pre class="tw-font-mono tw-text-xs">{{ item.message }}</pre>
                         </div>
                       </v-expansion-panel-content>
                     </v-expansion-panel>

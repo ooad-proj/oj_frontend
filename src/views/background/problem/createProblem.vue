@@ -610,8 +610,8 @@ export default {
       select: ["java"],
 
       content: {
-        python: "##--##--template starts here\n\n\n\n\n##--##--template ends here\n",
-        java: "//--//--template starts here\n\n\n\n\n//--//--template ends here\n",
+        python: "##--##--\n# template starts here\n\n\n\n\n# template ends here\n##--##--\n",
+        java: "//--//--\n// template starts here\n\n\n\n\n// template ends here\n//--//--\n",
       },
       ////////////////////////样例文件//////////////////////
       testCaseAmount: null,

@@ -32,5 +32,8 @@ export default {
     },
     getContestInfo(contestId){
         return http.get('/api/contest/'+contestId+'/answering', {})
+    },
+    getContestWithDDL(amount) {
+        return http.get('/api/contest/ddl', {amount: amount})
     }
 }
