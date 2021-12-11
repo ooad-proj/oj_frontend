@@ -251,6 +251,11 @@
                       </v-menu>
                     </v-col>
                   </v-row>
+                  <v-checkbox
+                    v-model="editedItem.access"
+                    label="竞赛是否可见"
+                    class=""
+                  ></v-checkbox>
                 </v-form>
               </v-card-text>
               <v-card-actions>
@@ -364,7 +369,8 @@ export default {
             this.editedItem.title,
             this.editedItem.description,
             this.editedItem.startTime,
-            this.editedItem.endTime
+            this.editedItem.endTime,
+            this.editedItem.access
           )
           .then((response) => {
             let map = { 0: "修改成功", "-1": "失败" };
@@ -382,7 +388,8 @@ export default {
             this.editedItem.title,
             this.editedItem.description,
             this.editedItem.startTime,
-            this.editedItem.endTime
+            this.editedItem.endTime,
+            this.editedItem.access
           )
           .then((response) => {
             let map = { 0: "添加成功", "-1": "失败" };
@@ -473,7 +480,7 @@ export default {
         startTime: "",
         endTime: "",
         description: "",
-        accessible:false,
+        access: false,
       },
 
       editedItem: {
@@ -482,7 +489,7 @@ export default {
         startTime: "",
         endTime: "",
         description: "",
-        accessible:false
+        access: false,
       },
       editedIndex: -1,
       ///////////////////////////////////////////
@@ -503,7 +510,7 @@ export default {
         { text: "结束时间", value: "endTime", sortable: false },
         { text: "修改", value: "revise", sortable: false },
         { text: "删除", value: "delete", sortable: false },
-        { text: "是否可见", value: "accessible", sortable: false },
+        { text: "是否可见", value: "access", sortable: false },
         { text: "进入", value: "enter", sortable: false },
       ],
     };
