@@ -1,7 +1,7 @@
 import axios from 'axios'
 import qs from 'qs'
 import router from '../router/index'
-
+let baseURL = "http://localhost:8082/";
 let instance = axios.create({
   // baseURL:"http://mockjs.docway.net/mock/1itkXEuHAcj"
   // baseURL:"http://mockjs.xiaoyaoji.cn/mock/1itkXEuHAcj"
@@ -73,4 +73,4 @@ let put = function(url, params) {
   })
 });}
 
-export default {instance, get, put, del, post}
+export default {instance, get, put, del, post,baseURL}

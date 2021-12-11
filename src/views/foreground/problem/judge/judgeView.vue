@@ -25,7 +25,6 @@
           <v-col cols="6">
             <div style="height: 600px" class="tw-overflow-y-auto">
               <vue-codeditor
-        
                 style="font-size: 16px; min-height: 600px"
                 theme="katzenmilch"
                 :mode="select"
@@ -38,6 +37,7 @@
             <div class="tw-p-2">选择语言</div>
             <div class="tw-mt-2">
               <v-select
+                @change="changeTemplate()"
                 :items="selections"
                 solo
                 flat
@@ -162,8 +162,23 @@
                       <div>全部数目:{{ this.totalNum }}</div>
                     </v-col>
                   </v-row> -->
-                  <div v-if="this.ifsubmit" class=" tw-px-4 tw-py-2 tw-my-2 tw-text-white tw-rounded-md tw-border-dashed" :class="finialResult == 'AC' ? 'tw-text-green-500 tw-border-green-500': 'tw-text-red-500 tw-border-red-500'">
-                    正确数：{{this.correctNum}}/{{this.totalNum}}
+                  <div
+                    v-if="this.ifsubmit"
+                    class="
+                      tw-px-4
+                      tw-py-2
+                      tw-my-2
+                      tw-text-white
+                      tw-rounded-md
+                      tw-border-dashed
+                    "
+                    :class="
+                      finialResult == 'AC'
+                        ? 'tw-text-green-500 tw-border-green-500'
+                        : 'tw-text-red-500 tw-border-red-500'
+                    "
+                  >
+                    正确数：{{ this.correctNum }}/{{ this.totalNum }}
                   </div>
                 </div>
 
@@ -172,7 +187,7 @@
                     <v-expansion-panel
                       v-for="(item, i) in results"
                       :key="i"
-                      class="grey lighten-4" 
+                      class="grey lighten-4"
                     >
                       <v-expansion-panel-header>
                         <div class="tw-flex tw-justify-around">
@@ -229,6 +244,7 @@ export default {
   },
   mounted() {
     this.getIfHaveAnswer();
+    this.getTemplate();
   },
   computed: {
     answerClass: function () {
@@ -240,7 +256,7 @@ export default {
   },
   data() {
     return {
-      ifsubmit:false,
+      ifsubmit: false,
       ifHaveAnswer: false,
       testLoader: false,
       submitLoader: false,
@@ -312,9 +328,31 @@ export default {
         "-3": "测试机错误",
       },
       submitId: null,
+      templateMap: {
+        java: "",
+        python: "",
+      },
     };
   },
   methods: {
+    changeTemplate() {
+      this.code = this.templateMap[this.select];
+    },
+    getTemplate() {
+      api.submitFactory
+        .getTemplate(this.$route.params.problemId)
+        .then((response) => {
+          let content = response.content;
+          this.templateMap = {};
+          for (let i = 0; i < content.length; i++) {
+            this.templateMap[content[i].language] = content[i].code;
+          }
+          this.changeTemplate()
+        })
+        .catch(() => {
+          this.$refs.sb.warn("未知错误");
+        });
+    },
     getIfHaveAnswer() {
       let map = {
         0: "成功",
@@ -390,7 +428,7 @@ export default {
           this.standardResult = temp.content.standardResult;
           this.userResult = temp.content.userResult;
           this.$refs.sb.warn("测试完成");
-          
+
           break;
         } else if (temp.code == 0) {
           await this.sleep(1000);

@@ -473,6 +473,7 @@ export default {
         startTime: "",
         endTime: "",
         description: "",
+        accessible:false,
       },
 
       editedItem: {
@@ -481,6 +482,7 @@ export default {
         startTime: "",
         endTime: "",
         description: "",
+        accessible:false
       },
       editedIndex: -1,
       ///////////////////////////////////////////
@@ -501,6 +503,7 @@ export default {
         { text: "结束时间", value: "endTime", sortable: false },
         { text: "修改", value: "revise", sortable: false },
         { text: "删除", value: "delete", sortable: false },
+        { text: "是否可见", value: "accessible", sortable: false },
         { text: "进入", value: "enter", sortable: false },
       ],
     };
