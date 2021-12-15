@@ -344,6 +344,8 @@ export default {
     },
     changeTemplate() {
       this.code = this.templateMap[this.select];
+      console.log(this.templateMap)
+      console.log(this.select)
     },
     getTemplate() {
       api.submitFactory
@@ -355,6 +357,7 @@ export default {
           for (let i = 0; i < content.length; i++) {
             this.templateMap[content[i].language] = content[i].code;
           }
+          this.select = content[0].language
           this.changeTemplate()
         })
         .catch(() => {
