@@ -126,7 +126,7 @@
                       </div>
                       <div>{{ standardResult.timeCost }}</div>
                       <div>{{ standardResult.memoryCost }}</div> -->
-                      <pre class="tw-font-mono tw-text-xs">{{
+                      <pre class="tw-font-mono ">{{
                         standardResult.message
                       }}</pre>
                     </div>
@@ -245,6 +245,7 @@ export default {
   mounted() {
     this.getIfHaveAnswer();
     this.getTemplate();
+    this.getProblemInfo();
   },
   computed: {
     answerClass: function () {
@@ -335,6 +336,12 @@ export default {
     };
   },
   methods: {
+    getProblemInfo(){
+      api.problemFactory.getProblemInfo(this.$route.params.problemId).then((response)=>{
+        this.selections = response.content.allowedLanguage
+        this.select = this.selections[0]
+      })
+    },
     changeTemplate() {
       this.code = this.templateMap[this.select];
     },
@@ -343,6 +350,7 @@ export default {
         .getTemplate(this.$route.params.problemId)
         .then((response) => {
           let content = response.content;
+          console.log(response)
           this.templateMap = {};
           for (let i = 0; i < content.length; i++) {
             this.templateMap[content[i].language] = content[i].code;
@@ -368,6 +376,7 @@ export default {
           }
         });
     },
+    
     testAnswer() {
       this.testLoader = true;
       api.submitFactory

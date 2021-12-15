@@ -252,9 +252,9 @@
 
             <v-row>
               <v-col>
-                <v-input :rules="[(v) => !!v || '提示不能为空']" v-model="tips">
+               
                   <md-editor class="tw-w-full" v-model="tips" />
-                </v-input>
+        
               </v-col>
             </v-row>
 
@@ -387,7 +387,7 @@
             </v-row>
 
             <v-row class="tw-mt-4">
-              <v-col md="2">
+              <v-col md="4">
                 <v-input
                   :rules="[(v) => !!v || '必须上传样例']"
                   v-model="testCaseId"
@@ -412,7 +412,7 @@
                   </div>
                 </v-input>
               </v-col>
-              <v-col md="7">
+              <v-col md="5">
                 <v-file-input
                   outlined
                   label="样例"
@@ -516,7 +516,7 @@
               </v-col>
             </v-row>
 
-            <v-row>
+            <!-- <v-row>
               <v-col>
                 <div
                   class="
@@ -531,16 +531,16 @@
                   额外信息
                 </div>
               </v-col>
-            </v-row>
+            </v-row> -->
 
-            <v-row>
+            <!-- <v-row>
               <v-col md="2">
                 <v-checkbox
                   v-model="allowDetailedResult"
                   label="允许学生查看详细结果"
                 ></v-checkbox>
               </v-col>
-            </v-row>
+            </v-row> -->
           </v-container>
 
           <div class="tw-p-10"></div>
@@ -637,8 +637,7 @@ export default {
         { text: "删除", value: "delete", sortable: false, width: 50 },
       ],
       samples: [
-        { input: "asdasd", output: "asdad" },
-        { input: "asdasd", output: "sasd" },
+        { input: "Input...", output: "Output..." }
       ],
       shownId: null,
       title: null,
@@ -650,8 +649,9 @@ export default {
   },
   methods: {
     download() {
-      let url = urlFactory.sample_Download_URL;
+      let url = urlFactory.sample_Download_URL_Start;
       url = url + this.testCaseId;
+      url =url+urlFactory.sample_Download_URL_End;
       let link = document.createElement("a");
       link.style.display = "none";
       link.href = url;
@@ -710,8 +710,7 @@ export default {
       this.inputFormat = "";
       this.outputFormat = "";
       this.samples = [
-        { input: "asdasd", output: "asdad" },
-        { input: "asdasd", output: "sasd" },
+        { input: "Input...", output: "Output..." },
       ];
       this.tips = "";
       this.timeLimit = null;
@@ -719,7 +718,7 @@ export default {
       this.select = ["C++"];
       this.testCaseId = "";
       this.content = {
-        python: "asddsa",
+        python: "",
         java: "",
       };
       this.totalScore = "";
@@ -854,13 +853,7 @@ export default {
             if (response.content.submitTemplate.length > 0) {
               this.isTemplate = true;
             }
-          } else {
-            //TODO error Page
-            let a = 1;
-            console.log(a);
           }
-          console.log("???????" + this.description);
-          console.log("asdasdas");
         });
     },
   },

@@ -8,7 +8,7 @@
           <v-col md="2">
             <v-row>
               <v-col cols="4">
-                <div class="tw-mt-6 tw-ml-8">用户:</div>
+                <div class="tw-mt-6">用户:</div>
               </v-col>
               <v-col cols="6">
                 <v-text-field
@@ -24,7 +24,7 @@
           <v-col md="2">
             <v-row>
               <v-col cols="4">
-                <div class="tw-mt-6 tw-ml-8">问题:</div>
+                <div class="tw-mt-6">问题:</div>
               </v-col>
               <v-col cols="6">
                 <v-text-field
@@ -40,7 +40,7 @@
           <v-col md="2">
             <v-row>
               <v-col cols="4">
-                <div class="tw-mt-6 tw-ml-8">状态:</div>
+                <div class="tw-mt-6">状态:</div>
               </v-col>
               <v-col cols="6">
                 <v-text-field
@@ -56,7 +56,7 @@
           <v-col md="2">
             <v-row>
               <v-col cols="4">
-                <div class="tw-mt-6 tw-ml-8">组Id:</div>
+                <div class="tw-mt-6">组Id:</div>
               </v-col>
               <v-col cols="6">
                 <v-text-field
@@ -65,14 +65,13 @@
                   single-line
                 ></v-text-field>
               </v-col>
-              <v-spacer></v-spacer>
             </v-row>
           </v-col>
 
           <v-col md="2">
             <v-row>
               <v-col cols="4">
-                <div class="tw-mt-6 tw-ml-8">竞赛:</div>
+                <div class="tw-mt-6">竞赛:</div>
               </v-col>
               <v-col cols="6">
                 <v-text-field

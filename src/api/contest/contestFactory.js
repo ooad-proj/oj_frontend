@@ -22,12 +22,13 @@ export default {
             endTime:endTime
         })
     },
-    changeContestBasicInfo(contestId,title,description,startTime,endTime){
+    changeContestBasicInfo(contestId,title,description,startTime,endTime,access){
         return http.put('/api/contest/'+contestId, {
             title:title,
             description:description,
             startTime:startTime,
-            endTime:endTime
+            endTime:endTime,
+            access:access
         })
     },
     getContestInfo(contestId){

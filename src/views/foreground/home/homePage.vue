@@ -34,7 +34,7 @@
     <div style=" min-height: 90vh">
       <v-container grid-list-xs>
         <v-row>
-          <v-col md="8">
+          <v-col md="7">
             <v-card class=" pa-5 tw-my-4">
               <p class=" tw-text-xl tw-font-bold">最近公告</p>
               <div class=" tw-flex tw-justify-between tw-p-2 tw-border tw-border-solid">
@@ -58,7 +58,7 @@
               </div>
             </v-card>
           </v-col>
-          <v-col md="4">
+          <v-col md="5">
             <v-card class=" pa-5 tw-my-4">
               <p class=" tw-text-xl tw-font-bold">临期比赛</p>
               <div class=" tw-flex tw-justify-between tw-p-2 tw-border tw-border-solid">
@@ -71,7 +71,8 @@
               </div>
             </v-card>
             <v-card class=" pa-5 tw-my-4">
-              <p class=" tw-text-xl tw-font-bold">STH1</p>
+              <p class=" tw-text-xl tw-font-bold">近期提交</p>
+              <line-chart ref="chart" :height="200"></line-chart>
             </v-card>
           </v-col>
         </v-row>
@@ -83,8 +84,10 @@
 
 <script>
 import api from '../../../api/api'
+import LineChart from "@/components/LineChart.vue"
 
 export default {
+  components: {LineChart},
   mounted () {
     window.addEventListener('scroll', this.handleScroll)
     this.getDataFromApi()
@@ -130,6 +133,11 @@ export default {
         api.rankFactory.getRank(1,10),
         api.contestFactory.getContestWithDDL(5)
       ]).then((resps) => {
+        let resp = resps[0]
+        console.log(resp)
+        this.$refs.chart.dataStd[0].values = resp.content.data
+        this.$refs.chart.labels = (resp.content.label)
+
         this.value = resps[0].content.data
         this.announcements = resps[1].content
         this.rank = resps[2].content.list
