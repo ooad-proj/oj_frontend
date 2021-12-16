@@ -94,7 +94,7 @@ export default {
         },
         { text: "标题", value: "title", sortable: false },
         { text: "我的分数", value: "myScore", sortable: false },
-        { text: "总分", value: "score", sortable: false },
+        { text: "总分", value: "totalScore", sortable: false },
         { text: "进入问题", value: "enter", sortable: false },
       ],
       tableData: [],

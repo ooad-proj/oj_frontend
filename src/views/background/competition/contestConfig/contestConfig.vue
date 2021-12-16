@@ -8,11 +8,13 @@
         <v-btn
           color="primary"
           class="mx-1"
+          @click="exportUserCode()"
           >导出通过代码</v-btn
         >
         <v-btn
           color="primary"
           class="mx-1"
+          @click="exportUserScore()"
           >导出用户分数</v-btn
         >
       </div>
@@ -94,7 +96,7 @@ export default {
     exportUserScore(){
       let url = urlFactory.user_Score_URL_Start;
       url = url + this.contestId;
-      url = url + urlFactory.user_Score_End
+      url = url + urlFactory.user_Score_URL_End
       let link = document.createElement("a");
       link.style.display = "none";
       link.href = url;
