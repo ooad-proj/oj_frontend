@@ -79,19 +79,22 @@ export default {
         api.authFactory.getInfo(),
         api.authFactory.getGroups(),
         api.authFactory.getRole(),
-        api.submitFactory.getSubmitAllTimes()
       ]).then((resps) => {
         let info = resps[0];
         this.basic = info.content;
+        console.log(this.basic.id)
         api.submitFactory.getSubmitTimes(this.basic.id).then(resp => {
           this.$refs.chart.dataStd[0].values = resp.content.data
           this.$refs.chart.labels = this.fliterLabel(resp.content.label)
           // this.$refs.chart.dataStd[0].values = [1,2,3]
           // this.$refs.chart.labels = this.fliterLabel(['1','2','3'])
         })
+        api.submitFactory.getSubmitAllTimes(this.basic.id).then(resp=>{
+          this.record = resp.content[0];  
+        })
         this.group = resps[1].content;
         this.role = resps[2].content;
-        this.record = resps[3].content;
+        
       });
     },
   },

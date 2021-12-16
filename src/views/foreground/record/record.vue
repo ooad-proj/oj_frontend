@@ -136,6 +136,11 @@ export default {
     SnackBar,
   },
   mounted() {
+    this.userId = this.$route.query.userId
+    this.stateCode = this.$route.query.stateCode
+    this.problemId = this.$route.query.problemId
+    this.groupId = this.$route.query.groupId
+    this.contestId = this.$route.query.contestId
     this.getDataFromApi("");
   },
   data() {
@@ -211,7 +216,7 @@ export default {
           this.tableData = response.content.list;
           console.log(this.tableData)
           this.tableData.forEach((item) => {
-            item.submitTime = this.timestampToTime(item.submitTime / 1000);
+            item.submitTime = this.timestampToTime(item.submitTime);
             return item;
           });
           this.totalAmont = response.content.totalAmont;

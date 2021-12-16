@@ -28,7 +28,7 @@ export default {
   data() {
     return {
       items : [],
-      showAnswer: true,
+      showAnswer: false,
       sidebarData: {
         creatorId: null,
         creatorName: null,

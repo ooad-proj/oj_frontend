@@ -301,7 +301,7 @@ export default {
   },
   computed: {
     editTitle() {
-      return this.editing ? "编辑一个用户" : "添加一个用户";
+      return this.editing ? "编辑一个竞赛" : "添加一个竞赛";
     },
   },
   methods: {
@@ -335,7 +335,7 @@ export default {
     editItem(item) {
       this.editedIndex = this.tableData.indexOf(item);
       let temp_start = item.startTime.trim().split(" ");
-      let temp_end = item.startTime.trim().split(" ");
+      let temp_end = item.endTime.trim().split(" ");
       this.startDay = temp_start[0];
       this.startTimeInDay = temp_start[1];
       this.endDay = temp_end[0];

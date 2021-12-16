@@ -35,7 +35,7 @@
           tw-p-2 tw-px-1
           sm:tw-px-4
         "
-        @click="$router.push('/record')"
+        @click="goRecord()"
       >
         <v-icon class="white--text">mdi-format-list-bulleted</v-icon>
         <span class="tw-hidden lg:tw-inline">记录</span>
@@ -139,6 +139,18 @@ export default {
           this.user.id = -1;
           this.user.name = "";
         }
+      });
+    },
+    goRecord() {
+      this.$router.push({
+        name: "recordPage",
+        query: {
+          userId: "",
+          problemId: "",
+          stateCode: "",
+          groupId: "",
+          contestId: "",
+        },
       });
     },
   },
