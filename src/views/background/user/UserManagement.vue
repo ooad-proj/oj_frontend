@@ -495,6 +495,9 @@ export default {
         .then((response) => {
           this.userInfo = response.content.list;
           this.totalUser = response.content.totalAmount;
+          // if ((this.options.page-1)*this.options.itemsPerPage > this.totalUser){
+          //   this.options.page=1
+          // }
           this.loading = false;
         });
     },

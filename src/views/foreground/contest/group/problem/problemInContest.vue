@@ -2,7 +2,16 @@
   <div>
     <v-container grid-list-xs>
       <v-card class="pa-5">
-        <p class="tw-text-xl tw-font-bold">竞赛:{{ title }}</p>
+        <div class=" tw-flex tw-justify-between">
+          <div>
+            <p class="tw-text-xl tw-font-bold">竞赛:{{ title }}</p>
+          </div>
+          <div>
+            <v-btn color="primary" class="tw-w-full" @click="goRecord()"
+              >查看记录</v-btn
+            >
+          </div>
+        </div>
 
         <v-divider></v-divider>
 
@@ -17,7 +26,6 @@
           <v-progress-linear
             :value="value"
             color="primary"
-            
             height="25"
             class="mx-5"
           >
@@ -149,8 +157,9 @@ export default {
         this.title = response.content.contest.title;
         this.nowTime = new Date(Date.now()).getTime();
         this.value =
-          (this.nowTime - this.startTime) / (this.endTime - this.startTime)*100;
-        this.value = this.value > 100 ? 100 : this.value
+          ((this.nowTime - this.startTime) / (this.endTime - this.startTime)) *
+          100;
+        this.value = this.value > 100 ? 100 : this.value;
         console.log(response);
       });
     },
@@ -160,6 +169,23 @@ export default {
         params: {
           problemId: item.problemId,
         },
+      });
+    },
+    goRecord() {
+      let id =0
+      api.authFactory.getInfo().then((response) => {
+        console.log(response);
+        id = response.content.id;
+        this.$router.push({
+          name: "recordPage",
+          query: {
+            userId: id,
+            problemId: "",
+            stateCode: "",
+            groupId: this.$route.params.groupId,
+            contestId: this.contestId,
+          },
+        });
       });
     },
   },

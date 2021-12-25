@@ -59,7 +59,7 @@ export default {
         { text: "回答问题数", value: "answerNum", sortable: false },
         { text: "正确数", value: "correctNum", sortable: false },
         { text: "正确率", value: "correctRate", sortable: false },
-        { text: "排名", value: "rank", sortable: false },
+        { text: "排名", value: "ranking", sortable: false },
       ],
     };
   },

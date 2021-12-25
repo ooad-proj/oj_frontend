@@ -128,11 +128,11 @@
                 >
                   <md-editor class="tw-w-full" v-model="releaseContent" />
                 </v-input>
-                <v-checkbox
+                <!-- <v-checkbox
                   v-model="isMail"
                   label="是否需要邮件通知"
                   class=""
-                ></v-checkbox>
+                ></v-checkbox> -->
               </v-form>
             </v-card-text>
             <v-card-actions>

@@ -23,7 +23,7 @@
                 label="搜索id"
                 single-line
                 hide-details
-                @click:append="getDataFromApi(this.searchContent)"
+                @click:append="getDataFromApi(searchContent)"
               >
               </v-text-field>
             </div>
@@ -51,7 +51,7 @@
             <div
               class="
                 tw-text-purple-600
-                tw-text-3xl
+                tw-text-2xl
                 tw-font-bold
                 tw-truncate
                 tw-w-min
@@ -83,7 +83,7 @@
           <div class="tw-flex tw-justify-between tw-items-center">
             <div
               class="
-                tw-text-3xl tw-font-bold tw-truncate tw-w-min tw-cursor-pointer
+                tw-text-2xl tw-font-bold tw-truncate tw-w-min tw-cursor-pointer
                 hover:tw-underline
               "
               @click="Go(item)"
@@ -108,16 +108,16 @@
           <v-card class="pa-5">
             <v-row>
               <v-col>
-                <v-card-title class="text-h5">发布公告</v-card-title>
+                <v-card-title class="text-h5">发布公告或帖子</v-card-title>
                 <v-card-text>
                   <v-form ref="releaseForm" v-model="releaseValid">
                     <v-text-field
                       v-model="releaseName"
                       :rules="[
-                        (v) => !!v || '公告名不能为空',
-                        (v) => v.length < 10 || '公告名不能超过10个字符',
+                        (v) => !!v || '帖子名不能为空',
+                        (v) => v.length < 10 || '帖子名不能超过10个字符',
                       ]"
-                      label="请输入公告名"
+                      label="请输入帖子名"
                       required
                     ></v-text-field>
                     <v-input
@@ -137,13 +137,13 @@
                       class=""
                       v-if="(my_role =='teacher') |(my_role =='assistant')"
                     ></v-checkbox>
-                    <v-checkbox
+                    <!-- <v-checkbox
                       v-model="isMail"
                       label="是否需要邮件通知"
                       class=""
                       :disabled="!isPublic"
                       v-if="(my_role =='teacher') |(my_role =='assistant')"
-                    ></v-checkbox>
+                    ></v-checkbox> -->
                   </v-form>
                 </v-card-text>
                 <v-card-actions>
@@ -248,6 +248,7 @@ export default {
       }
     },
     getDataFromApi(search) {
+      console.log("11")
       api.forumFactory
         .getForumList(
           this.$route.params.groupId,
@@ -260,6 +261,7 @@ export default {
           console.log(this.list);
           this.totalPage = response.content.totalPage;
           this.totalAmount = response.content.totalAmount;
+          // this.page =1
         });
       api.forumFactory
         .getPublic(this.$route.params.groupId, 3)
@@ -301,6 +303,9 @@ export default {
     },
     toTime: function(val){
       return this.timestampToTime(val)[0]+this.timestampToTime(val)[1]
+    },
+    test(){
+      console.log("haode")
     }
   },
 };
