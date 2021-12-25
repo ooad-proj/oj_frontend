@@ -107,7 +107,7 @@
                     <div
                       class="tw-p-2 tw-h-48 tw-overflow-auto tw-rounded-md"
                       :class="
-                        userResult.correct
+                        standardResult.correct
                           ? 'tw-bg-gray-100 '
                           : 'tw-bg-red-100 tw-text-red-600'
                       "
@@ -126,7 +126,7 @@
                       </div>
                       <div>{{ standardResult.timeCost }}</div>
                       <div>{{ standardResult.memoryCost }}</div> -->
-                      <pre class="tw-font-mono ">{{
+                      <pre class="tw-font-mono tw-text-xs">{{
                         standardResult.message
                       }}</pre>
                     </div>

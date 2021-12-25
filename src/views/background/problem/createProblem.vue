@@ -252,9 +252,7 @@
 
             <v-row>
               <v-col>
-               
-                  <md-editor class="tw-w-full" v-model="tips" />
-        
+                <md-editor class="tw-w-full" v-model="tips" />
               </v-col>
             </v-row>
 
@@ -431,7 +429,7 @@
                     @click="uploadSample"
                     >上传样例</v-btn
                   >
-                  <v-btn color="primary" @click="download()">下载样例</v-btn>
+                  <v-btn color="primary" @click="download()" v-if="this.$route.query.ifEdit">下载样例</v-btn>
                 </div>
               </v-col>
             </v-row>
@@ -610,9 +608,11 @@ export default {
       select: ["java"],
 
       content: {
-        python: "##--##--\n# template starts here\n\n\n\n\n# template ends here\n##--##--\n",
-        java: "//--//--\n// template starts here\n\n\n\n\n// template ends here\n//--//--\n",
+        python:
+          "# template starts here\n##--##--\n\n\n\n\n##--##--\n# template ends here\n",
+        java: "// template starts here\n//--//--\n\n\n\n\n//--//--\n// template ends here\n",
       },
+
       ////////////////////////样例文件//////////////////////
       testCaseAmount: null,
       testCaseId: null,
@@ -636,9 +636,7 @@ export default {
         { text: "输出", value: "output", sortable: false },
         { text: "删除", value: "delete", sortable: false, width: 50 },
       ],
-      samples: [
-        { input: "Input...", output: "Output..." }
-      ],
+      samples: [{ input: "Input...", output: "Output..." }],
       shownId: null,
       title: null,
       description: "",
@@ -651,7 +649,7 @@ export default {
     download() {
       let url = urlFactory.sample_Download_URL_Start;
       url = url + this.testCaseId;
-      url =url+urlFactory.sample_Download_URL_End;
+      url = url + urlFactory.sample_Download_URL_End;
       let link = document.createElement("a");
       link.style.display = "none";
       link.href = url;
@@ -661,8 +659,8 @@ export default {
     confirm() {
       this.$route.query.ifEdit ? this.submitEdit() : this.submit();
     },
-    changeTemplateToContent(submitTemplate) {
-      let temp = {};
+    changeTemplateToContent(content, submitTemplate) {
+      let temp = content;
       submitTemplate.forEach(function (item) {
         temp[item.language] = item.code;
       });
@@ -709,17 +707,16 @@ export default {
       this.description = "";
       this.inputFormat = "";
       this.outputFormat = "";
-      this.samples = [
-        { input: "Input...", output: "Output..." },
-      ];
+      this.samples = [{ input: "Input...", output: "Output..." }];
       this.tips = "";
       this.timeLimit = null;
       this.spaceLimit = null;
-      this.select = ["C++"];
+      this.select = ["java"];
       this.testCaseId = "";
       this.content = {
-        python: "",
-        java: "",
+        python:
+          "# template starts here\n##--##--\n\n\n\n\n##--##--\n# template ends here\n",
+        java: "// template starts here\n//--//--\n\n\n\n\n//--//--\n// template ends here\n",
       };
       this.totalScore = "";
       this.punishRule = "";
@@ -845,6 +842,7 @@ export default {
             this.select = response.content.allowedLanguage;
             this.testCaseId = response.content.testCaseId;
             this.content = this.changeTemplateToContent(
+              this.content,
               response.content.submitTemplate
             );
             this.totalScore = response.content.scoreRule.totalScore;

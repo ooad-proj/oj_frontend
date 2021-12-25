@@ -56,12 +56,12 @@
           <v-col md="2">
             <v-row>
               <v-col cols="4">
-                <div class="tw-mt-6">组Id:</div>
+                <div class="tw-mt-6">班级Id:</div>
               </v-col>
               <v-col cols="6">
                 <v-text-field
                   v-model="groupId"
-                  label="组Id"
+                  label="班级Id"
                   single-line
                 ></v-text-field>
               </v-col>
@@ -217,6 +217,7 @@ export default {
           console.log(this.tableData)
           this.tableData.forEach((item) => {
             item.submitTime = this.timestampToTime(item.submitTime);
+            item.score = item.score.toFixed(2)
             return item;
           });
           this.totalAmont = response.content.totalAmont;

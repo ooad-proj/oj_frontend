@@ -25,7 +25,7 @@
             <p class=" tw-text-5xl tw-font-bold tw-overflow-hidden tw-font-mono typer tw-border-0 tw-border-r-4 tw-border-solid">
               T<span class=" tw-text-teal-600">eal</span>OJ
             </p>
-            <v-btn color="primary">ENTER</v-btn>
+            <!-- <v-btn color="primary">ENTER</v-btn> -->
           </div>
         </div>
       </div>
@@ -59,7 +59,7 @@
             </v-card>
           </v-col>
           <v-col md="5">
-            <v-card class=" pa-5 tw-my-4">
+            <v-card class=" pa-5 tw-my-4" v-if="logined">
               <p class=" tw-text-xl tw-font-bold">临期比赛</p>
               <div class=" tw-flex tw-justify-between tw-p-2 tw-border tw-border-solid">
                 <div>竞赛名</div>
@@ -94,6 +94,7 @@ export default {
   },
   data() {
     return {
+      logined: false,
       filter: 0,
       value: [0,0],
       announcements: [],
@@ -127,6 +128,9 @@ export default {
       return res;
     },
     getDataFromApi() {
+      api.authFactory.isLogin().then(resp => {
+        this.logined = resp.isLogin
+      })
       Promise.all([
         api.submitFactory.getSubmitTimes(""),
         api.forumFactory.getPublic(0,5),
