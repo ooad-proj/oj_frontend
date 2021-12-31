@@ -122,12 +122,7 @@
                       <v-form ref="form" v-model="addUserValid">
                         <v-text-field
                           v-model="id"
-                          :rules="[
-                            (v) => !!v || 'ID不能为空',
-                            (v) =>
-                              /(^[1-9]\d*$)/.test(v) ||
-                              '请输入有效的id(8位数字)',
-                          ]"
+                          :rules="[(v) => !!v || 'ID不能为空']"
                           label="ID"
                           required
                         ></v-text-field>
@@ -135,6 +130,12 @@
                           v-model="name"
                           :rules="[(v) => !!v || '用户名不能为空']"
                           label="用户名"
+                          required
+                        ></v-text-field>
+                        <v-text-field
+                          v-model="password"
+                          :rules="[(v) => !!v || '密码不能为空', (v) => v.length >= 6 || '密码长度不能少于6个字符']"
+                          label="密码"
                           required
                         ></v-text-field>
                         <v-text-field
@@ -279,6 +280,7 @@
 
 
 <script>
+import urlFactory from "@/api/url/urlFactory.js"
 import api from "@/api/api";
 import SnackBar from "../../../components/SnackBar.vue";
 import axios from "axios";
@@ -303,6 +305,7 @@ export default {
   },
   data() {
     return {
+      password:'',
       myrole: null,
       //编辑的item
       editedItem2: {
@@ -452,7 +455,7 @@ export default {
     },
     sendFile() {
       let that = this;
-      let url = "http://localhost:8082/api/user/add/batch";
+      let url = urlFactory.add_user_URL;
       //获取数据
       let data = new FormData();
       data.append("file", this.csvFile);
@@ -463,6 +466,7 @@ export default {
         this.$refs.sb.warn("上传成功");
         this.$refs.formCsv.resetValidation();
         this.csvFile = null;
+        this.getDataFromApi("");
       });
     },
     closeUpload() {
@@ -474,12 +478,13 @@ export default {
       this.id = null;
       this.name = null;
       this.mail = null;
+      this.password = null;
       this.addingUser = false;
     },
     addUser() {
       this.addingUserLoader = true;
       api.userFactory
-        .createUser(this.id, this.name, 123456, this.mail)
+        .createUser(this.id, this.name, this.password, this.mail)
         .then((response) => {
           this.$refs.sb.warn(this.respMap[response.code]);
           this.closeAddUser();

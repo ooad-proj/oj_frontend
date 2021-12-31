@@ -59,14 +59,14 @@
         <v-row>
           <div class="tw-flex tw-flex-row tw-p-3">
             <div class="tw-w-32">创建者id：</div>
-            <div class="tw-w-48">{{ creatorName }}</div>
+            <div class="tw-w-48">{{ creatorId}}</div>
           </div>
         </v-row>
 
         <v-row>
           <div class="tw-flex tw-flex-row tw-p-3">
             <div class="tw-w-32">创建者姓名：</div>
-            <div class="tw-w-48">{{ creatorId }}</div>
+            <div class="tw-w-48">{{ creatorName }}</div>
           </div>
         </v-row>
       </v-container>

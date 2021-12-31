@@ -99,7 +99,9 @@
                       </div>
                       <div>{{ userResult.timeCost }}</div>
                       <div>{{ userResult.memoryCost }}</div> -->
-                      <pre class="tw-font-mono tw-text-xs">{{ userResult.message }}</pre>
+                      <pre class="tw-font-mono tw-text-xs">{{
+                        userResult.message
+                      }}</pre>
                     </div>
                   </v-col>
                   <v-col md="6">
@@ -220,7 +222,9 @@
                               : 'tw-bg-red-100 tw-text-red-600'
                           "
                         >
-                          <pre class="tw-font-mono tw-text-xs">{{ item.message }}</pre>
+                          <pre class="tw-font-mono tw-text-xs">{{
+                            item.message
+                          }}</pre>
                         </div>
                       </v-expansion-panel-content>
                     </v-expansion-panel>
@@ -336,29 +340,32 @@ export default {
     };
   },
   methods: {
-    getProblemInfo(){
-      api.problemFactory.getProblemInfo(this.$route.params.problemId).then((response)=>{
-        this.selections = response.content.allowedLanguage
-        this.select = this.selections[0]
-      })
+    getProblemInfo() {
+      api.problemFactory
+        .getProblemInfo(this.$route.params.problemId)
+        .then((response) => {
+          this.selections = response.content.allowedLanguage;
+          this.select = this.selections[0];
+          this.changeTemplate();
+        });
     },
     changeTemplate() {
       this.code = this.templateMap[this.select];
-      console.log(this.templateMap)
-      console.log(this.select)
+      console.log(this.templateMap);
+      console.log(this.select);
     },
     getTemplate() {
       api.submitFactory
         .getTemplate(this.$route.params.problemId)
         .then((response) => {
           let content = response.content;
-          console.log(response)
-          this.templateMap = {};
-          for (let i = 0; i < content.length; i++) {
-            this.templateMap[content[i].language] = content[i].code;
+          console.log(response);
+          if (response.content.length != 0) {
+            this.templateMap = { java: "", python: "" };
+            for (let i = 0; i < content.length; i++) {
+              this.templateMap[content[i].language] = content[i].code;
+            }
           }
-          this.select = content[0].language
-          this.changeTemplate()
         })
         .catch(() => {
           this.$refs.sb.warn("未知错误");
@@ -379,7 +386,7 @@ export default {
           }
         });
     },
-    
+
     testAnswer() {
       this.testLoader = true;
       api.submitFactory

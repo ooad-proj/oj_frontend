@@ -14,12 +14,13 @@ export default {
         return http.del('/api/contest/' + contestId, {
         })
     },
-    addContest(groupId,title,description,startTime,endTime){
+    addContest(groupId,title,description,startTime,endTime,access){
         return http.post('/api/contest/group/'+groupId, {
             title:title,
             description:description,
             startTime:startTime,
-            endTime:endTime
+            endTime:endTime,
+            access:access
         })
     },
     changeContestBasicInfo(contestId,title,description,startTime,endTime,access){

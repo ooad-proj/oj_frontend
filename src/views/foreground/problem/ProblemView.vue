@@ -6,7 +6,7 @@
           <problem-description
             :data="this.descriptionData"
           ></problem-description>
-          <problem-answer v-if="showAnswer" :items="items"></problem-answer>
+          <problem-answer v-if="showAnswer && ifHaveAnswer" :items="items"></problem-answer>
         </v-col>
         <v-col cols="3">
           <problem-side-item :data="this.sidebarData"></problem-side-item>
@@ -27,7 +27,8 @@ export default {
   // 本组件可能跳转位置不同，注意处理
   data() {
     return {
-      items : [],
+      ifHaveAnswer:false,
+      items: [],
       showAnswer: false,
       sidebarData: {
         creatorId: null,
@@ -57,6 +58,7 @@ export default {
   mounted() {
     this.problemId = this.$route.params.problemId;
     this.getDataFromApi();
+    this.getIfHaveAnswer();
   },
   methods: {
     partial() {
@@ -103,12 +105,21 @@ export default {
       });
       api.problemFactory.getAnswerOfProblem(this.problemId).then((response) => {
         if (response.code == 0) {
-          this.showAnswer = true
-          this.items = response.content;
-        }else if (response.code ==-2){
-          this.showAnswer = false
+          this.showAnswer = true;
+          this.items = response.content.answer;
+        } else if (response.code == -2) {
+          this.showAnswer = false;
         }
       });
+    },
+    getIfHaveAnswer() {
+      api.submitFactory
+        .ifHaveAnswer(this.$route.params.problemId)
+        .then((response) => {
+          if (response.code == 0) {
+            this.ifHaveAnswer = response.content.haveAnswer;
+          }
+        });
     },
   },
 };

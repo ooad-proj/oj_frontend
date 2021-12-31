@@ -52,8 +52,7 @@
                 <v-text-field
                   v-model="assistantId"
                   :rules="[
-                    (v) => !!v || 'ID不能为空',
-                    (v) => /(^[1-9]\d*$)/.test(v) || '请输入有效的id(数字)',
+                    (v) => !!v || 'ID不能为空'
                   ]"
                   label="请输入学助ID"
                   required

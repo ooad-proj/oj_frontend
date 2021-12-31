@@ -219,8 +219,8 @@ export default {
     getDataFromApi() {
       api.problemFactory.getAnswerOfProblem(this.problemId).then((response) => {
         if (response.code == 0) {
-          this.isPublish = response.isPublish;
-          this.items = response.content;
+          this.isPublish = response.content.isPublish;
+          this.items = response.content.answer;
         }
       });
     },

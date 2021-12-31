@@ -54,10 +54,7 @@
               <v-form ref="editingForm" v-model="editValid">
                 <v-text-field
                   v-model="editedItem.id"
-                  :rules="[
-                    (v) => !!v || 'ID不能为空',
-                    (v) => /(^[1-9]\d*$)/.test(v) || '请输入有效的id(数字)',
-                  ]"
+                  :rules="[(v) => !!v || 'ID不能为空']"
                   label="ID"
                   required
                 ></v-text-field>
@@ -117,10 +114,7 @@
               <v-form ref="addingForm" v-model="addValid">
                 <v-text-field
                   v-model="addUserId"
-                  :rules="[
-                    (v) => !!v || 'ID不能为空',
-                    (v) => /(^[1-9]\d*$)/.test(v) || '请输入有效的id(数字)',
-                  ]"
+                  :rules="[(v) => !!v || 'ID不能为空']"
                   label="请输入用户ID"
                   required
                 ></v-text-field>
@@ -242,15 +236,19 @@ export default {
     myrole: null,
     respMap: {
       0: "成功",
-      "-1": "用户已存在",
-      "-2": "必须项不能为空",
-      "-3": "密码格式错误",
+      "-1": "组不存在",
+      "-2": "用户不存在",
+      "-3": "用户已在组内",
+      "-4": "不能添加老师",
+      "-5": "不能添加本组学助",
     },
     classMap: {
       0: "tw-bg-green-400",
       "-1": "tw-bg-yellow-500",
       "-2": "tw-bg-red-400",
       "-3": "tw-bg-red-400",
+      "-4": "tw-bg-red-400",
+      "-5": "tw-bg-red-400",
     },
     csvValid: false,
     editValid: false,
@@ -328,6 +326,7 @@ export default {
           this.$emit("showmsg", "上传成功");
           this.$refs.formCsv.resetValidation();
           this.csvFile = null;
+          this.getDataFromApi();
         });
     },
     closeUpload() {
